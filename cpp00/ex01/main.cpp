@@ -4,31 +4,37 @@
 int main(void)
 {
 	std::string input;
-
+	std::cout << "Welcome to my awesome phonebook!" << std::endl;
 	while (1)
 	{
-		std::cout << "enter something: ";
-		if (!(std::cin >> input))
+		std::cout << "Enter a command: ";
+		if (!(std::getline(std::cin, input)))
 		{
 			std::cout << std::endl;
 			std::cout << "Were you trying to get me on a neverending loop with that EOF? ;)" << std::endl;
 			break;
 		}
 		if (input == "ADD")
-			std::cout << "adding user" << std::endl;
+		{
+			std::cout << "First name: " << std::endl;
+			std::cout << "Last name: " << std::endl;
+			std::cout << "Nickname: " << std::endl;
+			std::cout << "Phone Number: " << std::endl;
+			std::cout << "Darkest Secret: " << std::endl;
+		}
 		else if (input == "SEARCH")
+		{
 			std::cout << "search user" << std::endl;
+		}
 		else if (input == "EXIT")
 		{
-			std::cout << "goodbye" << std::endl;
 			break;
 		}
 		else
 		{
-			std::cout << "Could not find requested action:'" << input << "'" << std::endl;
 			std::cout << "Please write the accpted actions: 'ADD', 'SEARCH', EXIT" << std::endl;
 		}
 	}
-	std::cout << "Exiting phonebook..." << std::endl ;
+	std::cout << "Exiting phonebook..." << std::endl;
 	return 0;
 }
