@@ -1,8 +1,11 @@
 #include <string>
 #include <iostream>
+#include "Phonebook.hpp"
+#include "Contact.hpp"
 
 int main(void)
 {
+	Phonebook my_phonebook;
 	std::string input;
 	std::cout << "Welcome to my awesome phonebook!" << std::endl;
 	while (1)
@@ -16,11 +19,7 @@ int main(void)
 		}
 		if (input == "ADD")
 		{
-			std::cout << "First name: " << std::endl;
-			std::cout << "Last name: " << std::endl;
-			std::cout << "Nickname: " << std::endl;
-			std::cout << "Phone Number: " << std::endl;
-			std::cout << "Darkest Secret: " << std::endl;
+			my_phonebook.AddContact();
 		}
 		else if (input == "SEARCH")
 		{

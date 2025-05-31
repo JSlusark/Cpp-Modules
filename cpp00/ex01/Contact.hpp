@@ -1,19 +1,3 @@
-/*
-Contact
-Stands for a phonebook contact.
-
-Each contact has:
-- first name
-- last name
-- phone number
-- darkest secret
-
-cannot be empty
-max 10 characters previewd
-*/
-
-
-
 #ifndef CONTACT_HPP
 #define CONTACT_HPP
 
@@ -22,17 +6,20 @@ max 10 characters previewd
 
 class Contact
 {
-	public:
-		void setFirstName();
-		void setLastName();
-		void setPhoneNumber();
-		void setDarkestSecret();
+public:
+	void SetFirstName(const std::string& input);
+	void SetLastName(const std::string& input);
+	void SetPhoneNumber(const std::string& input);
+	void SetDarkestSecret(const std::string& input);
+	const std::string& GetFirstName();
+	const std::string& GetLastName();
+	const std::string& GetPhoneNumber();
+	const std::string& GetDarkestSecret();
 
-	private:
+private:
 	std::string first_name;
 	std::string last_name;
 	std::string phone_number;
 	std::string darkest_secret;
-}
-
+};
 #endif
