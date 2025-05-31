@@ -23,7 +23,7 @@ int main(void)
 		}
 		else if (input == "SEARCH")
 		{
-			std::cout << "search user" << std::endl;
+			my_phonebook.SearchContact();
 		}
 		else if (input == "EXIT")
 		{
@@ -31,6 +31,7 @@ int main(void)
 		}
 		else
 		{
+			// any other input is ignored
 			std::cout << "Please write the accpted actions: 'ADD', 'SEARCH', EXIT" << std::endl;
 		}
 	}
