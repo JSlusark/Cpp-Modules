@@ -1,7 +1,5 @@
 #include <iostream> // preprocess statement for input/output stream library
 #include <string>	// preprocess statement for input/output stream library
-// alt + shift + i to auto indent
-// alt + shift + f to format the code
 
 int main(int argc, char **argv)
 {

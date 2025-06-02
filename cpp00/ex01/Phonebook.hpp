@@ -10,8 +10,8 @@ class Phonebook
 {
 
 	private:
-	static const int MAX_I = 8;
-	Contact contact[MAX_I];
+	static const int MAX_N = 2; //<----------------------- remove this
+	Contact contact[MAX_N];
 	std::string GetInput(const std::string prompt, std::string required_type);
 	void DisplayContactInfo(int i, Contact contact);
 	void DisplayContactList();
@@ -19,10 +19,9 @@ class Phonebook
 
 
 public:
-	int total_i; // check if i can do a macro instead
-	int added_contacts;
+	int added_n;
 	void AddContact();
-	void SearchContact(); // search for a user
+	void SearchContact();
 	void Exit();
 };
 

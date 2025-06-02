@@ -6,7 +6,7 @@
 int main(void)
 {
 	Phonebook my_phonebook;
-	my_phonebook.total_i = 0;
+	my_phonebook.added_n = 0;
 	std::string input;
 	std::cout << "Welcome to my awesome phonebook!" << std::endl;
 	while (1)
