@@ -3,11 +3,13 @@ CPP = c++
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 
 HEADERS = Phonebook.hpp \
-		Contact.hpp
+		Contact.hpp \
+		Utils.hpp
 
 SRC = main.cpp \
 	Phonebook.cpp \
 	Contact.cpp \
+	Utils.cpp
 
 OBJDIR = obj
 OBJ = $(addprefix $(OBJDIR)/, $(SRC:.cpp=.o))
