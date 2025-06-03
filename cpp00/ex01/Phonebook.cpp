@@ -16,7 +16,7 @@ std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const 
 					  << "EOF detected. Exiting..." << std::endl;
 			exit(0);
 		}
-	    input = trim(input); 
+		input = trim(input);
 		if (!isValid(input))
 		{
 			std::cout << error_message << std::endl;
@@ -92,6 +92,7 @@ void Phonebook::SearchContact()
 }
 void Phonebook::Exit()
 {
+	std::cout << ">Exiting My Awesome Phonebook..." << std::endl;
 	PrintFooter();
 	exit(0);
 }
