@@ -1,5 +1,6 @@
 #include "Phonebook.hpp"
 #include "Contact.hpp"
+#include "OutputView.hpp"
 
 Phonebook::Phonebook() : total_contacts(0), index(0) {};
 
@@ -91,6 +92,6 @@ void Phonebook::SearchContact()
 }
 void Phonebook::Exit()
 {
-	std::cout << "Exiting phonebook" << std::endl;
+	PrintFooter();
 	exit(0);
 }

@@ -9,7 +9,8 @@ HEADERS = Phonebook.hpp \
 SRC = main.cpp \
 	Phonebook.cpp \
 	Contact.cpp \
-	Utils.cpp
+	Utils.cpp \
+	OutputView.cpp
 
 OBJDIR = obj
 OBJ = $(addprefix $(OBJDIR)/, $(SRC:.cpp=.o))
