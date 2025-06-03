@@ -19,7 +19,8 @@ class Phonebook
 
 
 public:
-	int added_n;
+	int total_contacts;
+	int index;
 	void AddContact();
 	void SearchContact();
 	void Exit();

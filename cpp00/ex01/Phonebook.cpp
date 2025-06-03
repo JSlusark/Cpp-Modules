@@ -24,14 +24,16 @@ std::string Phonebook::GetInput(const std::string prompt, std::string required_t
 
 void Phonebook::AddContact()
 {
-	if (added_n == MAX_N)
-		added_n = 0;
+	if (index == MAX_N) 
+		index = 0;
 	std::cout << "You are now able to add a new contact, please add the following: first name, last name, phone number and darkect secret" << std::endl;
-	this->contact[added_n].SetFirstName(GetInput("Add contact's first name: ", "string"));
-	this->contact[added_n].SetLastName(GetInput("Add contact's last name: ", "string"));
-	this->contact[added_n].SetPhoneNumber(GetInput("Add contact's phone number: ", "number"));
-	this->contact[added_n].SetDarkestSecret(GetInput("Add contact's darkest secret: ", "string"));
-	added_n++;
+	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", "string"));
+	this->contact[index].SetLastName(GetInput("Add contact's last name: ", "string"));
+	this->contact[index].SetPhoneNumber(GetInput("Add contact's phone number: ", "number"));
+	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", "string"));
+	if(total_contacts < MAX_N)
+		total_contacts++;
+	index++;
 }
 void Phonebook::DisplayContactInfo(int i, Contact contact)
 {
@@ -45,8 +47,8 @@ void Phonebook::DisplayContactInfo(int i, Contact contact)
 void Phonebook::DisplayContactList()
 {
 	std::cout << "Total contacts saved in your phonebook: "
-			  << C_GREEN << added_n << C_RESET << std::endl;
-	for (int i = 0; i < added_n; i++)
+			  << C_GREEN << total_contacts << C_RESET << std::endl;
+	for (int i = 0; i < total_contacts; i++)
 		DisplayContactInfo(i, this->contact[i]);
 }
 
@@ -56,7 +58,7 @@ void Phonebook::RequestContactView()
 	std::string input = GetInput("User at input: ", "number");
 	int i = std::atoi(input.c_str());
 	// might add repromting here
-	if (i < 0 || i >= added_n)
+	if (i < 0 || i >= total_contacts)
 	{
 		if (i >= MAX_N)
 			std::cout << "Phonebook is limited to 8 contacts. Please write an index from 0 to 7" << std::endl;
@@ -69,14 +71,11 @@ void Phonebook::RequestContactView()
 
 void Phonebook::SearchContact()
 {
-	if (added_n == 0)
+	if (total_contacts == 0)
 		std::cout << "Phonebook is empty: you need to add at least one contact to view the list of contacts" << std::endl;
 	else
 	{
 		DisplayContactList();
 		RequestContactView();
 	}
-}
-void Phonebook::Exit()
-{
 }
