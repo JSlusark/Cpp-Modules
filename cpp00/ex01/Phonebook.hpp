@@ -9,6 +9,7 @@
 #define ERR_ALPHA "Input accepts letters only"
 #define ERR_DIGIT "Input accepts digits only"
 #define ERR_EMPTY "Input cannot be empty"
+#define ERR_CMD "Invalid command"
 
 class Phonebook
 {
@@ -18,13 +19,13 @@ private:
 	int index;
 	static const int MAX_CONTACTS = 2; //<----------------------- remove this
 	Contact contact[MAX_CONTACTS];
-	std::string GetInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message);
 	void DisplayContactInfo(int i, Contact contact);
 	void DisplayContactList();
 	void RequestContactView();
-
-public:
+	
+	public:
 	Phonebook();
+	std::string GetInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message);
 	void AddContact();
 	void SearchContact();
 	void Exit();

@@ -3,14 +3,19 @@
 
 Phonebook::Phonebook() : total_contacts(0), index(0) {};
 
-std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const std::string&), std::string error_message) 
+std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message)
 {
 	while (true)
 	{
 		std::string input;
 		std::cout << prompt;
-		std::getline(std::cin, input);
-		if(!isValid(input))
+		if (!std::getline(std::cin, input))
+		{
+			std::cout << std::endl
+					  << "EOF detected. Exiting..." << std::endl;
+			exit(0);
+		}
+		if (!isValid(input))
 		{
 			std::cout << error_message << std::endl;
 			continue;
@@ -82,4 +87,9 @@ void Phonebook::SearchContact()
 		DisplayContactList();
 		RequestContactView();
 	}
+}
+void Phonebook::Exit()
+{
+	std::cout << "Exiting phonebook" << std::endl;
+	exit(0);
 }

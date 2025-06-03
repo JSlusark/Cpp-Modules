@@ -3,6 +3,11 @@
 #include "Phonebook.hpp"
 #include "Contact.hpp"
 
+bool isCommand(const std::string &s)
+	{
+		return s == "ADD" || s == "SEARCH" || s == "EXIT";
+	}
+
 int main(void)
 {
 	Phonebook my_phonebook;
@@ -10,31 +15,13 @@ int main(void)
 	std::cout << "Welcome to my awesome phonebook!" << std::endl;
 	while (1)
 	{
-		std::cout << "Enter a command: ";
-		if (!(std::getline(std::cin, input)))
-		{
-			std::cout << std::endl;
-			std::cout << "Were you trying to get me on a neverending loop with that EOF? ;)" << std::endl;
-			break; // see if there is a way to make it work without using break
-		}
-		else if (input == "ADD")
-		{
+		std::string input = my_phonebook.GetInput("Enter a command: ", isCommand, ERR_CMD);
+		if (input == "ADD")
 			my_phonebook.AddContact();
-		}
 		else if (input == "SEARCH")
-		{
 			my_phonebook.SearchContact();
-		}
 		else if (input == "EXIT")
-		{
-			break;
-		}
-		else
-		{
-			// any other input is ignored
-			std::cout << "Please write the accpted actions: 'ADD', 'SEARCH', EXIT" << std::endl;
-		}
+			my_phonebook.Exit();	
 	}
-	std::cout << "Exiting phonebook..." << std::endl;
 	return 0;
 }
