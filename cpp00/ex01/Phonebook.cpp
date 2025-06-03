@@ -15,6 +15,7 @@ std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const 
 					  << "EOF detected. Exiting..." << std::endl;
 			exit(0);
 		}
+	    input = trim(input); 
 		if (!isValid(input))
 		{
 			std::cout << error_message << std::endl;
@@ -29,10 +30,10 @@ void Phonebook::AddContact()
 	if (index >= MAX_CONTACTS)
 		index = 0;
 	std::cout << "You are now able to add a new contact, please add the following: first name, last name, phone number and darkect secret" << std::endl;
-	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", stringIsAlphas, ERR_ALPHA));
-	this->contact[index].SetLastName(GetInput("Add contact's last name: ", stringIsAlphas, ERR_ALPHA));
+	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", stringIsAlphaSpace, ERR_ALPHA));
+	this->contact[index].SetLastName(GetInput("Add contact's last name: ", stringIsAlphaSpace, ERR_ALPHA));
 	this->contact[index].SetPhoneNumber(GetInput("Add contact's phone number: ", StringIsDigits, ERR_DIGIT));
-	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", stringIsAlphas, ERR_ALPHA));
+	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", stringIsAlphaSpace, ERR_ALPHA));
 	if (total_contacts < MAX_CONTACTS)
 		total_contacts++;
 	index++;
