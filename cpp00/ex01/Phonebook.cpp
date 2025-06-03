@@ -3,21 +3,16 @@
 
 Phonebook::Phonebook() : total_contacts(0), index(0) {};
 
-std::string Phonebook::GetInput(const std::string prompt, std::string required_type) // if number or string
+std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const std::string&), std::string error_message) 
 {
 	while (true)
 	{
 		std::string input;
 		std::cout << prompt;
 		std::getline(std::cin, input);
-		if (required_type == "string" && !stringIsAlphas(input))
+		if(!isValid(input))
 		{
-			std::cout << "Input accepts letters only" << std::endl; // allow space between names
-			continue;
-		}
-		else if (required_type == "number" && !StringIsDigits(input))
-		{
-			std::cout << "Input accepts digits only" << std::endl;
+			std::cout << error_message << std::endl;
 			continue;
 		}
 		return input;
@@ -29,10 +24,10 @@ void Phonebook::AddContact()
 	if (index >= MAX_CONTACTS)
 		index = 0;
 	std::cout << "You are now able to add a new contact, please add the following: first name, last name, phone number and darkect secret" << std::endl;
-	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", "string"));
-	this->contact[index].SetLastName(GetInput("Add contact's last name: ", "string"));
-	this->contact[index].SetPhoneNumber(GetInput("Add contact's phone number: ", "number"));
-	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", "string"));
+	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", stringIsAlphas, ERR_ALPHA));
+	this->contact[index].SetLastName(GetInput("Add contact's last name: ", stringIsAlphas, ERR_ALPHA));
+	this->contact[index].SetPhoneNumber(GetInput("Add contact's phone number: ", StringIsDigits, ERR_DIGIT));
+	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", stringIsAlphas, ERR_ALPHA));
 	if (total_contacts < MAX_CONTACTS)
 		total_contacts++;
 	index++;
@@ -59,7 +54,7 @@ void Phonebook::RequestContactView()
 	while (true)
 	{
 		std::cout << "Add the index of the user you want to search, index should be from 0 to 7" << std::endl;
-		std::string input = GetInput("User at input: ", "number");
+		std::string input = GetInput("User at input: ", StringIsDigits, ERR_DIGIT);
 		int i = std::atoi(input.c_str()); // check int overflow
 		if (i < 0 || i >= total_contacts)
 		{
