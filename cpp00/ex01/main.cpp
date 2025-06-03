@@ -3,11 +3,6 @@
 #include "Phonebook.hpp"
 #include "Contact.hpp"
 
-bool isCommand(const std::string &s)
-	{
-		return s == "ADD" || s == "SEARCH" || s == "EXIT";
-	}
-
 int main(void)
 {
 	Phonebook my_phonebook;

@@ -15,3 +15,8 @@ bool StringIsDigits(const std::string& s) {
     }
     return !s.empty(); // Return false for empty string
 }
+
+bool isCommand(const std::string &s)
+	{
+		return s == "ADD" || s == "SEARCH" || s == "EXIT";
+	}
