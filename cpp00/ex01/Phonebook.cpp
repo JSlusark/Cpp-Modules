@@ -1,6 +1,8 @@
 #include "Phonebook.hpp"
 #include "Contact.hpp"
 
+Phonebook::Phonebook() : total_contacts(0), index(0) {};
+
 std::string Phonebook::GetInput(const std::string prompt, std::string required_type) // if number or string
 {
 	while (true)
@@ -24,14 +26,14 @@ std::string Phonebook::GetInput(const std::string prompt, std::string required_t
 
 void Phonebook::AddContact()
 {
-	if (index == MAX_N) 
+	if (index >= MAX_N)
 		index = 0;
 	std::cout << "You are now able to add a new contact, please add the following: first name, last name, phone number and darkect secret" << std::endl;
 	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", "string"));
 	this->contact[index].SetLastName(GetInput("Add contact's last name: ", "string"));
 	this->contact[index].SetPhoneNumber(GetInput("Add contact's phone number: ", "number"));
 	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", "string"));
-	if(total_contacts < MAX_N)
+	if (total_contacts < MAX_N)
 		total_contacts++;
 	index++;
 }

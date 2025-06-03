@@ -9,18 +9,18 @@
 class Phonebook
 {
 
-	private:
+private:
+	int total_contacts;
+	int index;
 	static const int MAX_N = 2; //<----------------------- remove this
-	Contact contact[MAX_N];
+	Contact contact[MAX_N];		// the
 	std::string GetInput(const std::string prompt, std::string required_type);
 	void DisplayContactInfo(int i, Contact contact);
 	void DisplayContactList();
 	void RequestContactView();
 
-
 public:
-	int total_contacts;
-	int index;
+	Phonebook();
 	void AddContact();
 	void SearchContact();
 	void Exit();

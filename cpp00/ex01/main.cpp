@@ -6,8 +6,6 @@
 int main(void)
 {
 	Phonebook my_phonebook;
-	my_phonebook.total_contacts = 0;
-	my_phonebook.index = 0;
 	std::string input;
 	std::cout << "Welcome to my awesome phonebook!" << std::endl;
 	while (1)
@@ -17,9 +15,9 @@ int main(void)
 		{
 			std::cout << std::endl;
 			std::cout << "Were you trying to get me on a neverending loop with that EOF? ;)" << std::endl;
-			break;
+			break; // see if there is a way to make it work without using break
 		}
-		if (input == "ADD")
+		else if (input == "ADD")
 		{
 			my_phonebook.AddContact();
 		}
