@@ -12,8 +12,8 @@ class Phonebook
 private:
 	int total_contacts;
 	int index;
-	static const int MAX_N = 2; //<----------------------- remove this
-	Contact contact[MAX_N];		// the
+	static const int MAX_CONTACTS = 2; //<----------------------- remove this
+	Contact contact[MAX_CONTACTS];
 	std::string GetInput(const std::string prompt, std::string required_type);
 	void DisplayContactInfo(int i, Contact contact);
 	void DisplayContactList();

@@ -26,14 +26,14 @@ std::string Phonebook::GetInput(const std::string prompt, std::string required_t
 
 void Phonebook::AddContact()
 {
-	if (index >= MAX_N)
+	if (index >= MAX_CONTACTS)
 		index = 0;
 	std::cout << "You are now able to add a new contact, please add the following: first name, last name, phone number and darkect secret" << std::endl;
 	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", "string"));
 	this->contact[index].SetLastName(GetInput("Add contact's last name: ", "string"));
 	this->contact[index].SetPhoneNumber(GetInput("Add contact's phone number: ", "number"));
 	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", "string"));
-	if (total_contacts < MAX_N)
+	if (total_contacts < MAX_CONTACTS)
 		total_contacts++;
 	index++;
 }
@@ -62,8 +62,9 @@ void Phonebook::RequestContactView()
 	// might add repromting here
 	if (i < 0 || i >= total_contacts)
 	{
-		if (i >= MAX_N)
-			std::cout << "Phonebook is limited to 8 contacts. Please write an index from 0 to 7" << std::endl;
+		if (i >= MAX_CONTACTS)
+			std::cout << "Phonebook is limited to a total of " << MAX_CONTACTS << " contacts." << std::endl
+					  << "Please write an index from 0 to " << MAX_CONTACTS << std::endl;
 		else
 			std::cout << "No contact was added at index " << i << std::endl;
 	}
