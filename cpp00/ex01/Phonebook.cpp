@@ -56,20 +56,26 @@ void Phonebook::DisplayContactList()
 
 void Phonebook::RequestContactView()
 {
-	std::cout << "Add the index of the user you want to search, index should be from 0 to 7" << std::endl;
-	std::string input = GetInput("User at input: ", "number");
-	int i = std::atoi(input.c_str());
-	// might add repromting here
-	if (i < 0 || i >= total_contacts)
+	while (true)
 	{
-		if (i >= MAX_CONTACTS)
-			std::cout << "Phonebook is limited to a total of " << MAX_CONTACTS << " contacts." << std::endl
-					  << "Please write an index from 0 to " << MAX_CONTACTS << std::endl;
+		std::cout << "Add the index of the user you want to search, index should be from 0 to 7" << std::endl;
+		std::string input = GetInput("User at input: ", "number");
+		int i = std::atoi(input.c_str()); // check int overflow
+		if (i < 0 || i >= total_contacts)
+		{
+			if (i >= MAX_CONTACTS)
+				std::cout << "Phonebook is limited to a total of " << MAX_CONTACTS << " contacts." << std::endl
+						  << "Please write an index from 0 to " << MAX_CONTACTS << std::endl;
+			else
+				std::cout << "No contact was added at index " << i << std::endl;
+			continue;
+		}
 		else
-			std::cout << "No contact was added at index " << i << std::endl;
+		{
+			DisplayContactInfo(i, this->contact[i]);
+			break;
+		}
 	}
-	else
-		DisplayContactInfo(i, this->contact[i]);
 }
 
 void Phonebook::SearchContact()
