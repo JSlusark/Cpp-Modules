@@ -1,6 +1,15 @@
 #include "Phonebook.hpp"
 #include "Contact.hpp"
 #include "OutputView.hpp"
+#include <iomanip>
+
+static std::string FormatField(const std::string &str)
+{
+	if (str.length() > 10)
+		return str.substr(0, 9) + ".";
+	else
+		return std::string(10 - str.length(), ' ') + str;
+}
 
 Phonebook::Phonebook() : total_contacts(0), index(0) {};
 
@@ -13,7 +22,7 @@ std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const 
 		if (!std::getline(std::cin, input))
 		{
 			std::cout << std::endl
-					  << C_RED << "EOF detected: " C_WHITE "Exiting Your Awesome Phoneboo..." << C_WHITE << std::endl;
+					  << C_RED << "EOF detected: " C_WHITE "Exiting Your Awesome Phonebook..." << C_WHITE << std::endl;
 			PrintFooter();
 			exit(0);
 		}
@@ -40,13 +49,13 @@ void Phonebook::AddContact()
 		total_contacts++;
 	index++;
 }
+
 void Phonebook::DisplayContactInfo(int i, Contact contact)
 {
-	std::cout << C_YELLOW << i << C_WHITE << " | "
-			  << contact.GetFirstName() << " | "
-			  << contact.GetLastName() << " | "
-			  << contact.GetPhoneNumber() << " | "
-			  << contact.GetDarkestSecret() << std::endl;
+	std::cout << C_YELLOW << std::setw(10) << i << C_WHITE << " | "
+			  << FormatField(contact.GetFirstName()) << " | "
+			  << FormatField(contact.GetLastName()) << " | "
+			  << FormatField(contact.GetPhoneNumber()) << std::endl;
 }
 
 void Phonebook::DisplayContactList()
@@ -62,6 +71,11 @@ void Phonebook::RequestContactView()
 	while (true)
 	{
 		std::string input = GetInput("User at input: ", StringIsDigits, ERR_INDEX);
+		if (input.length() > 1)
+		{
+			std::cout << ERR_INDEX_INVALID_INDEX << std::endl;
+			continue;
+		}
 		int i = std::atoi(input.c_str()); // check int overflow
 		if (i < 0 || i >= total_contacts)
 		{
