@@ -9,6 +9,7 @@ int main(void)
 	Phonebook my_phonebook;
 	std::string input;
 	PrintHeader();
+	std::cout << "Your Awesome Phonebook session started...." << std::endl;
 	while (1)
 	{
 		std::string input = my_phonebook.GetInput("Enter a command: ", isCommand, ERR_CMD);

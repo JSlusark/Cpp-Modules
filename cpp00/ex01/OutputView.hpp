@@ -2,7 +2,6 @@
 #define OUTPUTVIEW_HPP
 #include <iostream>
 
-
 void PrintHeader();
 void PrintFooter();
 

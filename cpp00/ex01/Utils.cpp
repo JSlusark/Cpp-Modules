@@ -7,7 +7,7 @@ bool stringIsAlphaSpace(const std::string &s)
         if (!std::isalpha(static_cast<unsigned char>(s[i])) && s[i] != ' ')
             return false;
     }
-    return !s.empty(); // Return false for empty string
+    return !s.empty();
 }
 
 bool StringIsDigits(const std::string &s)
@@ -17,7 +17,7 @@ bool StringIsDigits(const std::string &s)
         if (!std::isdigit(static_cast<unsigned char>(s[i])))
             return false;
     }
-    return !s.empty(); // Return false for empty string
+    return !s.empty();
 }
 
 bool isCommand(const std::string &s)

@@ -9,11 +9,12 @@ std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const 
 	while (true)
 	{
 		std::string input;
-		std::cout << prompt;
+		std::cout << C_GREEN << prompt << C_WHITE;
 		if (!std::getline(std::cin, input))
 		{
 			std::cout << std::endl
-					  << "EOF detected. Exiting..." << std::endl;
+					  << C_RED << "EOF detected: " C_WHITE "Exiting Your Awesome Phoneboo..." << C_WHITE << std::endl;
+			PrintFooter();
 			exit(0);
 		}
 		input = trim(input);
@@ -30,18 +31,18 @@ void Phonebook::AddContact()
 {
 	if (index >= MAX_CONTACTS)
 		index = 0;
-	std::cout << "You are now able to add a new contact, please add the following: first name, last name, phone number and darkect secret" << std::endl;
-	this->contact[index].SetFirstName(GetInput("Add contact's first name: ", stringIsAlphaSpace, ERR_ALPHA));
-	this->contact[index].SetLastName(GetInput("Add contact's last name: ", stringIsAlphaSpace, ERR_ALPHA));
-	this->contact[index].SetPhoneNumber(GetInput("Add contact's phone number: ", StringIsDigits, ERR_DIGIT));
-	this->contact[index].SetDarkestSecret(GetInput("Add contact's darkest secret: ", stringIsAlphaSpace, ERR_ALPHA));
+	std::cout << "You are now able to add a new contact and provide its details." << std::endl;
+	contact[index].SetFirstName(GetInput("First name: ", stringIsAlphaSpace, ERR_ALPHA));
+	contact[index].SetLastName(GetInput("Last name: ", stringIsAlphaSpace, ERR_ALPHA));
+	contact[index].SetPhoneNumber(GetInput("Phone number: ", StringIsDigits, ERR_DIGIT));
+	contact[index].SetDarkestSecret(GetInput("Darkest secret: ", stringIsAlphaSpace, ERR_ALPHA));
 	if (total_contacts < MAX_CONTACTS)
 		total_contacts++;
 	index++;
 }
 void Phonebook::DisplayContactInfo(int i, Contact contact)
 {
-	std::cout << i << " | "
+	std::cout << C_YELLOW << i << C_WHITE << " | "
 			  << contact.GetFirstName() << " | "
 			  << contact.GetLastName() << " | "
 			  << contact.GetPhoneNumber() << " | "
@@ -51,30 +52,30 @@ void Phonebook::DisplayContactInfo(int i, Contact contact)
 void Phonebook::DisplayContactList()
 {
 	std::cout << "Total contacts saved in your phonebook: "
-			  << C_GREEN << total_contacts << C_RESET << std::endl;
+			  << C_GREEN << total_contacts << C_WHITE << std::endl;
 	for (int i = 0; i < total_contacts; i++)
-		DisplayContactInfo(i, this->contact[i]);
+		DisplayContactInfo(i, contact[i]);
 }
 
 void Phonebook::RequestContactView()
 {
 	while (true)
 	{
-		std::cout << "Add the index of the user you want to search, index should be from 0 to 7" << std::endl;
-		std::string input = GetInput("User at input: ", StringIsDigits, ERR_DIGIT);
+		std::string input = GetInput("User at input: ", StringIsDigits, ERR_INDEX);
 		int i = std::atoi(input.c_str()); // check int overflow
 		if (i < 0 || i >= total_contacts)
 		{
 			if (i >= MAX_CONTACTS)
-				std::cout << "Phonebook is limited to a total of " << MAX_CONTACTS << " contacts." << std::endl
-						  << "Please write an index from 0 to " << MAX_CONTACTS << std::endl;
+				std::cout << ERR_INDEX_INVALID_RANGE << std::endl;
+			else if (i < 0)
+				std::cout << ERR_INDEX_INVALID_RANGE << std::endl;
 			else
-				std::cout << "No contact was added at index " << i << std::endl;
+				std::cout << ERR_INDEX_NOT_FOUND << std::endl;
 			continue;
 		}
 		else
 		{
-			DisplayContactInfo(i, this->contact[i]);
+			DisplayContactInfo(i, contact[i]);
 			break;
 		}
 	}
@@ -83,7 +84,7 @@ void Phonebook::RequestContactView()
 void Phonebook::SearchContact()
 {
 	if (total_contacts == 0)
-		std::cout << "Phonebook is empty: you need to add at least one contact to view the list of contacts" << std::endl;
+		std::cout << ERR_PHONEBOOK_IS_EMPTY << std::endl;
 	else
 	{
 		DisplayContactList();
@@ -92,7 +93,7 @@ void Phonebook::SearchContact()
 }
 void Phonebook::Exit()
 {
-	std::cout << ">Exiting My Awesome Phonebook..." << std::endl;
+	std::cout << EXIT_MESSAGE << std::endl;
 	PrintFooter();
 	exit(0);
 }
