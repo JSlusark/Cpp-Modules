@@ -6,8 +6,6 @@ HEADERS = Zombie.hpp
 
 SRC = main.cpp \
 	Zombie.cpp \
-	NewZombie.cpp \
-	RandomChump.cpp \
 	ZombieHorde.cpp
 
 OBJDIR = obj
