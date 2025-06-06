@@ -1,5 +1,5 @@
-NAME = HiThisIsBrain
-CPP = c++  # or g++
+NAME = UnnecessaryViolence
+CPP = c++
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 
 HEADERS = HumanA.hpp \

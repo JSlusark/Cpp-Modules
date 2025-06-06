@@ -1,18 +1,15 @@
 #include "Weapon.hpp"
 
-Weapon::Weapon() : type{}
-{
-}
+Weapon::Weapon(std::string type) : type(type) {}
+
 
 Weapon::~Weapon()
 {
 }
 
-const std::string& Weapon::getType(){
-
-    type;
-
+const std::string& Weapon::getType() const {
+    return type;
 }
-void Weapon::setType(std::string& value){
+void Weapon::setType(std::string value){
     type = value;
 }
