@@ -9,7 +9,7 @@ private:
 	std::string name;
 
 public:
-	HumanB(std::string name);
+	HumanB(std::string name); // does not need to have weapon in its constructor
 	~HumanB();
 	void Attack();
 	void SetWeapon(Weapon& type);

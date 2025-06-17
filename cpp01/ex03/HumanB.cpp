@@ -1,6 +1,6 @@
 #include "HumanB.hpp"
 
-HumanB::HumanB(std::string name) : weapon(nullptr), name(name) {}
+HumanB::HumanB(std::string name) : weapon(NULL), name(name) {}
 
 HumanB::~HumanB() {}
 
@@ -11,7 +11,7 @@ void HumanB::SetWeapon(Weapon& type){
 void HumanB::Attack()
 {
 	if(weapon)
-		std::cout << name << "attacks with their" << weapon->getType() << std::endl;
+		std::cout << name << " attacks with their " << weapon->getType() << std::endl;
 	else
-		std::cout << name << "has no weapon!" << std::endl;
+		std::cout << name << " cannot attack as no weapon type was set!" << std::endl;
 }

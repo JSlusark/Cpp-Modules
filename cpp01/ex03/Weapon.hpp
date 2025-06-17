@@ -8,9 +8,9 @@ private:
     std::string type;
 
 public:
-    Weapon(std::string type);
-    ~Weapon();
-    const std::string &getType() const;    // returns a const reference to type
-    void setType(std::string value); // sets type using the new value passed as a parameter.
+    Weapon(std::string type); //c constructor
+    ~Weapon(); // destructor
+    const std::string &getType() const; // returns a const reference (&) to type
+    void setType(std::string type); // sets type using the new value passed as a parameter.
 };
 #endif
