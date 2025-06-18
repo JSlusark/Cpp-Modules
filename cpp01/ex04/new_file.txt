@@ -1,31 +1,31 @@
 # ====================================
 #
-#           Hello test cases
+#            test cases
 #
 # ====================================
 
 ## Longer s2
-    ./SedIsForLosers file.txt "Hello" "Arrivederci"
+    ./SedIsForLosers file.txt "" "Arrivederci"
 ## Shorter s2
-    ./SedIsForLosers file.txt "Hello" "Yo"
+    ./SedIsForLosers file.txt "" "Yo"
 ## Space replacement
     ./SedIsForLosers file.txt " " "❤️"
 ## Empty s1
-    ./SedIsForLosers file.txt "" "Ciao"
+    ./SedIsForLosers file.txt "" "Salut"
 ## Empty s2
-    ./SedIsForLosers file.txt "Hello" ""
+    ./SedIsForLosers file.txt "" ""
 ## Recursive replacement
-    ./SedIsForLosers file.txt "He" "Hello"
+    ./SedIsForLosers file.txt "He" ""
 
 - TEXT:
-Hello
-Hello Ciao Hello
-HelloHello
-Ciao Ciao     Hello
-Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Ciao
-HelloCiao	Ciao
+
+ Ciao 
+
+Ciao Ciao     
+            Ciao
+Ciao	Ciao
 CiaoCiao	CiaoCiaoCiao	CiaoCiaoCiaoCiaoCiao
-	Ciao Hello Ciao Hello Ciao
+	Ciao  Ciao  Ciao
 
 Cia Cia o ciao C i a o
 

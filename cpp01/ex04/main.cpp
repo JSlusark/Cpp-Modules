@@ -22,11 +22,8 @@ void replace_word(std::string &line, std::string s1, std::string s2)
 
     size_t pos = 0;
     int i = 0;
-    // std::cout << std::endl;
-    // std::cout << "Line: " << line << std::endl;
     while((pos = line.find(s1, i)) !=  std::string::npos)
     {
-        // std::cout << "Found at: " << pos << std::endl;
         line.erase(pos, s1.length());
         if(!s2.empty()) // to avoid adding a space is s2 is ""
             line.insert(pos, s2);
@@ -37,40 +34,36 @@ void replace_word(std::string &line, std::string s1, std::string s2)
 // int main( std::string file_name, std::string s1, std::string s2)
 int main(int argc, char **argv)
 {
-    std::ifstream istream;
-    // std::ofstream ostream;
-
-    if (argc < 4 || argc > 4)
+    if (argc != 4)
     {
-        printf("Error: wrong arg count. Please write './program_name file arg2 arg3' \n");
+        std::cerr << "Error: wrong arg count. Please write Usage: ./SedIsForLosers <filename> <s1> <s2>" << std::endl;
         return (1);
     }
-    char *file = argv[1];
+    std::string i_file = argv[1];
     std::string s1 = argv[2];
     std::string s2 = argv[3];
+    // std::ofstream ostream;
 
-    istream.open(file, std::ios::in); // extrapulates file content in the istream
-    std::ofstream new_file("new_file.txt");
+    std::ifstream istream(i_file.c_str()); // use constructor to create immediately instead of declaration + .open, also closes file by default
+    if(!istream.is_open())
+    {
+        std::cout << "Error: cannot open i_file" << std::endl;
+        return 1;
+    }
+    std::string file_name = std::string(i_file) + ".replace";
+    std::ofstream o_file(file_name);
+    if (!o_file.is_open())
+    {
+        std::cerr << "Error: cannot create output file\n";
+        return 1;
+    }
+
     std::string line;
-    std::cout << "String1: " << s1 << std::endl;
-    std::cout << "String2: " << s2 << std::endl;
     while (std::getline(istream, line)) // gets the line from the istream
     {
         std::string dup = line;
         replace_word(dup, s1, s2);
-        // std::cout << "NL:" << std::endl;
-        // std::cout << line << std::endl;
-        new_file << dup << std::endl;
+        o_file << dup << std::endl;
     }
-
-    // std::cout << file << std::endl;
-    // // swap s1 with s2 and vice versa
-    // std::cout << s1 << std::endl;
-    // std::cout << s2 << std::endl;
-    // s1.swap(s2);
-    // std::cout << s1 << std::endl;
-    // std::cout << s2 << std::endl;
-    // // int fd =
-
     return (0);
 }

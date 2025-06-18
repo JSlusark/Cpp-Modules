@@ -11,7 +11,7 @@
 ## Space replacement
     ./SedIsForLosers file.txt " " "❤️"
 ## Empty s1
-    ./SedIsForLosers file.txt "" "Ciao"
+    ./SedIsForLosers file.txt "" "Salut"
 ## Empty s2
     ./SedIsForLosers file.txt "Hello" ""
 ## Recursive replacement
