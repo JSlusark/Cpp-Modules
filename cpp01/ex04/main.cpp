@@ -17,17 +17,21 @@
 
 void replace_word(std::string &line, std::string s1, std::string s2)
 {
+    if(s1.empty()) // avoids ending loop
+        return;
+
     size_t pos = 0;
-    // std::cout << "ORIGINAL:" << std::endl;
-    // std::cout << line << std::endl;
-    while(line.find(s1, pos) !=  std::string::npos)
+    int i = 0;
+    // std::cout << std::endl;
+    // std::cout << "Line: " << line << std::endl;
+    while((pos = line.find(s1, i)) !=  std::string::npos)
     {
+        // std::cout << "Found at: " << pos << std::endl;
         line.erase(pos, s1.length());
-        line.insert(pos, s2);
-        pos += s2.length();
+        if(!s2.empty()) // to avoid adding a space is s2 is ""
+            line.insert(pos, s2);
+        i = pos + s2.length(); // for recursive replacement cases
     }
-    // std::cout << "REPLACEMENT:" << std::endl;
-    // std::cout << line << std::endl;
 }
 
 // int main( std::string file_name, std::string s1, std::string s2)
