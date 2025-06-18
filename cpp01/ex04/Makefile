@@ -2,9 +2,9 @@ NAME = SedIsForLosers
 CPP = c++
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 
-# HEADERS = 
+# HEADERS =
 SRC = main.cpp \
-	
+
 
 OBJDIR = obj
 OBJ = $(addprefix $(OBJDIR)/, $(SRC:.cpp=.o))
@@ -24,7 +24,7 @@ clean:
 	rm -rf $(OBJDIR)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) file.replace
 
 re: fclean all
 
