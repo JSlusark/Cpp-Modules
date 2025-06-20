@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Phonebook.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jslusark <jslusark@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/20 12:29:31 by jslusark          #+#    #+#             */
-/*   Updated: 2025/06/20 14:39:37 by jslusark         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "Phonebook.hpp"
 #include "Contact.hpp"
 #include "OutputView.hpp"
@@ -23,35 +11,54 @@ static std::string FormatField(const std::string &str)
 		return std::string(10 - str.length(), ' ') + str;
 }
 
-Phonebook::Phonebook() : total_contacts(0), index(0) {};
+Phonebook::Phonebook() : total_contacts(0), index(0), eof_flag(false) {}
 Phonebook::~Phonebook() {}
+
+bool Phonebook::IsEof()
+{
+	if (eof_flag)
+		std::cout << EOF_MESSAGE << std::endl;
+	return eof_flag;
+}
 
 std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message)
 {
+	std::string input;
 	while (true)
 	{
-		std::string input;
 		std::cout << C_GREEN << prompt << C_WHITE;
 		if (!std::getline(std::cin, input))
 		{
-			std::cout << std::endl
-					  << C_RED << "EOF detected: " C_WHITE "Exiting Your Awesome Phonebook..." << C_WHITE << std::endl;
-			PrintFooter();
-			exit(0);
+			SetEof(true);
+			std::cout << std::endl;
+			break;
 		}
-		input = trim(input);
-		if (input.length() > 50)
+		else
 		{
-			std::cout << ERR_TOO_LONG << std::endl;
-			continue;
+			input = trim(input);
+			if (input.length() > 50)
+			{
+				std::cout << ERR_TOO_LONG << std::endl;
+				continue;
+			}
+			if (!isValid(input))
+			{
+				std::cout << error_message << std::endl;
+				continue;
+			}
+			return input;
 		}
-		if (!isValid(input))
-		{
-			std::cout << error_message << std::endl;
-			continue;
-		}
-		return input;
 	}
+	return "";
+}
+
+bool Phonebook::getAndSetField(const std::string &prompt, bool (*isValid)(const std::string &), const std::string &error_message, void (Contact::*setter)(const std::string &))
+{
+	std::string input = GetInput(prompt, isValid, error_message);
+	if (eof_flag)
+		return true;
+	(contact[index].*setter)(input);
+	return false;
 }
 
 void Phonebook::AddContact()
@@ -59,10 +66,14 @@ void Phonebook::AddContact()
 	if (index >= MAX_CONTACTS)
 		index = 0;
 	std::cout << "You are now able to add a new contact and provide its details." << std::endl;
-	contact[index].SetFirstName(GetInput("First name: ", stringIsAlphaSpace, ERR_ALPHA));
-	contact[index].SetLastName(GetInput("Last name: ", stringIsAlphaSpace, ERR_ALPHA));
-	contact[index].SetPhoneNumber(GetInput("Phone number: ", StringIsDigits, ERR_DIGIT));
-	contact[index].SetDarkestSecret(GetInput("Darkest secret: ", stringIsAlphaSpace, ERR_ALPHA));
+	if (getAndSetField("First name: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::SetFirstName))
+		return;
+	if (getAndSetField("Last name: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::SetLastName))
+		return;
+	if (getAndSetField("Phone number: ", StringIsDigits, ERR_DIGIT, &Contact::SetPhoneNumber))
+		return;
+	if (getAndSetField("Darkest secret: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::SetDarkestSecret))
+		return;
 	if (total_contacts < MAX_CONTACTS)
 		total_contacts++;
 	index++;
@@ -94,6 +105,8 @@ void Phonebook::RequestContactView()
 	while (true)
 	{
 		std::string input = GetInput("User at input: ", StringIsDigits, ERR_INDEX);
+		if (eof_flag)
+			return;
 		if (input.length() > 1)
 		{
 			std::cout << ERR_INDEX_INVALID_INDEX << std::endl;
@@ -102,9 +115,7 @@ void Phonebook::RequestContactView()
 		int i = std::atoi(input.c_str()); // check int overflow
 		if (i < 0 || i >= total_contacts)
 		{
-			if (i >= MAX_CONTACTS)
-				std::cout << ERR_INDEX_INVALID_RANGE << std::endl;
-			else if (i < 0)
+			if (i >= MAX_CONTACTS || i < 0)
 				std::cout << ERR_INDEX_INVALID_RANGE << std::endl;
 			else
 				std::cout << ERR_INDEX_NOT_FOUND << std::endl;
@@ -128,9 +139,8 @@ void Phonebook::SearchContact()
 		RequestContactView();
 	}
 }
+
 void Phonebook::Exit()
 {
 	std::cout << EXIT_MESSAGE << std::endl;
-	PrintFooter();
-	exit(0);
 }

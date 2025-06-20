@@ -6,19 +6,19 @@
 
 int main(void)
 {
-	Phonebook my_phonebook;
-	std::string input;
-	PrintHeader();
-	std::cout << "Your Awesome Phonebook session started...." << std::endl;
-	while (1)
+    Phonebook my_phonebook;
+    PrintHeader();
+    std::cout << "Your Awesome Phonebook session started...." << std::endl;
+	while (!my_phonebook.IsEof())
 	{
 		std::string input = my_phonebook.GetInput("Enter a command: ", isCommand, ERR_CMD);
 		if (input == "ADD")
 			my_phonebook.AddContact();
-		else if (input == "SEARCH")
+		if (input == "SEARCH")
 			my_phonebook.SearchContact();
-		else if (input == "EXIT")
-			my_phonebook.Exit();
+		if (input == "EXIT")
+			break;
 	}
-	return 0;
+    PrintFooter();
+    return 0;
 }

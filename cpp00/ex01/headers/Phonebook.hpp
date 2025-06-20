@@ -16,6 +16,7 @@
 #define ERR_INDEX_INVALID_RANGE C_RED "ERROR:" C_WHITE " phonebook is limited to a total of 0 to " << MAX_CONTACTS - 1 << " contacts." C_WHITE
 #define ERR_INDEX_INVALID_INDEX C_RED "ERROR:" C_WHITE " phonebook input need to be one single digit" C_WHITE
 #define ERR_PHONEBOOK_IS_EMPTY C_RED "ERROR:" C_WHITE " your phonebook is empty, add at least one contact to use this command." C_WHITE
+#define EOF_MESSAGE C_RED "EOF detected: " C_WHITE " Exiting Your Awesome Phonebook..." C_WHITE
 #define EXIT_MESSAGE C_RED ">" C_WHITE " Exiting Your Awesome Phonebook..." C_WHITE
 
 class Phonebook
@@ -24,15 +25,19 @@ class Phonebook
 private:
 	int total_contacts;
 	int index;
+	bool eof_flag;
 	static const int MAX_CONTACTS = 8;
 	Contact contact[MAX_CONTACTS];
 	void DisplayContactInfo(Contact contact);
 	void DisplayContactList();
 	void RequestContactView();
+	bool getAndSetField(const std::string &prompt, bool (*isValid)(const std::string &), const std::string &error_message, void (Contact::*setter)(const std::string &));
 
 public:
 	Phonebook();
 	~Phonebook();
+	bool IsEof();
+	void SetEof(bool val) { eof_flag = val; }
 	std::string GetInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message);
 	void AddContact();
 	void SearchContact();
