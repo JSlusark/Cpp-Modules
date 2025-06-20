@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Phonebook.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jslusark <jslusark@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/20 12:29:31 by jslusark          #+#    #+#             */
+/*   Updated: 2025/06/20 14:39:37 by jslusark         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Phonebook.hpp"
 #include "Contact.hpp"
 #include "OutputView.hpp"
@@ -12,6 +24,7 @@ static std::string FormatField(const std::string &str)
 }
 
 Phonebook::Phonebook() : total_contacts(0), index(0) {};
+Phonebook::~Phonebook() {}
 
 std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message)
 {
@@ -27,6 +40,11 @@ std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const 
 			exit(0);
 		}
 		input = trim(input);
+		if (input.length() > 50)
+		{
+			std::cout << ERR_TOO_LONG << std::endl;
+			continue;
+		}
 		if (!isValid(input))
 		{
 			std::cout << error_message << std::endl;
@@ -50,12 +68,12 @@ void Phonebook::AddContact()
 	index++;
 }
 
-void Phonebook::DisplayContactInfo(int i, Contact contact)
+void Phonebook::DisplayContactInfo(Contact contact)
 {
-	std::cout << C_YELLOW << std::setw(10) << i << C_WHITE << " | "
-			  << FormatField(contact.GetFirstName()) << " | "
-			  << FormatField(contact.GetLastName()) << " | "
-			  << FormatField(contact.GetPhoneNumber()) << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "First Name:" << C_WHITE << " " << contact.GetFirstName() << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "Last Name:" << C_WHITE << " " << contact.GetLastName() << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "Phone Number:" << C_WHITE << " " << contact.GetPhoneNumber() << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "Darkest Secret:" << C_WHITE << " " << contact.GetDarkestSecret() << std::endl;
 }
 
 void Phonebook::DisplayContactList()
@@ -63,7 +81,12 @@ void Phonebook::DisplayContactList()
 	std::cout << "Total contacts saved in your phonebook: "
 			  << C_GREEN << total_contacts << C_WHITE << std::endl;
 	for (int i = 0; i < total_contacts; i++)
-		DisplayContactInfo(i, contact[i]);
+	{
+		std::cout << C_YELLOW << std::setw(10) << i << C_WHITE << " | "
+				  << FormatField(contact[i].GetFirstName()) << " | "
+				  << FormatField(contact[i].GetLastName()) << " | "
+				  << FormatField(contact[i].GetPhoneNumber()) << std::endl;
+	}
 }
 
 void Phonebook::RequestContactView()
@@ -89,7 +112,7 @@ void Phonebook::RequestContactView()
 		}
 		else
 		{
-			DisplayContactInfo(i, contact[i]);
+			DisplayContactInfo(contact[i]);
 			break;
 		}
 	}

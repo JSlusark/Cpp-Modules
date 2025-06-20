@@ -48,8 +48,6 @@ void PrintHeader()
 void PrintFooter()
 {
     std::cout << C_MAGENTA << "\n             ~~~~~~~~~~~~✶✦✧ Thanks for texting \"Your Awesome Phonebook\"! ✧✦✶~~~~~~~~~~~~" << C_WHITE << std::endl;
-    // std::cout << C_MAGENTA << std::endl << "                        _____________________________________________________                       " C_WHITE << std::endl << std::endl;
-    // std::cout << "                           " << "Thanks for testing out Your Awesome Phonebook!" << std::endl;
     std::cout << "                                  Made with " << C_RED << "♥" << C_WHITE << " by " << C_GREEN << "github.com/jslusark" << C_WHITE << std::endl
               << std::endl;
 }
