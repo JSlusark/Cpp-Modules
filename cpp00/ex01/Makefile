@@ -1,6 +1,9 @@
 NAME      := phonebook
 CPP       := c++
-CPPFLAGS  := -Wall -Wextra -Werror -std=c++98
+CPPFLAGS  := -Wall -Wextra -Werror -std=c++98 -Iheaders
+SRCDIR    := src
+INCDIR    := headers
+OBJDIR    := obj
 
 HEADERS = Phonebook.hpp \
 		Contact.hpp \
@@ -12,8 +15,8 @@ SRC = main.cpp \
 	Utils.cpp \
 	OutputView.cpp
 	
-OBJDIR    := obj
-OBJ       := $(OBJDIR)/$(SRC:.cpp=.o)
+SRC       := $(addprefix $(SRCDIR)/, $(SRC))
+OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
 
 # Colors
 RESET     := \033[0m
@@ -28,7 +31,8 @@ all: $(NAME)
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
-$(OBJDIR)/%.o: %.cpp $(HEADERS) | $(OBJDIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(addprefix $(INCDIR)/, $(HEADERS)) | $(OBJDIR)
+	@mkdir -p $(dir $@)
 	@$(CPP) $(CPPFLAGS) -c $< -o $@
 
 $(NAME): $(OBJ)
@@ -37,7 +41,7 @@ $(NAME): $(OBJ)
 
 clean:
 	@if [ -d $(OBJDIR) ]; then \
-		$(RM) -r $(OBJDIR); \
+		rm -r $(OBJDIR); \
 		echo "$(SUCCESS)[CLEAN]:$(RESET) $(NAME) Object files were removed"; \
 	else \
 		echo "$(WARNING)[CLEAN]:$(RESET) $(NAME) Object files were already removed"; \
@@ -45,7 +49,7 @@ clean:
 
 fclean: clean
 	@if [ -f $(NAME) ]; then \
-		$(RM) $(NAME); \
+		rm $(NAME); \
 		echo "$(SUCCESS)[FCLEAN]:$(RESET) $(NAME) executable was removed"; \
 	else \
 		echo "$(WARNING)[FCLEAN]:$(RESET) $(NAME) executable was already removed"; \
