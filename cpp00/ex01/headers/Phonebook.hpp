@@ -25,6 +25,10 @@ private:
 	int total_contacts;
 	int index;
 	bool eof_flag;
+	/*
+	 Non-static members can’t be used in constant expressions,
+	 and does not need to depend on object instantiation
+	 */
 	static const int MAX_CONTACTS = 8;
 	Contact contact[MAX_CONTACTS];
 	void displayContactInfo(Contact contact);
@@ -35,9 +39,11 @@ private:
 public:
 	Phonebook();
 	~Phonebook();
+	static bool isCommand(const std::string &s); /* because passing it as a function parameter */
+	std::string formatField(const std::string &str);
+	std::string getInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message);
 	bool isEof();
 	void setEof(bool val) { eof_flag = val; }
-	std::string getInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message);
 	void addContact();
 	void searchContact();
 	void exit();

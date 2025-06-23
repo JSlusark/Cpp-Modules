@@ -20,11 +20,6 @@ bool stringIsDigits(const std::string &s)
     return !s.empty();
 }
 
-bool isCommand(const std::string &s)
-{
-    return s == "ADD" || s == "SEARCH" || s == "EXIT";
-}
-
 std::string trim(const std::string &str)
 {
     std::size_t first = 0;

@@ -1,6 +1,11 @@
 #include "Phonebook.hpp"
 
-static std::string formatField(const std::string &str)
+bool Phonebook::isCommand(const std::string &s)
+{
+	return s == "ADD" || s == "SEARCH" || s == "EXIT";
+}
+
+std::string Phonebook::formatField(const std::string &str)
 {
 	if (str.length() > 10)
 		return str.substr(0, 9) + ".";
