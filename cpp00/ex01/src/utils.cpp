@@ -1,7 +1,42 @@
-#include "OutputView.hpp"
-#include "Colors.hpp"
+#include "utils.hpp"
 
-void PrintHeader()
+bool stringIsAlphaSpace(const std::string &s)
+{
+    for (size_t i = 0; i < s.length(); ++i)
+    {
+        if (!std::isalpha(static_cast<unsigned char>(s[i])) && s[i] != ' ')
+            return false;
+    }
+    return !s.empty();
+}
+
+bool stringIsDigits(const std::string &s)
+{
+    for (size_t i = 0; i < s.length(); ++i)
+    {
+        if (!std::isdigit(static_cast<unsigned char>(s[i])))
+            return false;
+    }
+    return !s.empty();
+}
+
+bool isCommand(const std::string &s)
+{
+    return s == "ADD" || s == "SEARCH" || s == "EXIT";
+}
+
+std::string trim(const std::string &str)
+{
+    std::size_t first = 0;
+    while (first < str.size() && std::isspace(str[first]))
+        ++first;
+    std::size_t last = str.size();
+    while (last > first && std::isspace(str[last - 1]))
+        --last;
+    return str.substr(first, last - first);
+}
+/* Header and footer */
+void printHeader()
 {
     std::cout << std::endl
               << "      " << BG_DARK_PURPLE << C_MAGENTA << "╔═══════════════════════════════════════════════════════════════════════════════════════════╗" << C_RESET << std::endl;
@@ -45,7 +80,7 @@ void PrintHeader()
               << std::endl;
 }
 
-void PrintFooter()
+void printFooter()
 {
     std::cout << C_MAGENTA << "\n             ~~~~~~~~~~~~✶✦✧ Thanks for texting \"Your Awesome Phonebook\"! ✧✦✶~~~~~~~~~~~~" << C_WHITE << std::endl;
     std::cout << "                                  Made with " << C_RED << "♥" << C_WHITE << " by " << C_GREEN << "github.com/jslusark" << C_WHITE << std::endl

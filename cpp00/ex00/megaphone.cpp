@@ -6,11 +6,11 @@
 /*   By: jslusark <jslusark@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 10:45:12 by jslusark          #+#    #+#             */
-/*   Updated: 2025/06/20 11:18:18 by jslusark         ###   ########.fr       */
+/*   Updated: 2025/06/23 13:16:56 by jslusark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream> // preprocess statement for input/output stream library
+#include     <iostream> // preprocess statement for input/output stream library
 #include <cctype>  // instead of (char)toupper which is c style cast
 
 int main(int argc, char **argv)
@@ -34,16 +34,6 @@ int main(int argc, char **argv)
 	}
 	return 0;
 }
-
-
-/* 
-	Notes:
-	std::endl instead of \n - not occupies memory( n is 1 byte) and flushes
-	buffer immediately in each process (n only end of program)
-	
-	namespace - identifier used to avoid ambiguity,
-	defines scope(are in which is used),unique, avoids conflicts
-*/
 
 /*
 Test Commands for ./megaphone

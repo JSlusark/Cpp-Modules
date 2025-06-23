@@ -7,14 +7,13 @@ OBJDIR    := obj
 
 HEADERS = Phonebook.hpp \
 		Contact.hpp \
-		Utils.hpp
+		utils.hpp
 
 SRC = main.cpp \
 	Phonebook.cpp \
 	Contact.cpp \
-	Utils.cpp \
-	OutputView.cpp
-	
+	utils.cpp 
+
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
 

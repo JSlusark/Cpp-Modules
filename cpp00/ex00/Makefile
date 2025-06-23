@@ -42,7 +42,7 @@ fclean: clean
 	@if [ -f $(NAME) ]; then \
 		$(RM) $(NAME); \
 		echo "$(SUCCESS)[FCLEAN]:$(RESET) $(NAME) executable was removed"; \
-	else \
+	else
 		echo "$(WARNING)[FCLEAN]:$(RESET) $(NAME) executable was already removed"; \
 	fi
 

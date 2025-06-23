@@ -1,9 +1,6 @@
 #include "Phonebook.hpp"
-#include "Contact.hpp"
-#include "OutputView.hpp"
-#include <iomanip>
 
-static std::string FormatField(const std::string &str)
+static std::string formatField(const std::string &str)
 {
 	if (str.length() > 10)
 		return str.substr(0, 9) + ".";
@@ -14,14 +11,14 @@ static std::string FormatField(const std::string &str)
 Phonebook::Phonebook() : total_contacts(0), index(0), eof_flag(false) {}
 Phonebook::~Phonebook() {}
 
-bool Phonebook::IsEof()
+bool Phonebook::isEof()
 {
 	if (eof_flag)
 		std::cout << EOF_MESSAGE << std::endl;
 	return eof_flag;
 }
 
-std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message)
+std::string Phonebook::getInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message)
 {
 	std::string input;
 	while (true)
@@ -29,7 +26,8 @@ std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const 
 		std::cout << C_GREEN << prompt << C_WHITE;
 		if (!std::getline(std::cin, input))
 		{
-			SetEof(true);
+			// SetEof(true);
+			eof_flag = true;
 			std::cout << std::endl;
 			break;
 		}
@@ -54,57 +52,57 @@ std::string Phonebook::GetInput(const std::string prompt, bool (*isValid)(const 
 
 bool Phonebook::getAndSetField(const std::string &prompt, bool (*isValid)(const std::string &), const std::string &error_message, void (Contact::*setter)(const std::string &))
 {
-	std::string input = GetInput(prompt, isValid, error_message);
+	std::string input = getInput(prompt, isValid, error_message);
 	if (eof_flag)
 		return true;
 	(contact[index].*setter)(input);
 	return false;
 }
 
-void Phonebook::AddContact()
+void Phonebook::addContact()
 {
 	if (index >= MAX_CONTACTS)
 		index = 0;
 	std::cout << "You are now able to add a new contact and provide its details." << std::endl;
-	if (getAndSetField("First name: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::SetFirstName))
+	if (getAndSetField("First name: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::setFirstName))
 		return;
-	if (getAndSetField("Last name: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::SetLastName))
+	if (getAndSetField("Last name: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::setLastName))
 		return;
-	if (getAndSetField("Phone number: ", StringIsDigits, ERR_DIGIT, &Contact::SetPhoneNumber))
+	if (getAndSetField("Phone number: ", stringIsDigits, ERR_DIGIT, &Contact::setPhoneNumber))
 		return;
-	if (getAndSetField("Darkest secret: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::SetDarkestSecret))
+	if (getAndSetField("Darkest secret: ", stringIsAlphaSpace, ERR_ALPHA, &Contact::setDarkestSecret))
 		return;
 	if (total_contacts < MAX_CONTACTS)
 		total_contacts++;
 	index++;
 }
 
-void Phonebook::DisplayContactInfo(Contact contact)
+void Phonebook::displayContactInfo(Contact contact)
 {
-	std::cout << C_YELLOW << std::setw(16) << "First Name:" << C_WHITE << " " << contact.GetFirstName() << std::endl;
-	std::cout << C_YELLOW << std::setw(16) << "Last Name:" << C_WHITE << " " << contact.GetLastName() << std::endl;
-	std::cout << C_YELLOW << std::setw(16) << "Phone Number:" << C_WHITE << " " << contact.GetPhoneNumber() << std::endl;
-	std::cout << C_YELLOW << std::setw(16) << "Darkest Secret:" << C_WHITE << " " << contact.GetDarkestSecret() << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "First Name:" << C_WHITE << " " << contact.getFirstName() << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "Last Name:" << C_WHITE << " " << contact.getLastName() << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "Phone Number:" << C_WHITE << " " << contact.getPhoneNumber() << std::endl;
+	std::cout << C_YELLOW << std::setw(16) << "Darkest Secret:" << C_WHITE << " " << contact.getDarkestSecret() << std::endl;
 }
 
-void Phonebook::DisplayContactList()
+void Phonebook::displayContactList()
 {
 	std::cout << "Total contacts saved in your phonebook: "
 			  << C_GREEN << total_contacts << C_WHITE << std::endl;
 	for (int i = 0; i < total_contacts; i++)
 	{
 		std::cout << C_YELLOW << std::setw(10) << i << C_WHITE << " | "
-				  << FormatField(contact[i].GetFirstName()) << " | "
-				  << FormatField(contact[i].GetLastName()) << " | "
-				  << FormatField(contact[i].GetPhoneNumber()) << std::endl;
+				  << formatField(contact[i].getFirstName()) << " | "
+				  << formatField(contact[i].getLastName()) << " | "
+				  << formatField(contact[i].getPhoneNumber()) << std::endl;
 	}
 }
 
-void Phonebook::RequestContactView()
+void Phonebook::requestContactView()
 {
 	while (true)
 	{
-		std::string input = GetInput("User at input: ", StringIsDigits, ERR_INDEX);
+		std::string input = getInput("User at input: ", stringIsDigits, ERR_INDEX);
 		if (eof_flag)
 			return;
 		if (input.length() > 1)
@@ -123,24 +121,24 @@ void Phonebook::RequestContactView()
 		}
 		else
 		{
-			DisplayContactInfo(contact[i]);
+			displayContactInfo(contact[i]);
 			break;
 		}
 	}
 }
 
-void Phonebook::SearchContact()
+void Phonebook::searchContact()
 {
 	if (total_contacts == 0)
 		std::cout << ERR_PHONEBOOK_IS_EMPTY << std::endl;
 	else
 	{
-		DisplayContactList();
-		RequestContactView();
+		displayContactList();
+		requestContactView();
 	}
 }
 
-void Phonebook::Exit()
+void Phonebook::exit()
 {
 	std::cout << EXIT_MESSAGE << std::endl;
 }
