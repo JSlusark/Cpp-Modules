@@ -31,7 +31,7 @@ private:
 	 */
 	static const int MAX_CONTACTS = 8;
 	Contact contact[MAX_CONTACTS];
-	void displayContactInfo(Contact contact);
+	void displayContactInfo(Contact &contact);
 	void displayContactList();
 	void requestContactView();
 	bool getAndSetField(const std::string &prompt, bool (*isValid)(const std::string &), const std::string &error_message, void (Contact::*setter)(const std::string &));
@@ -41,7 +41,7 @@ public:
 	~Phonebook();
 	static bool isCommand(const std::string &s); /* because passing it as a function parameter */
 	std::string formatField(const std::string &str);
-	std::string getInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message);
+	std::string getInput(const std::string &prompt, bool (*isValid)(const std::string &), const std::string &error_message);
 	bool isEof();
 	void setEof(bool val) { eof_flag = val; }
 	void addContact();

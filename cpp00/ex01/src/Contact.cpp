@@ -21,23 +21,23 @@ void Contact::setDarkestSecret(const std::string &input)
 {
 	darkest_secret = input;
 }
-const std::string &Contact::getFirstName()
+const std::string &Contact::getFirstName() const
 {
 	return (first_name);
 }
-const std::string &Contact::getLastName()
+const std::string &Contact::getLastName() const
 {
 	return (last_name);
 }
-const std::string &Contact::getPhoneNumber()
+const std::string &Contact::getPhoneNumber() const
 {
 	return (phone_number);
 }
-const std::string &Contact::getDarkestSecret()
+const std::string &Contact::getDarkestSecret() const
 {
 	return (darkest_secret);
 }
-bool Contact::isEmpty()
+bool Contact::isEmpty() const // error handling in case getters return the wrong data or setters do not work
 {
 	if (getFirstName().empty() &&
 		getLastName().empty() &&

@@ -22,7 +22,6 @@ void printHeader();
 void printFooter();
 bool stringIsAlphaSpace(const std::string &s);
 bool stringIsDigits(const std::string &s);
-bool isCommand(const std::string &s);
 std::string trim(const std::string &str);
 
 #endif

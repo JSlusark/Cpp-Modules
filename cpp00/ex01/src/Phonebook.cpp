@@ -1,5 +1,8 @@
 #include "Phonebook.hpp"
 
+Phonebook::Phonebook() : total_contacts(0), index(0), eof_flag(false) {}
+Phonebook::~Phonebook() {} // we do not instantiate phonebook dynamically, but adding this anyway
+
 bool Phonebook::isCommand(const std::string &s)
 {
 	return s == "ADD" || s == "SEARCH" || s == "EXIT";
@@ -12,10 +15,6 @@ std::string Phonebook::formatField(const std::string &str)
 	else
 		return std::string(10 - str.length(), ' ') + str;
 }
-
-Phonebook::Phonebook() : total_contacts(0), index(0), eof_flag(false) {}
-Phonebook::~Phonebook() {}
-
 bool Phonebook::isEof()
 {
 	if (eof_flag)
@@ -23,7 +22,7 @@ bool Phonebook::isEof()
 	return eof_flag;
 }
 
-std::string Phonebook::getInput(const std::string prompt, bool (*isValid)(const std::string &), std::string error_message)
+std::string Phonebook::getInput(const std::string &prompt, bool (*isValid)(const std::string &), const std::string &error_message)
 {
 	std::string input;
 	while (true)
@@ -82,7 +81,7 @@ void Phonebook::addContact()
 	index++;
 }
 
-void Phonebook::displayContactInfo(Contact contact)
+void Phonebook::displayContactInfo(Contact &contact)
 {
 	std::cout << C_YELLOW << std::setw(16) << "First Name:" << C_WHITE << " " << contact.getFirstName() << std::endl;
 	std::cout << C_YELLOW << std::setw(16) << "Last Name:" << C_WHITE << " " << contact.getLastName() << std::endl;
@@ -110,12 +109,12 @@ void Phonebook::requestContactView()
 		std::string input = getInput("User at input: ", stringIsDigits, ERR_INDEX);
 		if (eof_flag)
 			return;
-		if (input.length() > 1)
+		if (input.length() > 1) // if 2 digit number
 		{
 			std::cout << ERR_INDEX_INVALID_INDEX << std::endl;
 			continue;
 		}
-		int i = std::atoi(input.c_str()); // check int overflow
+		int i = std::atoi(input.c_str());
 		if (i < 0 || i >= total_contacts)
 		{
 			if (i >= MAX_CONTACTS || i < 0)
