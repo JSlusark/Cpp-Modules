@@ -9,7 +9,7 @@ int main()
 		std::cout << "ZombieGroup failed to allocate" << std::endl;
 	}
 	for (int i = 0; i < 6; i++)
-		zombieGroup[i].Announce();
+		zombieGroup[i].announce();
 
 	std::cout << C_YELLOW "Destroying the horde..." C_RESET << std::endl;
 	delete[] zombieGroup; // deletes the group

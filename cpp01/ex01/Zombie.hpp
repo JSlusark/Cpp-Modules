@@ -24,7 +24,7 @@ public:
 	Zombie(std::string name);
 	~Zombie();
 	void SetName(std::string);
-	void Announce(void);
+	void announce(void);
 };
 
 // Stack and Heap functions

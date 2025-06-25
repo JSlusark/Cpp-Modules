@@ -13,7 +13,6 @@
 #define C_BOLD_WHITE "\033[1m\033[38;2;255;255;255m"
 #define BG_DARK_PURPLE "\033[48;2;50;0;80m"
 
-
 class Zombie
 {
 private:
@@ -22,11 +21,11 @@ private:
 public:
 	Zombie(std::string name);
 	~Zombie();
-	void Announce(void);
+	void announce(void);
 };
 
 // Stack and Heap functions
-Zombie* NewZombie(std::string name);
+Zombie *NewZombie(std::string name);
 void randomChump(std::string name);
 
 #endif
