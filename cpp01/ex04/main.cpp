@@ -6,8 +6,6 @@
         - std::fstream can do both reading and writing, depending on how you open it.
 
     ios is a typedef for std::basic_ios<char> that defines a bunch of stuff that is common to both input and output streams.
-
-
 */
 
 #include <iostream> // preprocess statement for input/output stream library
@@ -49,8 +47,7 @@ int main(int argc, char **argv)
         return 1;
     }
     // create outputFile
-    // std::string o_file_name = std::string(filename) + ".replace";
-    std::ofstream outputFile((filename) + ".replace");
+    std::ofstream outputFile((filename + ".replace").c_str());
     if (!outputFile.is_open())
     {
         std::cerr << "Error: cannot create " << filename + ".replace" << std::endl;

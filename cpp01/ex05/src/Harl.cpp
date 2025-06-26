@@ -1,4 +1,4 @@
-#include "Harl.hpp"
+#include "../headers/Harl.hpp"
 
 Harl::Harl(/* args */)
 {
@@ -44,12 +44,11 @@ void Harl::complain(std::string level)
 	{
 		if (action[i].name == level)
 		{
-			std::cout << "[" << level << "]" << std::endl;
+			std::cout << "[" << level << "]: " << std::endl;
 			(this->*action[i].func)();
 			validLevel = true;
 		}
 	}
 	if (!validLevel)
-		std::cout << "[" << level << "]\n" << "I have no time to lose! Call me when you have a valid argument!" << std::endl;
-	std::cout << std::endl;
+		std::cout << "["<< level <<"]:\n" "I have no time to lose! Call me when you have a valid argument!" << std::endl;
 }

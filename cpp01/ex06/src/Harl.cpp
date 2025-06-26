@@ -1,4 +1,4 @@
-#include "Harl.hpp"
+#include "../headers/Harl.hpp"
 
 Harl::Harl(/* args */)
 {

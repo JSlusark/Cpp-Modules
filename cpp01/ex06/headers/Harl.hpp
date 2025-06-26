@@ -3,6 +3,8 @@
 
 #include <string>
 #include <iostream>
+#define C_RESET "\033[0m"
+#define C_RED "\033[38;2;255;85;85m"
 
 
 
