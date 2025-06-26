@@ -1,4 +1,4 @@
-#include "Zombie.hpp"
+#include "../headers/Zombie.hpp"
 
 Zombie::Zombie(std::string name) : name(name) {}
 
