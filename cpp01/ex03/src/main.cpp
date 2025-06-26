@@ -1,6 +1,6 @@
-// #include "Weapon.hpp"
-#include "HumanA.hpp"
-#include "HumanB.hpp"
+#include "../headers/HumanA.hpp"
+#include "../headers/HumanB.hpp"
+
 /*
 HumanA uses a reference to Weapon because the weapon must always exist and never change after construction.
 In C++, references must be initialized when declared and can never be null or reseated to refer to something else.
@@ -12,9 +12,10 @@ They can also be reassigned later, allowing us to give HumanB a weapon at runtim
 This gives us flexibility, but we must handle the case where the pointer is null (e.g., check before using).
 */
 
-
 int main()
 {
+	std::cout << std::endl;
+	std::cout << "Human A example with weapon type in constructor" << std::endl;
 	{
 		Weapon club = Weapon("crude spiked club");
 		HumanA bob("Bob", club);
@@ -22,6 +23,8 @@ int main()
 		club.setType("some other type of club");
 		bob.Attack();
 	}
+	std::cout << std::endl;
+	std::cout << "Human B example with weapon set after instantiation" << std::endl;
 	{
 		Weapon club = Weapon("crude spiked club");
 		HumanB jim("Jim");
@@ -30,9 +33,26 @@ int main()
 		club.setType("some other type of club");
 		jim.Attack();
 	}
+	std::cout << std::endl;
+	std::cout << "Human A example with weapon empty string passed in constructor" << std::endl;
 	{
-		HumanB unarmed("Sarah");
-		unarmed.Attack();
+		Weapon emptyWeaponName = Weapon("");
+		HumanA sara("Sara", emptyWeaponName);
+		sara.Attack();
+		emptyWeaponName.setType("");
+		sara.Attack();
+		emptyWeaponName.setType("named weapon");
+		sara.Attack();
 	}
+	std::cout << std::endl;
+	std::cout << "Human B example with no weapon set" << std::endl;
+	{
+		Weapon emptyWeaponName = Weapon("");
+		HumanB janet("Janet");
+		janet.Attack();
+		janet.SetWeapon(emptyWeaponName);
+		janet.Attack();
+	}
+	std::cout << std::endl;
 	return 0;
 }
