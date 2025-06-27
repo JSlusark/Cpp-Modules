@@ -20,7 +20,7 @@ class ClapTrap
 		std::string name;
 		const int HIT_POINTS = 10;
 		const int ENERGY_POINTS = 10;
-		const int ATTACK_DAMAGE = 10;
+		const int ATTACK_DAMAGE = 0; // increase when attack received
 
 	public:
 		ClapTrap();
