@@ -1,43 +1,85 @@
 #include "../headers/ClapTrap.hpp"
 
-ClapTrap::ClapTrap() {}
-ClapTrap::ClapTrap(std::string name) : name(name) {}
+void printStatus(std::string name, int hitPoints, int energyPoints, int attackDamage)
+{
+    std::string hpColor;
+    if (hitPoints <= 0)
+        hpColor = C_RED;
+    else
+        hpColor = C_GREEN;
+    std::string epColor;
+    if (hitPoints <= 0)
+        epColor = C_RED;
+    else
+        epColor = C_GREEN;
+    std::string adColor;
+    if (hitPoints <= 0)
+        adColor = C_RED;
+    else
+        adColor = C_GREEN;
 
-ClapTrap::~ClapTrap() {}
+    std::cout << "            " << name << ":    Hit Points: " << hpColor << hitPoints << C_RESET << "/10 | " << "Energy Points: " << epColor << energyPoints << C_RESET << "/10 | " << "Attack Damage: " << adColor << attackDamage << C_RESET << std::endl;
+}
+
+ClapTrap::ClapTrap() : name(C_GRAY "Default" C_RESET), hitPoints(10), energyPoints(10), attackDamage(0)
+{
+    std::cout << "🤖 ClapTrap " << name << " was created by parametarised constructor" << std::endl;
+    printStatus(name, hitPoints, energyPoints, attackDamage);
+}
+ClapTrap::ClapTrap(std::string name) : name(name), hitPoints(10), energyPoints(10), attackDamage(0)
+{
+    std::cout << "🤖 ClapTrap " << name << " was created by parametarised constructor" << std::endl;
+    printStatus(name, hitPoints, energyPoints, attackDamage);
+}
+
+ClapTrap::~ClapTrap()
+{
+    std::cout << "🪦 ClapTrap " << name << " was destroyed by destructor" << std::endl;
+}
 void ClapTrap::attack(const std::string &target)
 {
     /*
     ATTACK_DAMAGE +1 to target
-    ENERGY_POINTS -1
+    energyPoints -1
     --------------------
-    if ENERGY_POINTS or HIT_POINTS are 0 canot do attack
+    if energyPoints or hitPoints are 0 canot do attack
 
     */
-    if (!ENERGY_POINTS || !HIT_POINTS)
-    {
-        std::cout << "ClapTrap "  cannot attack " << target << " because energy points or hit points are 0" << std::endl;
-    }
+    int amount = attackDamage;
+    if (energyPoints <= 0 || hitPoints <= 0) // put <=  in case it goes below 0
+        std::cout << C_RED << "🔫 ClapTrap " << name << C_RED << " cannot attack " << target << C_RED << " because energy points or hit points are 0" << C_RESET << std::endl;
     else
     {
-        std::cout << "ClapTrap " << name << " attacks" << target << ", causing " << target << " " << amount << " points of damage!" << std::endl;
-        ENERGY_POINTS - 1; 
+        std::cout << "🔫 ClapTrap " << name << " attacks " << target << ", causing " << amount << " points of damage!" << std::endl;
+        energyPoints--;
     }
+    printStatus(name, hitPoints, energyPoints, attackDamage);
 }
 void ClapTrap::takeDamage(unsigned int amount)
 {
-    /*
-    if ENERGY_POINTS or HIT_POINTS are 0 cannot take damage either?
-    attack damage + amount
-    */
-
-    std::cout << "ClapTrap " << name << " took" << amount << " points of damage!" << std::endl;
+    if (amount <= 0)
+        std::cout << "❌ ClapTrap " << name << C_RED << " receives no damages as attack was of amount 0 or below" << C_RESET << std::endl;
+    else if (hitPoints <= 0)
+        std::cout << "💦 ClapTrap " << name << C_RED << " hit points are depleted!" << C_RESET << std::endl;
+    else
+        std::cout << "💦 ClapTrap " << name << " took " << amount << " points of damage!" << std::endl;
+    hitPoints -= amount;
+    printStatus(name, hitPoints, energyPoints, attackDamage);
 }
 void ClapTrap::beRepaired(unsigned int amount)
 {
     /*
-    HIT_POINTS + amout
-    ENERGY_POINTS - 1
-    if ENERGY_POINTS or HIT_POINTS are 0 canot do repair
+    hitPoints + amout
+    energyPoints - 1
+    if energyPoints or hitPoints are 0 canot do repair
     */
-    std::cout << "ClapTrap " << name << " repaired itself, using" << amount << "energy point!" << std::endl;
+    if (energyPoints <= 0 || hitPoints <= 0) // put <=  in case it goes below 0
+        std::cout << C_RED << "🪫 ClapTrap " << name << C_RED << " cannot repair itself because energy points or hit points are 0" << C_RESET << std::endl;
+    else
+    {
+        std::cout << "🪛 ClapTrap " << name << " repaired itself, using " << amount << " energy point!" << std::endl;
+        energyPoints--;
+        hitPoints += amount;
+    }
+    printStatus(name, hitPoints, energyPoints, attackDamage);
 }

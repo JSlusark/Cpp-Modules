@@ -8,8 +8,8 @@ OBJDIR    := obj
 HEADERS = ClapTrap.hpp
 
 SRC = main.cpp \
-	ClapTrap.hpp
-	
+	ClapTrap.cpp
+
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
 
