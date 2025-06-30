@@ -2,7 +2,9 @@
 #ifndef CLAPTRAP_HPP
 #define CLAPTRAP_HPP
 #include <string>
+#include <sstream>
 #include <iostream>
+#include <iomanip> // for std::setw and std::right
 #include "colors.hpp"
 
 // base class (parent)
@@ -16,13 +18,14 @@ protected: // we switch private to protected to access the attribute directly an
 
 public:
 	ClapTrap(); // default constructor (does not ned params)
-	ClapTrap(std::string name);
+	ClapTrap(const std::string &name);
 	// copy contructor ?
 	// operator constructor ?
 	~ClapTrap();
 	void attack(const std::string &target); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
 	void takeDamage(unsigned int amount);
 	void beRepaired(unsigned int amount); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
+	std::string showStatus() const;
 };
 
 #endif

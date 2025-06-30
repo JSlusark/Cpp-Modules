@@ -5,34 +5,36 @@ ScavTrap::ScavTrap() : ClapTrap("Default") // default constructor
     hitPoints = 100;
     energyPoints = 50;
     attackDamage = 20;
-    std::cout << "🤖 ScavTrap " << name << " was created by parametarised constructor" << std::endl;
+    std::cout << C_YELLOW << "🤖 ScavTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 
-ScavTrap::ScavTrap(std::string name) : ClapTrap(name) // parametarised constructor
+ScavTrap::ScavTrap(const std::string &name) : ClapTrap(name) // parametarised constructor
 {
     hitPoints = 100;
     energyPoints = 50;
     attackDamage = 20;
-    std::cout << "🤖 ScavTrap " << name << " was created by parametarised constructor" << std::endl;
+    std::cout << C_YELLOW << "🤖 ScavTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 ScavTrap::~ScavTrap()
 {
-    std::cout << "🪦 ScavTrap " << name << " was destroyed by destructor" << std::endl;
+    std::cout << C_YELLOW << "🪦 ScavTrap " << C_RESET << name << " was destroyed by destructor" << showStatus() << std::endl;
 }
 
 void ScavTrap::guardGate()
 {
-    std::cout << "🗝️ ScavTrap " << name << " is in GateKeeper mode" << std::endl;
+    std::cout << C_YELLOW << "🗝️  ScavTrap " << C_RESET << name << " is in GateKeeper mode" << showStatus() << std::endl;
 }
 
 void ScavTrap::attack(const std::string &target)
 {
     int amount = attackDamage;
-    if (energyPoints <= 0 || hitPoints <= 0) // put <=  in case it goes below 0
-        std::cout << C_RED << "🔫 ScavTrap " << name << C_RED << " cannot attack " << target << C_RED << " becayse energy and hitpoints are depleted 🪫" << C_RESET << std::endl;
+    if (hitPoints <= 0)
+        std::cout << C_YELLOW << "🔫😵 ScavTrap " << C_RESET << name << " cannot attack " << target << ", it's dead!" << C_RESET << showStatus() << std::endl;
+    else if (energyPoints <= 0)
+        std::cout << C_YELLOW << "🔫❌ ScavTrap " << C_RESET << name << " cannot attack " << target << ", it got angry for its energy points depletion" << C_RESET << showStatus() << std::endl;
     else
     {
-        std::cout << "🔫 ScavTrap " << name << " uses 👋💥SLAP💥👋 " << target << ", causing " << amount << " points of damage!" << std::endl;
         energyPoints--;
+        std::cout << C_YELLOW << "🔫 ScavTrap " << C_RESET << name << " uses 👋SLAP👋 on " << target << ", causing " << amount << " points of damage!" << C_DARK_GRAY << "(EP -1)" << showStatus() << std::endl;
     }
 }

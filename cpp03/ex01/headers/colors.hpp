@@ -12,5 +12,9 @@
 #define C_PURPLE "\033[38;2;180;0;255m"
 #define C_CYAN "\033[38;2;0;255;255m"
 #define C_GRAY "\033[38;2;150;150;150m"
+#define C_LIGHT_GRAY  "\033[38;5;250m"
+#define C_MEDIUM_GRAY "\033[38;5;245m"
+#define C_DARK_GRAY   "\033[38;5;240m"
+
 
 #endif
