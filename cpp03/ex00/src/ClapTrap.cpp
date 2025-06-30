@@ -8,12 +8,12 @@ void printStatus(std::string name, int hitPoints, int energyPoints, int attackDa
     else
         hpColor = C_GREEN;
     std::string epColor;
-    if (hitPoints <= 0)
+    if (energyPoints <= 0)
         epColor = C_RED;
     else
         epColor = C_GREEN;
     std::string adColor;
-    if (hitPoints <= 0)
+    if (attackDamage <= 0)
         adColor = C_RED;
     else
         adColor = C_GREEN;
@@ -26,7 +26,7 @@ ClapTrap::ClapTrap() : name(C_GRAY "Default" C_RESET), hitPoints(10), energyPoin
     std::cout << "🤖 ClapTrap " << name << " was created by parametarised constructor" << std::endl;
     printStatus(name, hitPoints, energyPoints, attackDamage);
 }
-ClapTrap::ClapTrap(std::string name) : name(name), hitPoints(10), energyPoints(10), attackDamage(0)
+ClapTrap::ClapTrap(std::string &name) : name(name), hitPoints(10), energyPoints(10), attackDamage(0)
 {
     std::cout << "🤖 ClapTrap " << name << " was created by parametarised constructor" << std::endl;
     printStatus(name, hitPoints, energyPoints, attackDamage);

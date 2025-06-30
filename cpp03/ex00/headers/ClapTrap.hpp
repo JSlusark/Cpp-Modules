@@ -23,7 +23,7 @@ private:
 
 public:
 	ClapTrap(); // default constructor (does not ned params)
-	ClapTrap(std::string name);
+	ClapTrap(std::string &name);
 	// copy contructor ?
 	// operator constructor ?
 	~ClapTrap();
