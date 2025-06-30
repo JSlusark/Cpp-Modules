@@ -21,5 +21,5 @@ FragTrap::~FragTrap()
 }
 
 void FragTrap::highFivesGuys(void){
-    std::cout << C_GREEN << "🖐️ FragTrap " << C_RESET << name << " is requesting a high five to everyone in the room!" << showStatus() << std::endl;
+    std::cout << C_GREEN << "🖐️  FragTrap " << C_RESET << name << " is requesting a high five to everyone in the room!" << showStatus() << std::endl;
 }
