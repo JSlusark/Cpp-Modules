@@ -7,24 +7,21 @@
 #include <iomanip> // for std::setw and std::right
 #include "colors.hpp"
 
-// base class (parent)
 class ClapTrap
 {
-protected: // we switch private to protected to access the attribute directly and avoid using getters and setters
+protected:
 	std::string name;
 	int hitPoints;
 	int energyPoints;
 	int attackDamage;
 
 public:
-	ClapTrap(); // default constructor (does not ned params)
+	ClapTrap();
 	ClapTrap(const std::string &name);
-	// copy contructor ?
-	// operator constructor ?
-	virtual ~ClapTrap(); // made virtual in case of polymorphism
-	void attack(const std::string &target); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
+	virtual ~ClapTrap(); // added virtual to safely call the correct derived destructors when a derived object is deleted via a base pointer 
+	void attack(const std::string &target); 
 	void takeDamage(unsigned int amount);
-	void beRepaired(unsigned int amount); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
+	void beRepaired(unsigned int amount); 
 	std::string showStatus() const;
 };
 

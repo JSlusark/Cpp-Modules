@@ -6,17 +6,18 @@
 #include "ClapTrap.hpp"
 #include "colors.hpp"
 
-// Derived class (child) - the parent name is added with ":"
-class ScavTrap : virtual public ClapTrap
+class ScavTrap : virtual public ClapTrap // virtual creates one shared copy between frag and scav trap, to avoid duplication in case another class inherits from them
 {
-private: // attributes are not needed to be declared
+private:
+    // std::string name;
+    // int hitPoints;
+    // int energyPoints;
+    // int attackDamage;
 public:
-	ScavTrap(); // default constructor (does not need params)
+	ScavTrap();
 	ScavTrap(const std::string &name);
-	// 	// copy contructor ?
-	// 	// operator constructor ?
 	~ScavTrap();
-	void attack(const std::string &target); // overrides claptrap attack
+	void attack(const std::string &target);
 	void guardGate();
 };
 

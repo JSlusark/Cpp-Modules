@@ -6,20 +6,24 @@
 #include "FragTrap.hpp"
 #include "colors.hpp"
 
-// Derived class (child) - the parent name is added with ":"
-class DiamondTrap : public ScavTrap, public FragTrap
+class DiamondTrap : public ScavTrap, public FragTrap // double inheritance
 {
-private: // attributes are not needed to be declared
+private:
     std::string name;
+    // int hitPoints;
+    // int energyPoints;
+    // int attackDamage;
+
+    // using hitPoints FragTrap::hitPoints;       // 100
+    // using energyPoints = ScavTrap::energyPoints; // 50
+    // using attackDamage = FragTrap::attackDamage; // 30
 
 public:
-    DiamondTrap(); // default constructor (does not need params)
+    DiamondTrap();
     DiamondTrap(const std::string &name);
-    // 	// copy contructor ?
-    // 	// operator constructor ?
     ~DiamondTrap();
-    using ScavTrap::attack; // ScavTrap's attack method - it still uses it if not specifed.. is it because it relies on parent before grandparent? (as fragtrap does not have attack)
-    void whoAmI(void);
+    using ScavTrap::attack; // 'using' deals with method ambiguity, used to unhide inherited overloaded functions
+    void whoAmI(void);      // to show how identity works
 };
 
 #endif
