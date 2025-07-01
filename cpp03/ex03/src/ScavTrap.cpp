@@ -2,17 +2,17 @@
 
 ScavTrap::ScavTrap() : ClapTrap("Default") // default constructor
 {
-    hitPoints = 100;
-    energyPoints = 50;
-    attackDamage = 20;
+    hitPoints = DEFAULT_HP;
+    energyPoints = DEFAULT_EP;
+    attackDamage = DEFAULT_AD;
     std::cout << C_YELLOW << "🤖 ScavTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 
 ScavTrap::ScavTrap(const std::string &name) : ClapTrap(name) // parametarised constructor
 {
-    hitPoints = 100;
-    energyPoints = 50;
-    attackDamage = 20;
+    hitPoints = DEFAULT_HP;
+    energyPoints = DEFAULT_EP;
+    attackDamage = DEFAULT_AD;
     std::cout << C_YELLOW << "🤖 ScavTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 ScavTrap::~ScavTrap()

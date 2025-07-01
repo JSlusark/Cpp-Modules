@@ -2,17 +2,17 @@
 
 FragTrap::FragTrap() : ClapTrap("Default") // default constructor
 {
-    hitPoints = 100;
-    energyPoints = 100;
-    attackDamage = 30;
+    hitPoints = DEFAULT_HP;
+    energyPoints = DEFAULT_EP;
+    attackDamage = DEFAULT_AD;
     std::cout << C_GREEN << "🤖 FragTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 
 FragTrap::FragTrap(const std::string &name) : ClapTrap(name) // parametarised constructor
 {
-    hitPoints = 100;
-    energyPoints = 100;
-    attackDamage = 30;
+     hitPoints = DEFAULT_HP;
+    energyPoints = DEFAULT_EP;
+    attackDamage = DEFAULT_AD;
     std::cout << C_GREEN << "🤖 FragTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 FragTrap::~FragTrap()

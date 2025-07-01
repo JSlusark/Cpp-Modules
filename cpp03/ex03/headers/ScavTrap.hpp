@@ -9,10 +9,10 @@
 class ScavTrap : virtual public ClapTrap // virtual creates one shared copy between frag and scav trap, to avoid duplication in case another class inherits from them
 {
 private:
-    // std::string name;
-    // int hitPoints;
-    // int energyPoints;
-    // int attackDamage;
+protected:
+	static const int DEFAULT_HP = 100; // used this as assigning into the constructor will just assign to object and not class
+	static const int DEFAULT_EP = 50;  // used this as assigning into the constructor will just assign to object and not class
+	static const int DEFAULT_AD = 20;  // used this as assigning into the constructor will just assign to object and not class
 public:
 	ScavTrap();
 	ScavTrap(const std::string &name);
