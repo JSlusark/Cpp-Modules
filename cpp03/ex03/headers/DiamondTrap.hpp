@@ -10,13 +10,6 @@ class DiamondTrap : public ScavTrap, public FragTrap // double inheritance
 {
 private:
     std::string name;
-    // int hitPoints;
-    // int energyPoints;
-    // int attackDamage;
-
-    // using hitPoints FragTrap::hitPoints;       // 100
-    // using energyPoints = ScavTrap::energyPoints; // 50
-    // using attackDamage = FragTrap::attackDamage; // 30
 
 public:
     DiamondTrap();

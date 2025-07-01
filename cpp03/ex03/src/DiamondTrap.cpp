@@ -20,9 +20,9 @@ DiamondTrap::DiamondTrap(std::string const &name)
       FragTrap(name),                // Same for FragTrap with no args
       name(name)                     // Initializes DiamondTrap::name with the parameter
 {
-    hitPoints = FragTrap::DEFAULT_HP;    // 100
-    energyPoints = ScavTrap::DEFAULT_EP; // 50
-    attackDamage = FragTrap::DEFAULT_AD; // 30
+    hitPoints = FragTrap::DEFAULT_HP;    // 100 (not actual needed as it's the last classes applied)
+    energyPoints = ScavTrap::DEFAULT_EP; // overwrites to 50
+    attackDamage = FragTrap::DEFAULT_AD; // 30 (not actual needed as it's the last classes applied)
     std::cout << C_PURPLE << "🤖 DiamondTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 DiamondTrap::~DiamondTrap()
