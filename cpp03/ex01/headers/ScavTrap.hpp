@@ -6,18 +6,19 @@
 #include "ClapTrap.hpp"
 #include "colors.hpp"
 
-// Derived class (child) - the parent name is added with ":"
 class ScavTrap : public ClapTrap
 {
-private: // attributes are not needed to be declared
+private: // attributes are not needed to be re-declared
 public:
-	ScavTrap(); // default constructor (does not need params)
+	ScavTrap();
 	ScavTrap(const std::string &name);
-	// 	// copy contructor ?
-	// 	// operator constructor ?
+	// ADD COPY CONSTRUCTOR
+	// ADD COPY ASSIGNMENT OPERATOR
 	~ScavTrap();
-	void attack(const std::string &target); // overrides claptrap attack
+	void attack(const std::string &target);
 	void guardGate();
+	// 	takeDamage is inherited
+	// beRepaired is inherited
 };
 
 #endif

@@ -4,10 +4,9 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <iomanip> // for std::setw and std::right
+#include <iomanip>
 #include "colors.hpp"
 
-// base class (parent)
 class ClapTrap
 {
 protected: // we switch private to protected to access the attribute directly and avoid using getters and setters
@@ -19,12 +18,12 @@ protected: // we switch private to protected to access the attribute directly an
 public:
 	ClapTrap(); // default constructor (does not ned params)
 	ClapTrap(const std::string &name);
-	// copy contructor ?
-	// operator constructor ?
+	// ADD COPY CONSTRUCTOR
+	// ADD COPY ASSIGNMENT OPERATOR
 	~ClapTrap();
-	void attack(const std::string &target); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
+	void attack(const std::string &target);
 	void takeDamage(unsigned int amount);
-	void beRepaired(unsigned int amount); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
+	void beRepaired(unsigned int amount);
 	std::string showStatus() const;
 };
 

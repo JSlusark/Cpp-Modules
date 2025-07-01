@@ -16,6 +16,8 @@ protected:
 public:
 	ScavTrap();
 	ScavTrap(const std::string &name);
+	// ADD COPY CONSTRUCTOR
+	// ADD COPY ASSIGNMENT OPERATOR
 	~ScavTrap();
 	void attack(const std::string &target);
 	void guardGate();

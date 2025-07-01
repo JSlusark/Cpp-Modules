@@ -27,13 +27,13 @@ private:
 
 public:
 	ClapTrap(); // default constructor (does not ned params)
-	ClapTrap(const std::string &name);
-	// copy contructor ?
-	// operator constructor ?
-	~ClapTrap();
-	void attack(const std::string &target); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
-	void takeDamage(unsigned int amount);
-	void beRepaired(unsigned int amount); // costs 1 energyPoint, cannot happen when hitPoints and energyPoints = 0
+	ClapTrap(const std::string &name); // parametarised constructor
+	// ADD COPY CONSTRUCTOR
+	// ADD COPY ASSIGNMENT OPERATOR
+	~ClapTrap(); // destructor
+	void attack(const std::string &target); // - 1 energyPoint, damages with amount, cannot happen when hitPoints and energyPoints = 0
+	void takeDamage(unsigned int amount); // hp - amount
+	void beRepaired(unsigned int amount); // - 1 energyPoint hp + amount, cannot happen when hitPoints and energyPoints = 0
 	std::string showStatus() const;
 };
 

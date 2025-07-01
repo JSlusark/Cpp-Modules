@@ -16,6 +16,8 @@ protected:
 public:
     FragTrap();
     FragTrap(const std::string &name);
+    // ADD COPY CONSTRUCTOR
+    // ADD COPY ASSIGNMENT OPERATOR
     ~FragTrap();
     void highFivesGuys(void);
 };

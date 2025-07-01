@@ -17,7 +17,7 @@ int main()
 		clappie.takeDamage(20);
 		clappie.beRepaired(5);
 		clappie.attack("Scavvie");
-		std::cout << "Scavvie is attacked by random god level machine with 1000 attack hit points!!!!" << std::endl;
+		std::cout << "\nScavvie is attacked by a random god level machine with 1000 attack hit points!!!!" << std::endl;
 		scavvie.takeDamage(1000); // se if need to have limit
 	}
 

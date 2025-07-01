@@ -18,10 +18,12 @@ protected:
 public:
 	ClapTrap();
 	ClapTrap(const std::string &name);
-	virtual ~ClapTrap(); // added virtual to safely call the correct derived destructors when a derived object is deleted via a base pointer 
-	void attack(const std::string &target); 
+	// ADD COPY CONSTRUCTOR
+	// ADD COPY ASSIGNMENT OPERATOR
+	virtual ~ClapTrap(); // added virtual to safely call the correct derived destructors when a derived object is deleted via a base pointer
+	void attack(const std::string &target);
 	void takeDamage(unsigned int amount);
-	void beRepaired(unsigned int amount); 
+	void beRepaired(unsigned int amount);
 	std::string showStatus() const;
 };
 

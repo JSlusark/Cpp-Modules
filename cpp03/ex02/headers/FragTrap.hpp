@@ -5,15 +5,14 @@
 #include "ClapTrap.hpp"
 #include "colors.hpp"
 
-// Derived class (child) - the parent name is added with ":"
 class FragTrap : public ClapTrap
 {
-private: // attributes are not needed to be declared
+private: // attributes are not needed to be redeclared
 public:
-    FragTrap(); // default constructor (does not need params)
+    FragTrap();
     FragTrap(const std::string &name);
-    // 	// copy contructor ?
-    // 	// operator constructor ?
+    // ADD COPY CONSTRUCTOR
+    // ADD COPY ASSIGNMENT OPERATOR
     ~FragTrap();
     void highFivesGuys(void);
 };

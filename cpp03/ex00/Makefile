@@ -1,6 +1,6 @@
 NAME      := Aaaaand_OPEN
 CPP       := c++
-CPPFLAGS  := -Wall -Wextra -Werror -std=c++98 -Iheaders
+CPPFLAGS  := -Wall -Wextra -Werror -std=c++98
 SRCDIR    := src
 INCDIR    := headers
 OBJDIR    := obj
