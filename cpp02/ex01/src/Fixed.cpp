@@ -1,66 +1,96 @@
 #include "../headers/Fixed.hpp"
-// std::cout << std::endl;
 
-// Orthodox Canonical form
+// Orthodox Canonical Form
 
-//--- constructor types
-Fixed::Fixed(/* args */) : fixedPointNumber(0) // default constructor
+//--- Constructors
+
+Fixed::Fixed() : fixedPointNumber(0) // Default constructor
 {
 	std::cout << "Default constructor called" << std::endl;
 }
 
-Fixed::Fixed(const int number) : fixedPointNumber(0) // int constructor
+Fixed::Fixed(const int number) // Int constructor
 {
 	std::cout << "Int constructor called" << std::endl;
-	// covert to fixed point value
-	fixedPointNumber = number << fractionalBits; // << means number x 256  as (1<< 8 = 256)
+	fixedPointNumber = number << fractionalBits;
 }
-Fixed::Fixed(const float decimal) : fixedPointNumber(0) // int constructor
+
+Fixed::Fixed(const float decimal) // Float constructor
 {
 	std::cout << "Float constructor called" << std::endl;
-	// covert to fixed point value
-	fixedPointNumber = roundf(decimal * (1 << fractionalBits)); // direct op with int value of fraction (1<< 8 = 256)
+	fixedPointNumber = roundf(decimal * (1 << fractionalBits));
 }
-//---
 
-Fixed::Fixed(const Fixed &object) // ref usually called object, copy or src for convention. We are constructing from an existing object.
+//--- Copy Constructor: used to initiate an object as a copy from another object
+// source: https://courses.washington.edu/css342/zander/css332/copyeq.html
+Fixed::Fixed(const Fixed &object) : fixedPointNumber(0) // defensive init to avoid garbage value
 {
 	std::cout << "Copy constructor called" << std::endl;
-	this->fixedPointNumber = object.fixedPointNumber; // good to add this for clarity, we are using member variable
+
+	/*
+	THIS IS A BAD PRACTICE, but required by 42 test to show the copy assignment message
+	This works, but is wrong because:
+	- Copy constructor is meant to initialize a brand new object
+	- Assignment operator is used to replaced the contents of an already initialized object, so to be appliec fter initialization
+	- Using assignment here causes unnecessary default initialization + reassignment
+	- Also fails with const and reference members
+	- Dangerous for classes managing dynamic memory (e.g. using `new`/`delete`):
+	   → assignment often calls `delete` on existing members (like `delete[] arrayPtr;`)
+	   → but copy constructor is run before those members are safely initialized — may crash or cause undefined behavior.
+	*/
+
+	(*this) = object;
+
+	/*
+
+	Good practice alternative (what the compiler would synthesize by default):
+		this->fixedPointNumber = object.fixedPointNumber;
+
+		Or even better:
+	Fixed::Fixed(const Fixed &object) : fixedPointNumber(object.fixedPointNumber)
+	{
+		std::cout << "Copy constructor called" << std::endl;
+	}
+
+	*/
 }
 
-// copy assignment operator overload
-Fixed &Fixed::operator=(const Fixed &other) // other as we are replacing object's state with that of another
+//--- Copy Assignment Operator: used to replace an already initiated objectwith another
+Fixed &Fixed::operator=(const Fixed &other)
 {
 	std::cout << "Copy assignment operator called" << std::endl;
 	if (this != &other)
-	{
-		this->fixedPointNumber = other.fixedPointNumber; // good to add this for clarity, we are using member variable
-	}
+		this->fixedPointNumber = other.fixedPointNumber;
 	return *this;
 }
+
+//--- Destructor
 
 Fixed::~Fixed()
 {
 	std::cout << "Destructor called" << std::endl;
 }
-// my functions
-int Fixed::getRawBits(void) const
+
+//--- Member Functions
+
+int Fixed::getRawBits(void) const // returns raw value of fixed point number
 {
 	std::cout << "getRawBits member function called" << std::endl;
 	return fixedPointNumber;
-}; // returns raw value of fixed point number
-void Fixed::setRawBits(int const raw)
+}
+
+void Fixed::setRawBits(int const raw) // sets raw value of fixed point number
 {
 	std::cout << "setRawBits member function called" << std::endl;
 	fixedPointNumber = raw;
-}; // sets raw value of fixed point number
+}
 
-float Fixed::toFloat(void) const
+float Fixed::toFloat(void) const // converts the fixed-point back to float by 256(2--small8)
 {
 	return (fixedPointNumber / static_cast<float>(1 << fractionalBits));
-}; // converts the fixed-point back to float by 256(2--small8)
-int Fixed::toInt(void) const
+}
+
+int Fixed::toInt(void) const // converts the fixed-point value to an integer value.
 {
-	return (fixedPointNumber >> 8); // as fixed = int << 8
-}; // converts the fixed-point value to an integer value.
+	return (fixedPointNumber >> fractionalBits);
+}
