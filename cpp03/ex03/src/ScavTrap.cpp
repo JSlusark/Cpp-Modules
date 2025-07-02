@@ -15,6 +15,23 @@ ScavTrap::ScavTrap(const std::string &name) : ClapTrap(name) // parametarised co
     attackDamage = DEFAULT_AD;
     std::cout << C_YELLOW << "🤖 ScavTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
+
+ScavTrap::ScavTrap(const ScavTrap &other) : ClapTrap(other) // Call base class copy constructor
+{
+    std::cout << C_YELLOW << "📋 ScavTrap " << C_RESET << name << " was created by copy constructor" << showStatus() << std::endl;
+}
+
+ScavTrap &ScavTrap::operator=(const ScavTrap &other)
+{
+    if (this != &other)
+    {
+        ClapTrap::operator=(other); // Call base class assignment operator
+        // No extra attributes to assign here
+    }
+    std::cout << C_YELLOW << "📎 ScavTrap " << C_RESET << name << " was assigned by copy assignment" << showStatus() << std::endl;
+    return *this;
+}
+
 ScavTrap::~ScavTrap()
 {
     std::cout << C_YELLOW << "🪦 ScavTrap " << C_RESET << name << " was destroyed by destructor" << showStatus() << std::endl;

@@ -19,6 +19,25 @@ ClapTrap::ClapTrap(const std::string &name) : name(name), hitPoints(10), energyP
     std::cout << C_CYAN << "🤖 ClapTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
 
+ClapTrap::ClapTrap(const ClapTrap &other)
+    : name(other.name), hitPoints(other.hitPoints), energyPoints(other.energyPoints), attackDamage(other.attackDamage)
+{
+    std::cout << C_CYAN << "📋 ClapTrap " << C_RESET << name << " was created by copy constructor" << showStatus() << std::endl;
+}
+
+ClapTrap &ClapTrap::operator=(const ClapTrap &other)
+{
+    if (this != &other)
+    {
+        name = other.name;
+        hitPoints = other.hitPoints;
+        energyPoints = other.energyPoints;
+        attackDamage = other.attackDamage;
+    }
+    std::cout << C_CYAN << "📎 ClapTrap " << C_RESET << name << " was assigned by copy assignment" << showStatus() << std::endl;
+    return *this;
+}
+
 ClapTrap::~ClapTrap()
 {
     std::cout << C_CYAN << "🪦 ClapTrap " << C_RESET << name << " was destroyed by destructor" << showStatus() << std::endl;

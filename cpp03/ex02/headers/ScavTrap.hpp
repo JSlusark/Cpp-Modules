@@ -12,8 +12,8 @@ private: // attributes are not needed to be declared
 public:
 	ScavTrap();
 	ScavTrap(const std::string &name);
-	// ADD COPY CONSTRUCTOR
-	// ADD COPY ASSIGNMENT OPERATOR
+	ScavTrap(const ScavTrap &other);			// Copy constructor
+	ScavTrap &operator=(const ScavTrap &other); // Copy assignment
 	~ScavTrap();
 	void attack(const std::string &target); // overrides claptrap attack
 	void guardGate();

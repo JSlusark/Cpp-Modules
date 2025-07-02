@@ -25,6 +25,26 @@ DiamondTrap::DiamondTrap(std::string const &name)
     attackDamage = FragTrap::DEFAULT_AD; // 30 (not actual needed as it's the last classes applied)
     std::cout << C_PURPLE << "🤖 DiamondTrap " << C_RESET << name << " was created by parametarised constructor" << showStatus() << std::endl;
 }
+
+DiamondTrap::DiamondTrap(const DiamondTrap &other)
+    : ClapTrap(other), ScavTrap(other), FragTrap(other), name(other.name)
+{
+    std::cout << C_PURPLE << "📋 DiamondTrap " << C_RESET << name << " was created by copy constructor" << showStatus() << std::endl;
+}
+
+DiamondTrap &DiamondTrap::operator=(const DiamondTrap &other)
+{
+    if (this != &other)
+    {
+        ClapTrap::operator=(other);
+        ScavTrap::operator=(other);
+        FragTrap::operator=(other);
+        name = other.name;
+    }
+    std::cout << C_PURPLE << "📎 DiamondTrap " << C_RESET << name << " was assigned by copy assignment" << showStatus() << std::endl;
+    return *this;
+}
+
 DiamondTrap::~DiamondTrap()
 {
     std::cout << C_PURPLE << "🪦 DiamondTrap " << C_RESET << name << " was destroyed by destructor" << showStatus() << std::endl;
