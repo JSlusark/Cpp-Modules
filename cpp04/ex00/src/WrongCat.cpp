@@ -30,7 +30,7 @@ WrongCat::~WrongCat()
 	std::cout << "WrongCat destroyed by destructor " << std::endl;
 }
 
-void WrongCat::makeSound()
+void WrongCat::makeSound() const
 {
 	std::cout << "Wrong cat sound" << std::endl;
 }

@@ -53,7 +53,7 @@ int main()
 		wrong->makeSound(); // WrongAnimal sound
 
 		std::cout << "wrongCat->makeSound(): ";
-		wrongCat->makeSound(); // ❗Still WrongAnimal sound (no virtual)
+		wrongCat->makeSound(); // Still WrongAnimal sound (no virtual)
 
 		delete wrong;
 		delete wrongCat;

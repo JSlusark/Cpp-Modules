@@ -7,11 +7,13 @@ OBJDIR    := obj
 
 HEADERS = Animal.hpp \
 			WrongAnimal.hpp \
+			WrongCat.hpp \
 			Dog.hpp \
 			Cat.hpp
 
 SRC = main.cpp \
 	WrongAnimal.cpp \
+	WrongCat.cpp \
 	Animal.cpp \
 	Dog.cpp \
 	Cat.cpp

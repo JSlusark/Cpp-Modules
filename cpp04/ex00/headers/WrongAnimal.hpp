@@ -14,7 +14,7 @@ public:
 	WrongAnimal &operator=(const WrongAnimal &other); // Copy assignment operator
 	~WrongAnimal();									  // Destructor
 	std::string getType() const;					  // getter
-	void makeSound();
+	void makeSound() const;
 };
 
 #endif

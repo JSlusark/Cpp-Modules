@@ -10,7 +10,7 @@ public:
 	WrongCat(const WrongCat &other);			// Copy constructor
 	WrongCat &operator=(const WrongCat &other); // Copy assignment operator
 	~WrongCat();								// Destructor
-	void makeSound();
+	void makeSound() const;
 };
 
 #endif
