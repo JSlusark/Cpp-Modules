@@ -3,7 +3,7 @@
 #include "../headers/Dog.hpp"
 #include "../headers/WrongAnimal.hpp"
 #include "../headers/WrongCat.hpp"
-#include "colors.hpp"
+#include "../headers/colors.hpp"
 
 int main()
 {
