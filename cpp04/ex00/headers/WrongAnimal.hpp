@@ -1,5 +1,6 @@
 #ifndef WRONGANIMAL_HPP
 #define WRONGANIMAL_HPP
+#include "colors.hpp"
 #include <iostream>
 #include <string>
 

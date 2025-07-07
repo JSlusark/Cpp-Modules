@@ -9,7 +9,8 @@ HEADERS = Animal.hpp \
 			WrongAnimal.hpp \
 			WrongCat.hpp \
 			Dog.hpp \
-			Cat.hpp
+			Cat.hpp \
+			colors.hpp
 
 SRC = main.cpp \
 	WrongAnimal.cpp \
