@@ -40,6 +40,28 @@ int main()
 		}
 	}
 
+	std::cout << "Creating base Dog...\n";
+	Dog basic;
+
+	std::cout << "\nCreating a copy in a new scope...\n";
+	{
+		Dog tmp = basic; // This calls the copy constructor
+		std::cout << "Exiting scope, tmp will be destroyed...\n";
+	}
+	std::cout << "\nIf we reach this message without a crash, copy constructor worked smoothly...\n";
+	
+	std::cout << "\nAssigning basic dog to a temp...\n";
+	{
+		Dog tmp; // This calls the copy constructor
+		tmp = basic; // This calls the assignment operator
+		std::cout << "Exiting scope, tmp will be destroyed...\n";
+	}
+	std::cout << "\nIf we reach this message without a crash, copy assignment worked smoothly...\n";
+
+	// Optional: Access Brain content to be sure
+	// basic.setIdea(0, "Original");
+	// std::cout << "Idea 0 of basic: " << basic.getIdea(0) << std::endl;
+
 	// {
 	// 	Cat original;
 	// 	Cat copy(original);
