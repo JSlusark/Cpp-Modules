@@ -33,11 +33,11 @@ int main()
 		delete cat;
 	}
 
-	std::cout << C_YELLOW << "\n------ Polymorphic array using base class pointers ------" << C_RESET << std::endl;
+		std::cout << C_YELLOW << "\n------ Polymorphic array using base class pointers ------" << C_RESET << std::endl;
 	// upcasting  allows flexibility, in this case we can initialise different derived class through a common interface / base class
 	Animal *zoo[2] = {new Dog(), new Cat()}; // this is not possible by using a dog or cat array directly for example
-	for (int i = 0; i < 2; i++)
-	{
+		for (int i = 0; i < 2; i++)
+		{
 		zoo[i]->makeSound(); // derived classshould override the pure virtual fuction of base class
 		delete zoo[i];
 	}
@@ -52,8 +52,11 @@ int main()
 			animal = new Dog();
 		else if (input == "cat")
 			animal = new Cat();
-		animal->makeSound(); // works only if virtual
-		delete animal;
+		if (animal) // if assigned because input matched
+		{
+			animal->makeSound();  // if i remove the overriden cat function cat should become abstract too and init cat will fail
+			delete animal; 
+		}
 	}
 
 	{
@@ -69,8 +72,11 @@ int main()
 		std::cout << C_YELLOW << "\n------ Invalid assignment between different derived classes - causes undefined behaviour ------" << C_RESET << std::endl;
 		Animal *a = new Dog();
 		Animal *b = new Cat();
-		*a = *b; // ❌ Invalid — object slicing(copies only the animal part with its copy) + incompatible types!
+		*a = *b; // Invalid: object slicing(copies only the animal part with its copy) + incompatible types!
+		delete a; //  Still must delete both
+		delete b;
 	}
+
 	{
 		std::cout << C_YELLOW << "\n------ Valid copy assignment (same derived type) ------" << C_RESET << std::endl;
 		// valid copy costructor (only with the same derived class, no slicing, both base and dervied copy constructor called)
@@ -81,6 +87,7 @@ int main()
 		Cat cat1;
 		Cat cat2;
 		cat2 = cat1; // Copy assignment of same type
+		// no need to delete as it's all stack allocated
 	}
 
 	return 0;
