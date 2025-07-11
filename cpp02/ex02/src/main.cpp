@@ -2,12 +2,6 @@
 #include "../headers/Fixed.hpp"
 #include <ostream> // needed for std::ostream
 
-std::ostream &operator<<(std::ostream &out, const Fixed &fixed) // operator overload
-{
-	out << fixed.toFloat();
-	return out;
-}
-
 int main(void)
 {
 	Fixed a;

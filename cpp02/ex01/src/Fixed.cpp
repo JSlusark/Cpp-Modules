@@ -1,9 +1,7 @@
 #include "../headers/Fixed.hpp"
 
 // Orthodox Canonical Form
-
 //--- Constructors
-
 Fixed::Fixed() : fixedPointNumber(0) // Default constructor
 {
 	std::cout << "Default constructor called" << std::endl;
@@ -23,7 +21,7 @@ Fixed::Fixed(const float decimal) // Float constructor
 
 //--- Copy Constructor: used to initiate an object as a copy from another object
 // source: https://courses.washington.edu/css342/zander/css332/copyeq.html
-Fixed::Fixed(const Fixed &object) : fixedPointNumber(0) // defensive init to avoid garbage value
+Fixed::Fixed(const Fixed &other) : fixedPointNumber(0) // defensive init to avoid garbage value
 {
 	std::cout << "Copy constructor called" << std::endl;
 
@@ -39,15 +37,15 @@ Fixed::Fixed(const Fixed &object) : fixedPointNumber(0) // defensive init to avo
 	   → but copy constructor is run before those members are safely initialized — may crash or cause undefined behavior.
 	*/
 
-	(*this) = object;
+	(*this) = other;
 
 	/*
 
-	Good practice alternative (what the compiler would synthesize by default):
-		this->fixedPointNumber = object.fixedPointNumber;
+	Good practice (does not print the same output of test):
+		this->fixedPointNumber = other.fixedPointNumber;
 
 		Or even better:
-	Fixed::Fixed(const Fixed &object) : fixedPointNumber(object.fixedPointNumber)
+	Fixed::Fixed(const Fixed &other) : fixedPointNumber(other.fixedPointNumber)
 	{
 		std::cout << "Copy constructor called" << std::endl;
 	}
@@ -93,4 +91,13 @@ float Fixed::toFloat(void) const // converts the fixed-point back to float by 25
 int Fixed::toInt(void) const // converts the fixed-point value to an integer value.
 {
 	return (fixedPointNumber >> fractionalBits);
+}
+
+
+// operator overload: without, compiler does not know hwo to send fix point object to output stream
+
+std::ostream &operator<<(std::ostream &out, const Fixed &fixed) // operator overload
+{
+	out << fixed.toFloat(); // inserts a floating-point representation of the fixed-point number into the output stream object passed as a parameter
+	return out;
 }

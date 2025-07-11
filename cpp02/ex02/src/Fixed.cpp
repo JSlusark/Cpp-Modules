@@ -1,9 +1,7 @@
 #include "../headers/Fixed.hpp"
 
 // Orthodox Canonical Form
-
 //--- Constructors
-
 Fixed::Fixed() : fixedPointNumber(0) // Default constructor
 {
 	std::cout << "Default constructor called" << std::endl;
@@ -174,4 +172,12 @@ Fixed &Fixed::max(Fixed &a, Fixed &b)
 const Fixed &Fixed::max(const Fixed &a, const Fixed &b)
 {
 	return (a > b) ? a : b;
+}
+
+
+// utils
+std::ostream &operator<<(std::ostream &out, const Fixed &fixed) // operator overload
+{
+	out << fixed.toFloat();
+	return out;
 }

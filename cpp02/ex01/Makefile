@@ -5,10 +5,11 @@ SRCDIR    := src
 INCDIR    := headers
 OBJDIR    := obj
 
-HEADERS = Fixed.hpp
+HEADERS = Fixed.hpp \
+			
 
 SRC = main.cpp \
-	Fixed.cpp
+	Fixed.cpp 
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))

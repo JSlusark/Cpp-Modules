@@ -1,23 +1,21 @@
 #include "../headers/Fixed.hpp"
-// std::cout << std::endl;
 
 // Orthodox Canonical form
-
 Fixed::Fixed(/* args */) : fixedPointNumber(0) // default constructor
 {
 	std::cout << "Default costructor called" << std::endl;
 }
-Fixed::Fixed(const Fixed &object) // ref usually called object, copy or src for convention. We are constructing from an existing object.
+Fixed::Fixed(const Fixed &other) // ref usually called other, copy or src for convention. We are constructing from an existing other.
 {
 	std::cout << "Copy costructor called" << std::endl;
-	this->fixedPointNumber = object.fixedPointNumber; // good to add this for clarity, we are using member variable
+	this->fixedPointNumber = other.fixedPointNumber; // //fractionalBits does not need to be copied
 }
-Fixed &Fixed::operator=(const Fixed &other) // other as we are replacing object's state with that of another
+Fixed &Fixed::operator=(const Fixed &other) // other as we are replacing other's state with that of another
 {
 	std::cout << "Copy assignment operator called" << std::endl;
 	if (this != &other)
 	{
-		this->fixedPointNumber = other.fixedPointNumber; // good to add this for clarity, we are using member variable
+		this->fixedPointNumber = other.fixedPointNumber; //fractionalBits does not need to be copied
 	}
 	return *this;
 }
