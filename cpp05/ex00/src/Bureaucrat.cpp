@@ -2,9 +2,9 @@
 
 void Bureaucrat::validateGrade(int grade)
 {
-	if (grade < TOO_HIGH)
+	if (grade < 1)
 		throw GradeTooHighException();
-	if (grade > TOO_LOW)
+	if (grade > 150)
 		throw GradeTooLowException();
 }
 

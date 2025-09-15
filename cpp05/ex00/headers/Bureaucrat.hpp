@@ -6,9 +6,8 @@
 #include <exception>
 #include <iosfwd> // for std::ostream forward-decl
 
-int TOO_HIGH = 1;
-int TOO_LOW = 150;
-std::ostream &operator<<(std::ostream &out, Bureaucrat &b);
+// int TOO_HIGH = 1;
+// int TOO_LOW = 150;
 
 class Bureaucrat
 {
@@ -60,4 +59,5 @@ public:
 	};
 };
 
+std::ostream &operator<<(std::ostream &out, const Bureaucrat &b);
 #endif
