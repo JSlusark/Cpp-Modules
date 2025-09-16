@@ -5,24 +5,25 @@
 #include <iostream>
 #include <exception>
 #include <iosfwd> // for std::ostream forward-decl
-
-// int TOO_HIGH = 1;
-// int TOO_LOW = 150;
+#include "./colors.hpp"
 
 class Bureaucrat
 {
 private:
-	void validateGrade(int grade);
+	// attributes
 	const std::string _name;
 	int _grade; // ranges from 1(high) to 150 (low)
+	// class utils
+	void validateGrade(int grade);
+	static const int TOO_HIGH = 1;
+	static const int TOO_LOW = 150;
 
 public:
-	// Bureaucrat();                             // Default constructor
 	Bureaucrat(const std::string &name, int grade);
 	Bureaucrat(const Bureaucrat &other);			// Copy constructor
 	Bureaucrat &operator=(const Bureaucrat &other); // Copy assignment operator
 	~Bureaucrat();									// Destructor
-	// getters
+	// accessors
 	std::string getName() const;
 	int getGrade() const;
 	// modifiers
@@ -46,7 +47,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return ("Grade is too high ( < 1)");
+			return (C_RED "Exception:" C_RESET " Grade is too high ( < 1)");
 		}
 	};
 	class GradeTooLowException : public std::exception
@@ -54,7 +55,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return ("Grade is too low ( > 150)");
+			return (C_RED "Exception:" C_RESET " Grade is too low ( > 150)");
 		}
 	};
 };
