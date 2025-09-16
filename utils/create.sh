@@ -150,20 +150,25 @@ ${cls}::${cls}()
 	std::cout << "${cls} created by default constructor " << std::endl;
 }
 
-/* Copy constructor */
-${cls}::${cls}(const ${cls} &other)
+/* Parametarised constructor */
+${cls}::${cls}(const attr1, attr2)
 {
-	(void)other;
+	std::cout << "${cls} created by default constructor " << std::endl;
+}
+
+/* Copy constructor: constructs new object as a copy of an object */
+${cls}::${cls}(const ${cls} &other) : _attr1(other.attr1), _attr2(other.attr2)
+{
 	std::cout << "${cls} created by copy constructor " << std::endl;
 }
 
-/* Copy assignment operator */
+/* Copy assignment operator: we copy attributes only as object was already constucted */
 ${cls} &${cls}::operator=(const ${cls} &other)
 {
 	if (this != &other)
 	{
 		// BaseClass::operator=(other); // should add this instead if derived class
-		// attribute = other.Attribute; // placeholder
+		this->attribute = other->Attribute; // placeholder
 	}
 	std::cout << "${cls} assigned by copy assignment " << std::endl;
 	return *this;
@@ -186,6 +191,7 @@ class ${cls}
 private:
 public:
 	${cls}();                             // Default constructor
+  ${cls}::${cls}(const attr1, attr2)    //Parametarised constructor
 	${cls}(const ${cls} &other);          // Copy constructor
 	${cls} &operator=(const ${cls} &other); // Copy assignment operator
 	~${cls}();                            // Destructor
