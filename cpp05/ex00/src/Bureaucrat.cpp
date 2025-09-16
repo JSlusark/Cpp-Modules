@@ -51,14 +51,14 @@ int Bureaucrat::getGrade() const
 	return _grade;
 }
 
-void Bureaucrat::incrementGrade()
+void Bureaucrat::decrementGrade()
 { // decreases
 	std::cout << "Incrementing --" << std::endl;
 	validateGrade(_grade - 1);
 	--_grade;
 }
 
-void Bureaucrat::decrementGrade()
+void Bureaucrat::incrementGrade()
 { // increases
 	std::cout << "Decrementing ++" << std::endl;
 	validateGrade(_grade + 1);

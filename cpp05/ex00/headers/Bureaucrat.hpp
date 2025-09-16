@@ -27,8 +27,8 @@ public:
 	std::string getName() const;
 	int getGrade() const;
 	// modifiers
-	void incrementGrade(); // if out of ranhge throe cnstructor error
 	void decrementGrade(); // if out of ranhge throe cnstructor error
+	void incrementGrade(); // if out of ranhge throe cnstructor error
 
 	/*
 	 - exception throws signals errors
@@ -47,7 +47,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return (C_RED "Exception:" C_RESET " Grade is too high ( < 1)");
+			return (C_RED "Exception:" C_RESET " Cannot increment grade as it is too high ( < 1)");
 		}
 	};
 	class GradeTooLowException : public std::exception
@@ -55,7 +55,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return (C_RED "Exception:" C_RESET " Grade is too low ( > 150)");
+			return (C_RED "Exception:" C_RESET " Cannot decrement grade as it is too low ( > 150)");
 		}
 	};
 };

@@ -37,16 +37,16 @@ int main()
     std::cout << e.what() << std::endl;
   }
 
-  std::cout << C_GRAY << "\n---TEST 3: constant decrement until expection hit (TOO HIGH) ---" << C_RESET << std::endl;
+  std::cout << C_GRAY << "\n---TEST 3: constant grade increment(with --) until expection hit (TOO HIGH) ---" << C_RESET << std::endl;
   try
   {
     Bureaucrat b("Lola", 3);
     std::cout << b << std::endl; // 3
-    b.incrementGrade();
+    b.decrementGrade();
     std::cout << b << std::endl; // 2
-    b.incrementGrade();
+    b.decrementGrade();
     std::cout << b << std::endl; // 1
-    b.incrementGrade();
+    b.decrementGrade();
     std::cout << b << std::endl; // catch called
   }
   catch (std::exception &e)
@@ -54,18 +54,18 @@ int main()
     std::cout << e.what() << std::endl;
   }
 
-  std::cout << C_GRAY << "\n---TEST 3: constant decrement until expection hit (TOO LOW) ---" << C_RESET << std::endl;
+  std::cout << C_GRAY << "\n---TEST 3: constant decrement(with ++) until expection hit (TOO LOW) ---" << C_RESET << std::endl;
   try
   {
     Bureaucrat b("Tim", 149);
     std::cout << b << std::endl; // 149
-    b.decrementGrade();
+    b.incrementGrade();
     std::cout << b << std::endl; // 150
-    b.decrementGrade();          // catch
+    b.incrementGrade();          // catch
     std::cout << b << std::endl; // ---------- ends here
-    b.decrementGrade();
+    b.incrementGrade();
     std::cout << b << std::endl;
-    b.decrementGrade();
+    b.incrementGrade();
     std::cout << b << std::endl;
   }
   catch (std::exception &e)
