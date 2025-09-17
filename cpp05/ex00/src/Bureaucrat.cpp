@@ -51,18 +51,20 @@ int Bureaucrat::getGrade() const
 	return _grade;
 }
 
-void Bureaucrat::decrementGrade()
+void Bureaucrat::incrementGrade()
 { // decreases
 	std::cout << "Incrementing --" << std::endl;
 	validateGrade(_grade - 1);
 	--_grade;
+	std::cout << _name << "Incremented to " << _grade << std::endl;
 }
 
-void Bureaucrat::incrementGrade()
+void Bureaucrat::decrementGrade()
 { // increases
 	std::cout << "Decrementing ++" << std::endl;
 	validateGrade(_grade + 1);
 	++_grade;
+	std::cout << _name << "Decremented to " << _grade << std::endl;
 }
 
 // // stream - allows to print the object props

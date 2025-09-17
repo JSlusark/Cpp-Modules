@@ -51,26 +51,28 @@ int Bureaucrat::getGrade() const
 	return _grade;
 }
 
-void Bureaucrat::decrementGrade()
+void Bureaucrat::incrementGrade()
 { // decreases
-	std::cout << "Incrementing --" << std::endl;
+	// std::cout << "Incrementing --" << std::endl;
 	validateGrade(_grade - 1);
 	--_grade;
+	std::cout << _name << "'s grande incremented to: " << _grade << std::endl;
 }
 
-void Bureaucrat::incrementGrade()
+void Bureaucrat::decrementGrade()
 { // increases
-	std::cout << "Decrementing ++" << std::endl;
+	// std::cout << "Decrementing ++" << std::endl;
 	validateGrade(_grade + 1);
 	++_grade;
+	std::cout << _name << "Decremented to " << _grade << std::endl;
 }
 
 void Bureaucrat::signForm(Form &f) // add & to avoid creating a copy of f (without destructior uis called right after exception)
 {
 	try
 	{
+		// not adding conditional to sign if f.getSignature is true or false but would have been cool
 		f.beSigned(*this);
-		std::cout << _name << " signed " << f.getName() << std::endl;
 	}
 	catch (std::exception &e)
 	{

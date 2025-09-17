@@ -74,8 +74,11 @@ void Form::beSigned(const Bureaucrat &b)
 // stream
 std::ostream &operator<<(std::ostream &os, const Form &f)
 {
-	return os << C_YELLOW << "Form: " << C_RESET << f.getName()
-			  << C_YELLOW << "\n Is signed:" << C_RESET << f.getSignedStatus()
-			  << C_YELLOW << "\n Sign grade required:" << C_RESET << f.getSignPermission()
-			  << C_YELLOW << "\n Exec grade required:" << C_RESET << f.getExecPermission();
+	os << "-----------------------------------\n"
+	   << "	Form: " << f.getName() << "\n"
+	   << "	Is signed: " << (f.getSignedStatus() ? "Yes" : "No") << "\n"
+	   << "	Sign grade required: " << f.getSignPermission() << "\n"
+	   << "	Exec grade required: " << f.getExecPermission() << "\n"
+	   << "-----------------------------------";
+	return os;
 }
