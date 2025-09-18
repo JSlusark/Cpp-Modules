@@ -1,15 +1,8 @@
 #ifndef SHRUBBERYCREATIONFORM_HPP
 #define SHRUBBERYCREATIONFORM_HPP
 
-#include <string>
-#include <iostream>
-#include <exception>
-#include <iosfwd> // for std::ostream forward-decl
-#include "./colors.hpp"
 #include "AForm.hpp"
-
-// Forward declaration: breaks circular include (form.hpp present in bureaucrat)
-class Bureaucrat;
+#include <fstream>
 
 class ShrubberyCreationForm : public AForm
 {
@@ -18,7 +11,10 @@ private:
 
 public:
 	ShrubberyCreationForm(const std::string &target); // Parametarised constructor
-	void execute(Bureaucrat const &executor) const;
+	ShrubberyCreationForm(const ShrubberyCreationForm &other);
+	ShrubberyCreationForm &operator=(const ShrubberyCreationForm &other);
+	~ShrubberyCreationForm();
+	void executeForm() const;
 };
 
 #endif

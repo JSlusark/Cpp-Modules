@@ -34,15 +34,21 @@ public:
 	int getExecPermission() const;
 	void beSigned(const Bureaucrat &b); // changes the form status to signed if bur grad is high enough
 
-	virtual void execute(Bureaucrat const &executor) const = 0; // Pure virtual function
+	// added initExecution to avoid to write the same logic in child classes
+	void initExecution(Bureaucrat const &executor) const;
+	virtual void executeForm() const = 0; // Pure virtual function
 
-	// expceptions
+	/*
+	Exceptions do not need to be declared virtual as they are already by default:
+	https://en.cppreference.com/w/cpp/error/exception.html so doing so won't really do anything
+	other than wasting typing
+	*/
 	class GradeTooHighException : public std::exception
 	{
 	public:
 		virtual const char *what() const throw()
 		{
-			return (C_RED "[Exception]" C_RESET "AForm grade is too high ( < 1)");
+			return (C_RED "[Exception]" C_RESET "Form - grade is too high");
 		}
 	};
 	class GradeTooLowException : public std::exception
@@ -50,15 +56,15 @@ public:
 	public:
 		virtual const char *what() const throw()
 		{
-			return (C_RED "[Exception]" C_RESET " AForm grade is too low ( > 150)");
+			return (C_RED "[Exception]" C_RESET " Form - grade is too low");
 		}
 	};
-	class UnsignedForm : public std::exception
+	class UnsignedFormException : public std::exception
 	{
 	public:
 		virtual const char *what() const throw()
 		{
-			return (C_RED "[Exception]" C_RESET " AForm was not signed");
+			return (C_RED "[Exception]" C_RESET " Form was not signed");
 		}
 	};
 };

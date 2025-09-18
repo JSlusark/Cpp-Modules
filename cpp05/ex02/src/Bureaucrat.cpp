@@ -69,26 +69,40 @@ void Bureaucrat::decrementGrade()
 
 void Bureaucrat::signAForm(AForm &f) // add & to avoid creating a copy of f (without destructior uis called right after exception)
 {
-	try
+	std::cout << C_GRAY << "[LOG]" << C_RESET << " Bureaucrat " << _name << "(grade: " << _grade << ")" << " attempts to sign form " << f.getName() << "(grade required: " << f.getSignPermission() << ")" << std::endl;
+	if (f.getSignedStatus()) // decided to add this personally
 	{
-		// not adding conditional to sign if f.getSignature is true or false but would have been cool
-		f.beSigned(*this);
+		std::cout << C_GRAY << "[LOG]" << C_RESET <<  " Bureaucrat " << _name << " noticed that form " << f.getName() << " was already signed by another bureaucrat" << std::endl;
+		return;
 	}
-	catch (std::exception &e)
+	else
 	{
-		std::cout << e.what() << std::endl;
+		try
+		{
+			f.beSigned(*this);
+			std::cout << C_GREEN << "[SUCCESS]" << C_RESET << " Bureaucrat " << _name << " signed form " << f.getName() << std::endl;
+		}
+		catch (std::exception &e)
+		{
+			std::cout << C_RED << "[FAIL]" << C_RESET << " Bureaucrat " << _name << " couldn’t sign " << f.getName() << " for following reason: " << std::endl;
+			std::cout << e.what() << std::endl;
+		}
 	}
 }
 
-void Bureaucrat::signAForm(AForm &f)
+void Bureaucrat::execAForm(AForm const &f)
 {
+	std::cout << C_GRAY << "[LOG]" << C_RESET << " Bureaucrat " << _name << "(grade: " << _grade << ")" << " attempts to execute form " << f.getName() << "(grade required: " << f.getExecPermission() << ")" << std::endl;
+
 	try
 	{
 		// not adding conditional to sign if f.getSignature is true or false but would have been cool
-		f.execute(*this);
+		f.initExecution(*this);
+		std::cout << C_GREEN << "[SUCCESS]" << C_RESET << " Bureaucrat " << _name << " executed form " << f.getName() << std::endl;
 	}
 	catch (std::exception &e)
 	{
+		std::cout << C_RED << "[FAIL]" << C_RESET << " Bureaucrat " << _name << " couldn’t execute " << f.getName() << " for following reason: " << std::endl;
 		std::cout << e.what() << std::endl;
 	}
 }

@@ -60,15 +60,18 @@ int AForm::getExecPermission() const { return _gradeCanExec; }
 void AForm::beSigned(const Bureaucrat &b)
 {
 	if (b.getGrade() <= _gradeCanSign)
-	{
 		_isSigned = true;
-		std::cout << "Bureaucrat " << b.getName() << " signed form " << _name << std::endl;
-	}
 	else
-	{
-		std::cout << "Bureaucrat " << b.getName() << " couldn’t sign" << _name << " for following reason: " << std::endl;
 		throw GradeTooLowException();
-	}
+}
+
+void AForm::initExecution(Bureaucrat const &executor) const
+{
+	if (executor.getGrade() > _gradeCanExec)
+		throw GradeTooLowException();
+	if (!_isSigned)
+		throw UnsignedFormException();
+	executeForm(); // <--- calls corresponding child function
 }
 
 // stream

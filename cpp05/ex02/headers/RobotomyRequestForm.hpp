@@ -1,11 +1,6 @@
 #ifndef ROBOTOMYREQUESTFORM_HPP
 #define ROBOTOMYREQUESTFORM_HPP
 
-#include <string>
-#include <iostream>
-#include <exception>
-#include <iosfwd> // for std::ostream forward-decl
-#include "./colors.hpp"
 #include "AForm.hpp"
 
 // Forward declaration: breaks circular include (form.hpp present in bureaucrat)
@@ -19,7 +14,10 @@ private:
 public:
 	// RobotomyRequestForm();
 	RobotomyRequestForm(const std::string &target); // Parametarised constructor
-	void execute(Bureaucrat const &executor) const;
+	RobotomyRequestForm(const RobotomyRequestForm &other);
+	RobotomyRequestForm &operator=(const RobotomyRequestForm &other);
+	~RobotomyRequestForm();
+	void executeForm() const;
 };
 
 #endif

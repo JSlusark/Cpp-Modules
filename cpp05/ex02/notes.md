@@ -1,3 +1,5 @@
+EX 02 - Polymorphism and Abstract Classes
+What happens:
 -   Form is converted to Aform and needs to be an abstract class (means it cannot be instantiated, unless if called via pointer?)
 -   The other forms are derivative classes of AForm
 -   AForm has a pure virtual function execute that needs to be implemented in the derived classes

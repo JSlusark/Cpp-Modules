@@ -31,7 +31,7 @@ public:
 	void decrementGrade(); // if out of ranhge throe cnstructor error
 	void incrementGrade(); // if out of ranhge throe cnstructor error
 	void signAForm(AForm &f);
-	void executeForm(AForm const &form);
+	void execAForm(AForm const &f);
 
 	/*
 	 - exception throws signals errors
