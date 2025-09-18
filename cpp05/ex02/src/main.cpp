@@ -8,13 +8,23 @@
 
 int main()
 {
-
+    // By using srand(std::time(0)), we take the current system time in seconds as
+    // the seed. Since time(0) changes every second, each run of the program will
+    // start the random sequence at a different point, making the results appear
+    // random between runs.
+    //
+    // Important: srand() should only be called ONCE at the beginning of the program
+    // (e.g. in main). If you call srand() repeatedly (for example, inside a class
+    // constructor), and two calls happen within the same second, time(0) returns
+    // the same seed, which resets rand() to the same sequence. That causes repeated
+    // and non-random results.
+    std::srand(std::time(0));
     try
     {
         std::cout << C_GREEN << "Constructing bureaucrats..." << C_RESET << std::endl;
         Bureaucrat jane("Jane", 146); // lowest grade
         Bureaucrat carl("Carl", 1);   // top grade
-        Bureaucrat tim("Tim", 50);
+        Bureaucrat tim("Tim", 40);
         std::cout << C_GREEN << "Constructing forms..." << C_RESET << std::endl;
         ShrubberyCreationForm shrub("Shrub");    // 145 sign 137 exec
         RobotomyRequestForm robo("Robo");        // 72 sign 45 exec
@@ -46,13 +56,12 @@ int main()
         tim.signAForm(pardon);
 
         // ----------------- Test 3 -----------------
-        std::cout << C_CYAN << "\n---TEST 3: Tim signs and executes Robotomy 3 times---" << C_RESET << std::endl;
+        std::cout << C_CYAN << "\n---TEST 3: Tim signs and executes Robotomy 3 times, with 1 chance on 3 for success ---" << C_RESET << std::endl;
+        // std::srand(std::time(0));
         tim.execAForm(robo); // should throw FormNotSignedException
         tim.signAForm(robo);
         for (int i = 0; i < 3; i++)
-        {
             tim.execAForm(robo); // ~50% chance success each time, at least 1 should end in success
-        }
 
         // ----------------- Test 4 -----------------
         std::cout << C_CYAN << "\n---TEST 4: Carl executes Robotomy which was signed by somebody else ---" << C_RESET << std::endl;
