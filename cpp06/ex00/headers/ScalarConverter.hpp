@@ -13,7 +13,7 @@ private:
 	~ScalarConverter();										  // Destructor
 
 	public:
-	static void convert(std::string literal); // static method to convert the literal to char, int, float, double
+	static void convert(const std::string &literal); // static method to convert the literal to char, int, float, double
 };
 
 #endif

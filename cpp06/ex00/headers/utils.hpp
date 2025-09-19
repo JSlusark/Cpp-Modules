@@ -14,9 +14,9 @@
 #define C_GRAY "\033[38;2;150;150;150m"
 
 /* --------------------- LOG TYPES --------------------- */
-#define TEST C_YELLOW "[INFO] " C_RESET
 #define LOG C_GRAY "[LOG] " C_RESET
 #define SUCCESS C_GREEN "[SUCCESS] " C_RESET
+#define WARNING C_YELLOW "[WARNING] " C_RESET
 #define ERROR C_RED "[ERROR] " C_RESET
 #define EXCEPTION C_RED "[EXCEPTION] " C_RESET
 
