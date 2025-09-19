@@ -3,7 +3,7 @@
 /* Default constructor */
 ScalarConverter::ScalarConverter()
 {
-logMessage(NULL, "ScalarConverter created by default constructor");
+	logMessage(NULL, "ScalarConverter created by default constructor");
 }
 
 // /* Parametarised constructor */
@@ -15,7 +15,7 @@ logMessage(NULL, "ScalarConverter created by default constructor");
 /* Copy constructor: constructs new object as a copy of an object */
 ScalarConverter::ScalarConverter(const ScalarConverter &other) // : _attr1(other.attr1), _attr2(other.attr2)
 {
-	(void) other;
+	(void)other;
 	logMessage(NULL, "ScalarConverter created by copy constructor");
 }
 
@@ -37,16 +37,18 @@ ScalarConverter::~ScalarConverter()
 	logMessage(NULL, "ScalarConverter destroyed by destructor ");
 }
 
-void ScalarConverter::convert(std::string literal){
+void ScalarConverter::convert(std::string literal)
+{
 	logMessage(LOG, "Received literal: " + literal);
 
-	// for (int i = 0 ; i < literal.length(); i++)
-	// {
-	// 	logMessage(LOG, "Char: " + (literal[i] - 0));
-	// 	logMessage(LOG, "Int: " + (literal[i] - 0));
-	// 	logMessage(LOG, "Float: " + (literal[i] - 0));
-	// 	logMessage(LOG, "Double:" + (literal[i] - 0));
-	// }
-
+	if (literal == "+inf" || literal == "-inf" || literal == "nan" ||
+		literal == "+inff" || literal == "-inff" || literal == "nanf")
+	{
+		// .count() returns 1 if literal is found, 0 if not
+		std::cout << "char: impossible\n";
+		std::cout << "int: impossible\n";
+		std::cout << "float: " << literal << std::endl;
+		std::cout << "double: " << literal << std::endl;
+		return;
+	}
 }
-
