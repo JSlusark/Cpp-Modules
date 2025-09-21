@@ -3,6 +3,22 @@
 #include <string>
 #include "../headers/utils.hpp"
 
+struct t_convert
+{
+	std::string (*type)(const std::string &);	 // predicate: is this the type?
+	void (*convert)(const std::string &literal); // action: convert + print
+};
+
+enum MessageType
+{
+	SPEUDOLITERAL,
+	CHAR,
+	INT,
+	FLOAT,
+	DOUBLE,
+	INVALID
+};
+
 class ScalarConverter
 {
 private:
@@ -12,7 +28,16 @@ private:
 	ScalarConverter &operator=(const ScalarConverter &other); // Copy assignment operator
 	~ScalarConverter();										  // Destructor
 
-	public:
+	static MessageType match_type(const std::string &s);
+
+	static void convertToPseudoLiteral(const std::string &str) { logMessage(SUCCESS, "pseudo: " + str ); };
+	static void convertToChar(const std::string &str) { logMessage(SUCCESS, "char: " + str ); };
+	static void convertToInt(const std::string &str) { logMessage(SUCCESS, "int: " + str ); };
+	static void convertToFloat(const std::string &str) { logMessage(SUCCESS, "float: " + str ); };
+	static void convertToDouble(const std::string &str) { logMessage(SUCCESS, "double: " + str ); };
+	static void convertInvalid(const std::string &str) { logMessage(ERROR, "invalid: " + str ); };
+
+public:
 	static void convert(const std::string &literal); // static method to convert the literal to char, int, float, double
 };
 

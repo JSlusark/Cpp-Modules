@@ -14,15 +14,52 @@ int main(int argc, char **argv)
   else
   {
     const char *testLiterals[] = {
-        "a", "42", "-42", "3.14f", "2.71828",
-        "nan", "nanf", "+inf", "-inf", "+inff", "-inff"};
+        // char
+        // "a",
+        // // int
+        "-1",
+        "1-1",
+        "1+1",
+        "11+",
+        "+",
+        "-",
+        // "42",
+        // "-42",
+        // // float
+        // "3.14f",
+        ".3",
+        ".14f",
+        "1.1f.f",
+        "0",
+        "3.f",
+        "3.554322332323233f",
+        // // double
+        ".3",
+        ".14f",
+        "3.f",
+        "3.5543223323232345454545",
+        // "2.71828",
+        // // undefined
+        // "nan",
+        // "nanf",
+        // "+inf",
+        // "-inf",
+        // "+inff",
+        // "-inff",
+        // // invalid
+        // "hello",
+        // "123abc",
+        // "12.34.56",
+        // "++42",
+    };
     const int testCount = sizeof(testLiterals) / sizeof(testLiterals[0]);
 
     for (int i = 0; i < testCount; i++)
     {
-      testHeader(i, std::string("coverting ") + testLiterals[i]);
+      // testHeader(i, std::string("coverting ") + testLiterals[i]);
+      // std::cout << C_YELLOW<< "Literal: " << testLiterals[i] << " "<< C_RESET;
       ScalarConverter::convert(testLiterals[i]);
-      std::cout << std::endl;
+      // std::cout << std::endl;
     }
   }
 

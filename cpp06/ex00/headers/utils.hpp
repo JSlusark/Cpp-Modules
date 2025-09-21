@@ -19,6 +19,7 @@
 #define WARNING C_YELLOW "[WARNING] " C_RESET
 #define ERROR C_RED "[ERROR] " C_RESET
 #define EXCEPTION C_RED "[EXCEPTION] " C_RESET
+#define DEBUG C_CYAN "[DEBUG] " C_RESET
 
 inline void logMessage(const std::string &type, const std::string &message)
 {
