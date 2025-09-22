@@ -10,6 +10,7 @@ HEADERS = ScalarConverter.hpp \
 
 SRC = main.cpp \
 ScalarConverter.cpp \
+convert.cpp \
 matchType.cpp
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))

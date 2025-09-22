@@ -1,6 +1,12 @@
 #ifndef SCALARCONVERTER_HPP
 #define SCALARCONVERTER_HPP
 #include <string>
+#include <limits>
+#include <iomanip>
+#include <cctype>
+#include <cmath>
+
+
 #include "../headers/utils.hpp"
 
 struct t_convert
@@ -29,13 +35,6 @@ private:
 	~ScalarConverter();										  // Destructor
 
 	static MessageType match_type(const std::string &s);
-
-	static void convertToPseudoLiteral(const std::string &str) { logMessage(SUCCESS, "pseudo: " + str ); };
-	static void convertToChar(const std::string &str) { logMessage(SUCCESS, "char: " + str ); };
-	static void convertToInt(const std::string &str) { logMessage(SUCCESS, "int: " + str ); };
-	static void convertToFloat(const std::string &str) { logMessage(SUCCESS, "float: " + str ); };
-	static void convertToDouble(const std::string &str) { logMessage(SUCCESS, "double: " + str ); };
-	static void convertInvalid(const std::string &str) { logMessage(ERROR, "invalid: " + str ); };
 
 public:
 	static void convert(const std::string &literal); // static method to convert the literal to char, int, float, double
