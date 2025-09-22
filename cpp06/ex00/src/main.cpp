@@ -13,13 +13,31 @@ int main(int argc, char **argv)
   }
   else
   {
-    const char *testLiterals[] = {
-        "--------------------CHAR (✅)--------------------",
-        " ", "a", "Z", "?", "!", "f", "+", "-", ".",
-        "--------------------INT (✅)--------------------",
-        "0", "-0", "1", "1234", "12345", "42", "-42",
-        "+1", "-1",
-        "--------------------FLOAT (✅)--------------------",
+    const char *valid[] = {
+        "nan",
+        "nanf",
+        "+inf",
+        "-inf",
+        "+inff",
+        "-inff",
+        " ",
+        "a",
+        "Z",
+        "?",
+        "!",
+        "f",
+        "+",
+        "-",
+        ".",
+        "0",
+        "-0",
+        "1",
+        "1234",
+        "12345",
+        "42",
+        "-42",
+        "+1",
+        "-1",
         "3.14f",
         "-1f",
         "0f",
@@ -33,14 +51,24 @@ int main(int argc, char **argv)
         "+.14f",
         "-.14f",
         "3.554322332323233f",
-        "--------------------DOUBLE (✅)--------------------",
-        "3.14", "-1.0", "3.", ".3", ".14", "2e3", "5e-2",
-        "-.3", "-3.", "+.14", "-.14", "+1.", "-1.",
+        "3.14",
+        "-1.0",
+        "3.",
+        ".3",
+        ".14",
+        "2e3",
+        "5e-2",
+        "-.3",
+        "-3.",
+        "+.14",
+        "-.14",
+        "+1.",
+        "-1.",
         "3.554322332323233",
-        "1.", "1.109",
-        "--------------------NAN (✅)--------------------",
-        "nan", "nanf", "+inf", "-inf", "+inff", "-inff",
-        "--------------------UNPRINTABLE (❌)--------------------",
+        "1.",
+        "1.109",
+    };
+    const char *invalid[] = {
         "\0",
         "\a",
         "\b",
@@ -53,13 +81,10 @@ int main(int argc, char **argv)
         "\x7F",
         "a\r", "\th", "\x1B ", "a\n", "\r5",
         "",
-        "--------------------CHAR (❌)--------------------",
         "hellO WORld!!?", "??", "^!#@$%^*&()+-{}\\|][]'\";:.,/`~",
-        "--------------------INT (❌)--------------------",
         "1+1", "11+", "++1",
         "1-1", "11-", "--1",
         "+-1", "-+1", "1-+1", "11+-",
-        "--------------------FLOAT (❌)--------------------",
         "f.",
         ".f",
         ".ff",
@@ -81,26 +106,19 @@ int main(int argc, char **argv)
         "1f-",
         "1+1f",
         "1-f",
-        "--------------------DOUBLE (❌)--------------------",
         "1.1.1", "3.113.", "1-.", "1.2+",
         "+1.1.1", "",
-        "--------------------NAN (❌)--------------------",
         "--inff", "-+inff", "nan0",
-        "--------------------INVALID (❌)--------------------",
         "hello", "123abc", "0a", "dhdh1adsdd",
-        "27484e838383"
-
-    };
-
-    const int testCount = sizeof(testLiterals) / sizeof(testLiterals[0]);
-
-    for (int i = 0; i < testCount; i++)
-    {
-      // testHeader(i, std::string("coverting ") + testLiterals[i]);
-      // std::cout << C_YELLOW<< "Literal: " << testLiterals[i] << " "<< C_RESET;
-      ScalarConverter::convert(testLiterals[i]);
-      // std::cout << std::endl;
-    }
+        "27484e838383"};
+    testHeader(1, "Valid ");
+    int count = sizeof(valid) / sizeof(valid[0]);
+    for (int i = 0; i < count; i++)
+      ScalarConverter::convert(valid[i]);
+    testHeader(2,  "Invalid");
+    count = sizeof(valid) / sizeof(valid[0]);
+    for (int i = 0; i < count; i++)
+      ScalarConverter::convert(invalid[i]);
   }
 
   return 0;
