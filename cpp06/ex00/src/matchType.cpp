@@ -42,34 +42,36 @@ MessageType isNumber(const std::string &s)
 		// printf("INVALID 1 \n");
 		return INVALID;
 	}
-	std::string s_dup = s; // does not change if + or - found at start
-	if (s.front() == '-' || s.front() == '+') // skip by one ONLY if + or - in 0
+	size_t start = 0;
+	std::string s_dup = s;					// does not change if + or - found at start
+	if (s[start] == '-' || s[start] == '+') // skip by one ONLY if + or - in 0
 		s_dup = s.substr(1, s.length());
-	if (s_dup.empty() || s_dup.find("+") < s_dup.length() || s_dup.find("-") < s_dup.length()) // with cases that have only "+" of "-"
+	size_t dup_len = s_dup.length();
+	if (s_dup.empty() || s_dup.find("+") < dup_len || s_dup.find("-") < dup_len) // with cases that have only "+" of "-"
 	{
 		// printf("INVALID 2 \n");
 		return INVALID;
 	}
-	if (!loopLiteral(s_dup, isalpha) && s_dup.find(".") > s_dup.length()) // the substring should have digit only if vali int
+	if (!loopLiteral(s_dup, isalpha) && s_dup.find(".") > dup_len)
 	{
-		// printf("s_dup: %s \n", s_dup.c_str());
+		// if there are no letters, if . and f are not found ()
 		return INT;
 	}
 
-	if (s_dup.front() == '.' || s_dup.back() == '.') // no need to find
+	if (s_dup[start] == '.' || s_dup[dup_len - 1] == '.') // no need to find
 	{
-		// logMessage(DEBUG, std::to_string(s_dup.front()));
+		// logMessage(DEBUG, std::to_string(s_dup[start]));
 		// logMessage(DEBUG,std::to_string(s_dup.find("-")));
 		return INVALID;
 	}
-	if (s_dup.back() == 'f') // if last char of float is f we have a float
+	if (s_dup[dup_len - 1] == 'f') // if last char of float is f we have a float
 	{
-		s_dup = s.substr(0, s_dup.back()); // we check from first to 2nd last
-		printf("s_dup: %s \n", s_dup.c_str());
+		s_dup = s.substr(0, s_dup[dup_len - 1]); // we check from first to 2nd last
+		// printf("s_dup: %s \n", s_dup.c_str());
 		// add other stuff
 		return FLOAT;
 	}
-	logMessage(DEBUG,std::to_string(s_dup.back()));
+	// logMessage(DEBUG,std::to_string(s_dup[end]));
 
 	return DOUBLE;
 }
@@ -87,9 +89,9 @@ MessageType ScalarConverter::match_type(const std::string &s)
 	}
 	if (is_speudoLiteral(s)) // no need to loop its a full match
 		return SPEUDOLITERAL;
-	else if (!loopLiteral(s, isdigit) && s.length() > 1) // is print??
+	else if (!loopLiteral(s, isdigit) && s.length() == 1) // unsure if can be a full string or just one char
 	{
-		printf("CHAR!!!! \n");
+		// printf("CHAR!!!! \n");
 		return CHAR;
 	}
 	else
