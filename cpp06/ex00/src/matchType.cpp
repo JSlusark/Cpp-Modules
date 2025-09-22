@@ -25,75 +25,56 @@ bool hasDup(const std::string &s, const std::string &specials)
 
 bool is_speudoLiteral(const std::string &s)
 {
-	const std::string pseudoLiterals[6] = {
+	const std::string pseudos[6] = {
 		"-inff", "+inff", "nanf", "-inf", "+inf", "nan"};
 	for (size_t i = 0; i < 6; i++)
 	{
-		if (s == pseudoLiterals[i])
+		if (s == pseudos[i])
 			return true;
 	}
 	return false;
 }
 
-MessageType isNumber(const std::string &s)
+bool isInt(const std::string &s)
 {
-	if (hasDup(s, "-+.feE")) // we check for dups before skipping i 0
-	{
-		// printf("INVALID 1 \n");
-		return INVALID;
-	}
-	size_t start = 0;
-	std::string s_dup = s;					// does not change if + or - found at start
-	if (s[start] == '-' || s[start] == '+') // skip by one ONLY if + or - in 0
-		s_dup = s.substr(1, s.length());
-	size_t dup_len = s_dup.length();
-	if (s_dup.empty() || s_dup.find("+") < dup_len || s_dup.find("-") < dup_len) // with cases that have only "+" of "-"
-	{
-		// printf("INVALID 2 \n");
-		return INVALID;
-	}
-	if (!loopLiteral(s_dup, isalpha) && s_dup.find(".") > dup_len)
-	{
-		// if there are no letters, if . and f are not found ()
-		return INT;
-	}
-
-	if (s_dup[start] == '.' || s_dup[dup_len - 1] == '.') // no need to find
-	{
-		// logMessage(DEBUG, std::to_string(s_dup[start]));
-		// logMessage(DEBUG,std::to_string(s_dup.find("-")));
-		return INVALID;
-	}
-	if (s_dup[dup_len - 1] == 'f') // if last char of float is f we have a float
-	{
-		s_dup = s.substr(0, s_dup[dup_len - 1]); // we check from first to 2nd last
-		// printf("s_dup: %s \n", s_dup.c_str());
-		// add other stuff
-		return FLOAT;
-	}
-	// logMessage(DEBUG,std::to_string(s_dup[end]));
-
-	return DOUBLE;
+	std::istringstream iss(s);
+	int val;						 // val to store
+	iss >> std::noskipws >> val;	 // do not skip spaces
+	return iss.eof() && !iss.fail(); // if we are at end of stream and operation did not fail
 }
 
-// main func
+bool isFloat(const std::string &s)
+{
+	int back = s.length() - 1;
+	if (s.empty() || s[back] != 'f')
+		return false;
+	std::string dup = s.substr(0, back);
+	std::istringstream iss(dup);
+	float val;
+	iss >> std::noskipws >> val;
+	return iss.eof() && !iss.fail();
+}
+
+bool isDouble(const std::string &s)
+{
+	std::istringstream iss(s);
+	double val;
+	iss >> std::noskipws >> val;
+	return iss.eof() && !iss.fail();
+}
+
 MessageType ScalarConverter::match_type(const std::string &s)
 {
-
-	// if (loopLiteral(s, isprint) && loopLiteral(s, isdigit))
-	// 	return INT;
-	if (!loopLiteral(s, isprint)) //
-	{
-		// printf("INVALID 0 \n");
-		return INVALID;
-	}
-	if (is_speudoLiteral(s)) // no need to loop its a full match
+	if (is_speudoLiteral(s))
 		return SPEUDOLITERAL;
-	else if (!loopLiteral(s, isdigit) && s.length() == 1) // unsure if can be a full string or just one char
-	{
-		// printf("CHAR!!!! \n");
+	else if (s.length() == 1 && !isdigit(s[0]) && isprint(s[0]))
 		return CHAR;
-	}
+	else if (isInt(s))
+		return INT;
+	else if (isFloat(s))
+		return FLOAT;
+	else if (isDouble(s))
+		return DOUBLE;
 	else
-		return isNumber(s);
+		return INVALID;
 };

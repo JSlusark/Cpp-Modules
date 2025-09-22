@@ -2,6 +2,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <sstream>
 
 /* COLORS */
 #define C_RESET "\033[0m"
