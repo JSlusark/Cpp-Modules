@@ -18,8 +18,7 @@ ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other)
 {
 	if (this != &other)
 	{
-		// BaseClass::operator=(other); // should add this instead if derived class
-		// this->attribute = other->Attribute; // placeholder
+		// no attributes to copy
 	}
 	logMessage(NULL, "ScalarConverter assigned by copy assignment operator");
 	return *this;

@@ -60,8 +60,8 @@ static void convertInt(const std::string &s)
     logMessage(C_GREEN "[INT] " C_RESET, s);
     errno = 0; // need to be reset at each call to strtol/strtof/strtod as it can affect subsequent calls
     char *endptr;
-    long l = strtol(s.c_str(), &endptr, 10); // when not null will be set to point at th first uparsed char, base 10 for decimal
-    if (errno == ERANGE || endptr == s.c_str() || *endptr != '\0')
+    long l = strtol(s.c_str(), &endptr, 10); // when not null will be set to point at the first unparsed char, base 10 for decimal
+    if (errno == ERANGE || endptr == s.c_str() || *endptr != '\0') //check for range error, no conversion performed, or extra chars after number
     {
         printConversion(static_cast<char>(CHAR_MAX + 1), // char overflow
                         static_cast<long>(INT_MAX) + 1L, // int overflow

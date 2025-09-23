@@ -10,8 +10,8 @@ HEADERS = ScalarConverter.hpp \
 
 SRC = main.cpp \
 ScalarConverter.cpp \
-convert.cpp \
-matchType.cpp
+conversion.cpp \
+typeMatch.cpp
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
