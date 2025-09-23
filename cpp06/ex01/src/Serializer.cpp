@@ -18,8 +18,7 @@ Serializer &Serializer::operator=(const Serializer &other)
 {
 	if (this != &other)
 	{
-		// BaseClass::operator=(other); // should add this instead if derived class
-		// this->attribute = other->Attribute; // placeholder
+		// no attributes to copy
 	}
 	logMessage(NULL, "Serializer assigned by copy assignment operator");
 	return *this;
@@ -31,11 +30,12 @@ Serializer::~Serializer()
 	logMessage(NULL, "Serializer destroyed by destructor ");
 }
 
-
-uintptr_t Serializer::serialize(Data* ptr) {
-    return reinterpret_cast<uintptr_t>(ptr); // unsigned integer type capable of holding a pointer
+uintptr_t Serializer::serialize(Data *ptr)
+{
+	return reinterpret_cast<uintptr_t>(ptr); // unsigned integer type capable of holding a pointer
 }
 
-Data* Serializer::deserialize(uintptr_t raw) {
-    return reinterpret_cast<Data*>(raw); 
+Data *Serializer::deserialize(uintptr_t raw)
+{
+	return reinterpret_cast<Data *>(raw);
 }
