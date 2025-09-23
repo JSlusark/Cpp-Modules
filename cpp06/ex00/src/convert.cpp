@@ -8,6 +8,7 @@
 
 static void printConversion(char c, long i, float f, double d)
 {
+    // ------- CHAR -------
     std::cout << "char: ";
     if (std::isnan(d) || d < CHAR_MIN || d > CHAR_MAX)
         std::cout << "impossible" << std::endl;
@@ -15,27 +16,27 @@ static void printConversion(char c, long i, float f, double d)
         std::cout << "'" << c << "'" << std::endl;
     else
         std::cout << "Non displayable" << std::endl;
-
+    // ------- INT -------
     std::cout << "int: ";
     if (std::isnan(d) || d < INT_MIN || d > INT_MAX || errno == ERANGE)
         std::cout << "impossible" << std::endl;
     else
         std::cout << i << std::endl;
-
-        // fixed changes outpu format a of floating pony yo fixed decimal instead of scientifi notation
-    // set precision sets hpw many digits to print after decimal output(as fixed is there, without fixed it prints the titl significatn
+    // ------- FLOAT -------
     std::cout << "float: ";
     if (errno == ERANGE || f > FLT_MAX || f < -FLT_MAX) // for float
-        std::cout << "impossible" << std::endl;
+    std::cout << "impossible" << std::endl;
     else
-        std::cout << std::fixed << std::setprecision(1) << "float: "
- << f << "f" << std::endl;
-
+    // fixed changes outpu format a of floating pony yo fixed decimal instead of scientifi notation
+    // set precision sets hpw many digits to print after decimal output(as fixed is there, without fixed it prints the titl significatn
+        std::cout << std::fixed << std::setprecision(1)
+                  << f << "f" << std::endl;
+    // ------- DOUBLE -------
     std::cout << "double: ";
     if (errno == ERANGE || d > DBL_MAX || d < -DBL_MAX) // for double
         std::cout << "impossible" << std::endl;
     else
-        std::cout << std::fixed << std::setprecision(1) << "double: "
+        std::cout << std::fixed << std::setprecision(1)
                   << d << std::endl;
 }
 
@@ -50,7 +51,11 @@ static void convertChar(const std::string &s)
 static void convertInt(const std::string &s)
 {
     logMessage(C_GREEN "[INT] " C_RESET, s);
-    long l = strtol(s.c_str(), NULL, 10); // when not null will be set to point at th first uparsed char, base 10 for decimak
+    errno = 0;
+    char *endptr;
+    long l = strtol(s.c_str(), NULL, 10); // when not null will be set to point at th first uparsed char, base 10 for decimal
+    if (errno == ERANGE || endptr == s.c_str() || *endptr != '\0')
+        printConversion(0, 0, 0.0f, static_cast<double>(INT_MAX) + 1.0); // triggers impossible for each int cast
     printConversion(static_cast<char>(l),
                     static_cast<int>(l),
                     static_cast<float>(l),
@@ -59,7 +64,11 @@ static void convertInt(const std::string &s)
 static void convertFloat(const std::string &s)
 {
     logMessage(C_CYAN "[FLOAT] " C_RESET, s);
-    long f = strtof(s.c_str(), NULL); // it reutnr o.o if no valid conversion could be performed
+    float f = strtof(s.c_str(), NULL); // it reutnr o.o if no valid conversion could be performed
+    errno = 0;
+    char *endptr;
+    if (errno == ERANGE || endptr == s.c_str() || *endptr != '\0')
+        printConversion(0, 0, 0.0f, static_cast<double>(INT_MAX) + 1.0); // triggers impossible for each int cast
 
     printConversion(static_cast<char>(f),
                     static_cast<int>(f),
@@ -70,6 +79,10 @@ static void convertDouble(const std::string &s)
 {
     logMessage(C_PURPLE "[DOUBLE] " C_RESET, s);
     double d = strtod(s.c_str(), NULL);
+    errno = 0;
+    char *endptr;
+    if (errno == ERANGE || endptr == s.c_str() || *endptr != '\0')
+        printConversion(0, 0, 0.0f, static_cast<double>(INT_MAX) + 1.0); // triggers impossible for each int cast
     printConversion(static_cast<char>(d),
                     static_cast<int>(d),
                     static_cast<float>(d),
@@ -88,6 +101,7 @@ static void convertPseudoLiteral(const std::string &s)
 static void convertInvalid(const std::string &s)
 {
     logMessage(C_RED "[INVALID] " C_RESET, s);
+    std::cout << "Invalid literals cannot be converted!" << std::endl;
 };
 
 void ScalarConverter::convert(const std::string &literal)
