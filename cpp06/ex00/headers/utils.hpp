@@ -36,4 +36,5 @@ inline void testHeader(const int number, const std::string &title)
 			  << C_RESET << std::endl;
 };
 
+
 /* OTHER */
