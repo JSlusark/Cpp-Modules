@@ -1,43 +1,89 @@
 #include "../headers/ScalarConverter.hpp"
 
-static void printConversion(const char c, const int i, const float f, const double d)
+#include <iostream>
+#include <iomanip>
+#include <climits>
+#include <cfloat>
+#include <cmath>
+
+static void printConversion(char c, long i, float f, double d)
 {
-    logMessage(LOG, "char: " + std::to_string(c));
-    logMessage(LOG, "int: " + std::to_string(i));
-    logMessage(LOG, "float: " + std::to_string(f));
-    logMessage(LOG, "double: " + std::to_string(d));
+    std::cout << "char: ";
+    if (std::isnan(d) || d < CHAR_MIN || d > CHAR_MAX)
+        std::cout << "impossible" << std::endl;
+    else if (std::isprint(c))
+        std::cout << "'" << c << "'" << std::endl;
+    else
+        std::cout << "Non displayable" << std::endl;
+
+    std::cout << "int: ";
+    if (std::isnan(d) || d < INT_MIN || d > INT_MAX || errno == ERANGE)
+        std::cout << "impossible" << std::endl;
+    else
+        std::cout << i << std::endl;
+
+        // fixed changes outpu format a of floating pony yo fixed decimal instead of scientifi notation
+    // set precision sets hpw many digits to print after decimal output(as fixed is there, without fixed it prints the titl significatn
+    std::cout << "float: ";
+    if (errno == ERANGE || f > FLT_MAX || f < -FLT_MAX) // for float
+        std::cout << "impossible" << std::endl;
+    else
+        std::cout << std::fixed << std::setprecision(1) << "float: "
+ << f << "f" << std::endl;
+
+    std::cout << "double: ";
+    if (errno == ERANGE || d > DBL_MAX || d < -DBL_MAX) // for double
+        std::cout << "impossible" << std::endl;
+    else
+        std::cout << std::fixed << std::setprecision(1) << "double: "
+                  << d << std::endl;
 }
 
 static void convertChar(const std::string &s)
 {
     logMessage(C_YELLOW "[CHAR] " C_RESET, s);
-    printConversion(s[0], static_cast<int>(s[0]), static_cast<float>(s[0]), static_cast<double>(s[0]));
-    // std::cout << "char: " << s[0] << std::endl;
-    // std::cout << "int: " << static_cast<int>(s[0]) << std::endl;
-    // std::cout << "float: " << std::fixed << std::setprecision(1)
-    //           << static_cast<float>(s[0]) << "f" << std::endl;
-    // std::cout << "double: " << std::fixed << std::setprecision(1)
-    //           << static_cast<double>(s[0]) << std::endl;
+    printConversion(s[0],
+                    static_cast<int>(s[0]),
+                    static_cast<float>(s[0]),
+                    static_cast<double>(s[0]));
 };
 static void convertInt(const std::string &s)
 {
     logMessage(C_GREEN "[INT] " C_RESET, s);
+    long l = strtol(s.c_str(), NULL, 10); // when not null will be set to point at th first uparsed char, base 10 for decimak
+    printConversion(static_cast<char>(l),
+                    static_cast<int>(l),
+                    static_cast<float>(l),
+                    static_cast<double>(l));
 };
 static void convertFloat(const std::string &s)
 {
     logMessage(C_CYAN "[FLOAT] " C_RESET, s);
+    long f = strtof(s.c_str(), NULL); // it reutnr o.o if no valid conversion could be performed
+
+    printConversion(static_cast<char>(f),
+                    static_cast<int>(f),
+                    static_cast<float>(f),
+                    static_cast<double>(f));
 };
 static void convertDouble(const std::string &s)
 {
     logMessage(C_PURPLE "[DOUBLE] " C_RESET, s);
+    double d = strtod(s.c_str(), NULL);
+    printConversion(static_cast<char>(d),
+                    static_cast<int>(d),
+                    static_cast<float>(d),
+                    static_cast<double>(d));
 };
 static void convertPseudoLiteral(const std::string &s)
 {
     logMessage(C_MAGENTA "[SPEUDOLITERAL] " C_RESET, s);
-    logMessage(LOG, "char: impossible");
-    logMessage(LOG, "int: impossible");
-    // logMessage(LOG, "float: impossible");
-    // logMessage(LOG, "double: impossible");
+    double d = strtod(s.c_str(), NULL);
+    float f = static_cast<float>(d);
+    printConversion(0,
+                    0,
+                    f,
+                    d);
 };
 static void convertInvalid(const std::string &s)
 {

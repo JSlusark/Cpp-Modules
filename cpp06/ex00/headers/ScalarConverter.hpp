@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <cctype>
 #include <cmath>
+#include <climits>
+#include <cerrno>
 
 
 #include "../headers/utils.hpp"
