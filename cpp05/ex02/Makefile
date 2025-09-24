@@ -1,4 +1,4 @@
-NAME      := Bureaucrat
+NAME      := FormTypes
 CPP       := c++
 CPPFLAGS  := -Wall -Wextra -Werror -std=c++98
 SRCDIR    := src

@@ -30,7 +30,7 @@ ShrubberyCreationForm::~ShrubberyCreationForm()
 
 void ShrubberyCreationForm::executeForm() const
 {
-	std::ofstream file(_target + "_shrubbery");
+	std::ofstream file((_target + "_shrubbery").c_str()); // need to convert as c because ofstream and c++98
 	if (!file.is_open())
 		throw std::runtime_error(C_RED "Could not open file for shrubbery" C_RESET);
 	file << "🌴🌲🌴🌳🌴" << std::endl;

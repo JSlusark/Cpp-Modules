@@ -1,6 +1,8 @@
 #pragma once
 
 #include "AForm.hpp"
+#include <cstdlib>
+
 
 // Forward declaration: breaks circular include (form.hpp present in bureaucrat)
 class Bureaucrat;

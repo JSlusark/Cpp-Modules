@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include "../headers/Bureaucrat.hpp"
 #include "../headers/AForm.hpp"
 #include "../headers/ShrubberyCreationForm.hpp"
@@ -18,7 +19,7 @@ int main()
     // constructor), and two calls happen within the same second, time(0) returns
     // the same seed, which resets rand() to the same sequence. That causes repeated
     // and non-random results.
-    std::srand(std::time(0));
+    srand(time(0));
     try
     {
         std::cout << C_GREEN << "Constructing bureaucrats..." << C_RESET << std::endl;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include "../headers/colors.hpp"
 #include "../headers/Bureaucrat.hpp"
 #include "../headers/AForm.hpp"
@@ -9,7 +10,7 @@
 
 int main()
 {
-    std::srand(std::time(0));
+    srand(time(0));
     try
     {
         std::cout << C_GREEN << "Constructing bureaucrats..." << C_RESET << std::endl;
