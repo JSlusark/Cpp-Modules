@@ -111,8 +111,7 @@ int main(int argc, char **argv)
     //     "1.1.1", "3.113.", "1-.", "1.2+",
     //     "+1.1.1", "",
     //     "--inff", "-+inff", "nan0",
-    //     "hello", "123abc", "0a", "dhdh1adsdd",
-    //     "27484e838383"};
+    //     "hello", "123abc", "0a", "dhdh1adsdd"};
     // testHeader(2,  "Invalid");
     // count = sizeof(valid) / sizeof(valid[0]);
     // for (int i = 0; i < count; i++)
