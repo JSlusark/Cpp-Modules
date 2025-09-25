@@ -2,6 +2,7 @@
 
 int main()
 {
+	srand(time(0));
 	const float arr_float[] = {1.2f, 2.4f, 3.4f, 4.45f, 5.f};
 	char arr_char[] = {'a', 'b', 'c', 'd'};
 	int combination[] = {0, 0, 0, 0};
