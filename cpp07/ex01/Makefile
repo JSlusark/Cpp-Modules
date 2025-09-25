@@ -5,11 +5,9 @@ SRCDIR    := src
 INCDIR    := headers
 OBJDIR    := obj
 
-HEADERS = Base.hpp\
-		utils.hpp
+HEADERS = utils.hpp
 
-SRC = main.cpp \
-Base.cpp
+SRC = main.cpp
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
