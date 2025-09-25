@@ -10,25 +10,25 @@ int main()
 	testTitle(1, "Printing element of array int");
 	int size = sizeof(combination) / sizeof(combination[0]);
 	logMessage(LOG, "Empty lock combination");
-	iter(combination, size, printElement<int>);
+	iter(combination, size, printElement); // iter(combination, size, printElement<int>) if used easier template
 	logMessage(LOG, "Give random lock combination");
-	iter(combination, size, randomize<int>);
-	iter(combination, size, printElement<int>);
+	iter(combination, size, randomize);
+	iter(combination, size, printElement);
 	logMessage(LOG, "increasing combination by 1");
-	iter(combination, size, increase<int>);
-	iter(combination, size, printElement<int>);
+	iter(combination, size, increase);
+	iter(combination, size, printElement);
 
 	testTitle(2, "Printing element of array float");
 	size = sizeof(arr_float) / sizeof(arr_float[0]);
-	iter(arr_float, size, printElement<float>);
-	// iter(arr_float, size, increase<float>); // <--- compilation error as cannot use  on const
+	iter(arr_float, size, printElement);
+	// iter(arr_float, size, increase); // <--- compilation error as cannot use  on const
 
 	testTitle(3, "Printing element of array char");
 	size = sizeof(arr_char) / sizeof(arr_char[0]);
-	iter(arr_char, size, printElement<char>);
+	iter(arr_char, size, printElement);
 	logMessage(LOG, "Increasing each lement by 1");
-	iter(arr_char, size, increase<char>);
-	iter(arr_char, size, printElement<char>);
+	iter(arr_char, size, increase);
+	iter(arr_char, size, printElement);
 
 	return 0;
 }

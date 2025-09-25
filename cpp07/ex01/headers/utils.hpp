@@ -39,37 +39,31 @@ inline void testTitle(const int number, const std::string &title)
 
 /* TEMPLATES */
 
-template <typename T, typename I, typename F>
-void iter(T *arr, I len, F foo)
-{
-	for (I i = 0; i < len; i++) // to ensure that the index number matches the t
-	{
-		foo(arr[i]);
-	}
+// template <typename T, typename I, typename F>
+// void iter(T *arr, I len, F foo)
+// {
+// 	for (I i = 0; i < len; i++) // to ensure that the index number matches the t
+// 	{
+// 		foo(arr[i]);
+// 	}
+// }
+
+
+// non-const elements
+template <typename T, typename I>
+void iter(T* a, I n, void (*f)(T&)) {
+    for (I i = I(); i < n; ++i) f(a[i]);
+}
+
+// const elements
+template <typename T, typename I>
+void iter(T const* a, I n, void (*f)(T const&)) {
+    for (I i = I(); i < n; ++i) f(a[i]);
 }
 
 
-// template <typename T>
-// void iter(T* a, std::size_t len, void (*f)(T&))
-// {
-// 	for (I i = 0; i < len; i++) // to ensure that the index number matches the t
-// 	{
-// 		foo(arr[i]);
-// 	}
-// }
-
-// template <typename T>
-// void iter(T const* a, std::size_t len, void (*f)(T const&))
-// {
-// 	for (I i = 0; i < len; i++) // to ensure that the index number matches the t
-// 	{
-// 		foo(arr[i]);
-// 	}
-// }
-
-
 template <typename T>
-void printElement(T const &element) // argument by const  ref
+void printElement(T &element) // argument by const  ref
 {
 	std::cout << element << std::endl;
 }
