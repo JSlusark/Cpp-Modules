@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../headers/utils.hpp"
-#include "../headers/Array.hpp"
 
 #include <iostream>
 #include <string>
@@ -9,11 +8,11 @@
 template <typename T>
 class Array
 {
-private:
+	private:
 	T *_data;
 	unsigned int _size;
 
-public:
+	public:
 	Array();							  // Default constructor
 	Array(unsigned int n);				  // parametarised
 	Array(const Array &other);			  // Copy constructor
@@ -25,3 +24,4 @@ public:
 
 	unsigned int size() const; // Size getter
 };
+#include "../src/Array.tpp"

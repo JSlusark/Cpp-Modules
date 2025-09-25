@@ -2,26 +2,32 @@
 
 /* Default constructor */
 template <typename T>
-Array<T>::Array() : _data(NULL), _n(0)
+Array<T>::Array() : _data(0), _size(0)
 {
-	logMessage(NULL, "Array created by default constructor");
+	logMessage(LOG, "Array created by default constructor");
 }
 
-/* Parametarised constructor */
+/* Parameterized constructor */
 template <typename T>
-Array<T>::Array(unsigned int n) : _data(NULL), _size(n) // initialised by default
+Array<T>::Array(unsigned int n) : _data(0), _size(n)
 {
-	logMessage(NULL, "Array created by parametarised constructor");
+	logMessage(LOG, "Array created by parametarised constructor");
 	if (_size) // allocate only if size is not 0
 		_data = new T[_size]();
 }
 
-/* Copy constructor: constructs new object as a copy of an object */
+/* Copy constructor */
 template <typename T>
-Array<T>::Array(const Array &other) : _data(new[other._size]), _size(other._size)
-{
-	(void)other;
-	logMessage(NULL, "Array created by copy constructor");
+Array<T>::Array(const Array &other)
+	: _data(0), _size(other._size)
+{ // init in declaration order
+	logMessage(LOG, "Array created by copy constructor");
+	if (_size)
+	{
+		_data = new T[_size];
+		for (unsigned int i = 0; i < _size; ++i)
+			_data[i] = other._data[i];
+	}
 }
 
 /* Copy assignment operator: we copy attributes only as object was already constucted */
@@ -36,7 +42,7 @@ Array<T> &Array<T>::operator=(const Array<T> &other)
 		for (unsigned int i = 0; i < _size; ++i)
 			_data[i] = other._data[i];
 	}
-	logMessage(NULL, "Array assigned by copy assignment operator");
+	logMessage(LOG, "Array assigned by copy assignment operator");
 	return *this;
 }
 
@@ -44,28 +50,28 @@ Array<T> &Array<T>::operator=(const Array<T> &other)
 template <typename T>
 Array<T>::~Array()
 {
-	logMessage(NULL, "Array destroyed by destructor ");
+	logMessage(LOG, "Array destroyed by destructor");
 	delete[] _data;
 }
 
+/* operator[] (non-const) */
 template <typename T>
 T &Array<T>::operator[](unsigned int i)
 {
 	if (i >= _size)
-		throw std::out_of_range(logMessage(ERROR, "Array index out of bounds"));
+		throw std::out_of_range(C_RED "Array index out of bounds" C_RESET);
 	return _data[i];
 }
 
+/* operator[] (const) */
 template <typename T>
-const T &Array<T>::operator[](unsigned int i) const // Const version
+T const &Array<T>::operator[](unsigned int i) const
 {
 	if (i >= _size)
-		throw std::out_of_range(logMessage(ERROR, "Array index out of bounds"));
+		throw std::out_of_range(C_RED "Array index out of bounds" C_RESET);
 	return _data[i];
 }
 
+/* size() */
 template <typename T>
-unsigned int Array<T>::size() const
-{
-	return _size;
-}
+unsigned int Array<T>::size() const { return _size; }
