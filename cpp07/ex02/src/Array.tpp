@@ -4,14 +4,14 @@
 template <typename T>
 Array<T>::Array() : _data(0), _size(0)
 {
-	logMessage(LOG, "Array created by default constructor");
+	logMessage(DEFAULT_C, "Array created by default constructor");
 }
 
 /* Parameterized constructor */
 template <typename T>
 Array<T>::Array(unsigned int n) : _data(0), _size(n)
 {
-	logMessage(LOG, "Array created by parametarised constructor");
+	logMessage(COPY_C, "Array created by parametarised constructor");
 	if (_size) // allocate only if size is not 0
 		_data = new T[_size]();
 }
@@ -21,7 +21,7 @@ template <typename T>
 Array<T>::Array(const Array &other)
 	: _data(0), _size(other._size)
 { // init in declaration order
-	logMessage(LOG, "Array created by copy constructor");
+	logMessage(COPY_C, "Array created by copy constructor");
 	if (_size)
 	{
 		_data = new T[_size];
@@ -42,7 +42,7 @@ Array<T> &Array<T>::operator=(const Array<T> &other)
 		for (unsigned int i = 0; i < _size; ++i)
 			_data[i] = other._data[i];
 	}
-	logMessage(LOG, "Array assigned by copy assignment operator");
+	logMessage(ASSIGN_OP, "Array assigned by copy assignment operator");
 	return *this;
 }
 
@@ -50,7 +50,7 @@ Array<T> &Array<T>::operator=(const Array<T> &other)
 template <typename T>
 Array<T>::~Array()
 {
-	logMessage(LOG, "Array destroyed by destructor");
+	logMessage(DESTRUCTOR, "Array destroyed by destructor");
 	delete[] _data;
 }
 
