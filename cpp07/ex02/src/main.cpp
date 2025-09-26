@@ -95,7 +95,7 @@ int main()
 
     logMessage(LOG, "Testing out of bounds for [] operator");
     try
-    {
+    {copy cons
         numbers[-2] = 0; // Out of bounds
     }
     catch (const std::exception &e)
