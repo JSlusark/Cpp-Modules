@@ -47,12 +47,11 @@ void swap (T &a, T &b){
 }
 
 template <typename T>
-T const &max (T &a, T &b){
-	// std::cout << (a > b )<< std::endl;
+T const &max (T const &a, T const &b){
 	return  a > b ? a : b;
 }
 
 template <typename T>
-T const &min (T &a, T &b){
+T const &min (T const &a, T const &b){
 	return  a < b ? a : b;
 }

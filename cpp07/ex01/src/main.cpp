@@ -26,9 +26,23 @@ int main()
 	testTitle(3, "Printing element of array char");
 	size = sizeof(arr_char) / sizeof(arr_char[0]);
 	iter(arr_char, size, printElement);
-	logMessage(LOG, "Increasing each lement by 1");
+	logMessage(LOG, "Increasing each element by 1");
 	iter(arr_char, size, increase);
 	iter(arr_char, size, printElement);
+
+	testTitle(4, "Testing empty array");
+	int emptyArray[] = {};
+	size = sizeof(emptyArray) / sizeof(emptyArray[0]);
+	logMessage(LOG, "Nothing should change in the array or be printed below as array is empty");
+	iter(emptyArray, size, randomize);
+	iter(emptyArray, size, printElement);
+
+	testTitle(5, "Testing single-element array");
+	int singleElement[] = {42};
+	iter(singleElement, 1, printElement);
+	logMessage(LOG, "Increased the only element by 1");
+	iter(singleElement, 1, increase);
+	iter(singleElement, 1, printElement);
 
 	return 0;
 }

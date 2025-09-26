@@ -48,22 +48,24 @@ inline void testTitle(const int number, const std::string &title)
 // 	}
 // }
 
-
 // non-const elements
 template <typename T, typename I>
-void iter(T* a, I n, void (*f)(T&)) {
-    for (I i = I(); i < n; ++i) f(a[i]);
+void iter(T *a, I n, void (*f)(T &))
+{
+	for (I i = 0; i < n; ++i)
+		f(a[i]);
 }
 
 // const elements
 template <typename T, typename I>
-void iter(T const* a, I n, void (*f)(T const&)) {
-    for (I i = I(); i < n; ++i) f(a[i]);
+void iter(T const *a, I n, void (*f)(T const &))
+{
+	for (I i = 0; i < n; ++i)
+		f(a[i]);
 }
 
-
 template <typename T>
-void printElement(T &element) // argument by const  ref
+void printElement(T const &element) // argument by const  ref
 {
 	std::cout << element << std::endl;
 }
