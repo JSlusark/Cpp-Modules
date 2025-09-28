@@ -3,13 +3,13 @@
 /* Parametarised constructor */
 PresidentialPardonForm::PresidentialPardonForm(const std::string &target) : AForm("Presidential", 25, 5), _target(target)
 {
-	std::cout << "PresidentialPardonForm created by parametarise constructor " << std::endl;
+		logMessage(PARAM_C, "PresidentialPardonForm created");
 }
 
 PresidentialPardonForm::PresidentialPardonForm(const PresidentialPardonForm &other)
 	: AForm(other), _target(other._target)
 {
-	std::cout << "PresidentialPardonForm copied" << std::endl;
+	logMessage(COPY_C, "PresidentialPardonForm copy created");
 }
 
 PresidentialPardonForm &PresidentialPardonForm::operator=(const PresidentialPardonForm &other)
@@ -19,13 +19,14 @@ PresidentialPardonForm &PresidentialPardonForm::operator=(const PresidentialPard
 		AForm::operator=(other); // delegate to base assignment
 		_target = other._target;
 	}
-	std::cout << "PresidentialPardonForm assigned" << std::endl;
+	logMessage(ASSIGN_OP, "PresidentialPardonForm assigned copy");
 	return *this;
 }
 
 PresidentialPardonForm::~PresidentialPardonForm()
 {
-	std::cout << "PresidentialPardonForm destroyed" << std::endl;
+	logMessage(DESTRUCTOR, "PresidentialPardonForm destroyed");
+
 }
 
 void PresidentialPardonForm::executeForm() const

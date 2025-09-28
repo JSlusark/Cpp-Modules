@@ -7,7 +7,6 @@ void Bureaucrat::validateGrade(int grade)
 		throw GradeTooHighException();
 	if (grade > TOO_LOW)
 		throw GradeTooLowException();
-	// std::cout << C_YELLOW << "Grade validator: " C_RESET << _name << " has valid grade of " << _grade << "" << std::endl;
 }
 
 /* Parametarised constructor */
@@ -15,13 +14,13 @@ Bureaucrat::Bureaucrat(const std::string &name, int grade)
 	: _name(name), _grade(grade)
 {
 	validateGrade(_grade);
-	std::cout << "Bureaucrat " << _name << " created by parametarise constructor " << std::endl;
+	logMessage(PARAM_C,  "Bureaucrat " + _name + " created ");
 }
 
 /* Copy constructor: the object is costucted and copies variable at the same tome */
 Bureaucrat::Bureaucrat(const Bureaucrat &other) : _name(other._name), _grade(other._grade)
 {
-	std::cout << "Bureaucrat " << _name << " created by copy constructor " << std::endl;
+	logMessage(COPY_C,  "Bureaucrat " + _name + " copy created");
 }
 
 /* Copy assignment operator: the ojetct is already cinstructed elsewhere, so we just assign copies of props */
@@ -31,14 +30,14 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &other)
 	{
 		this->_grade = other._grade;
 	}
-	std::cout << "Bureaucrat " << _name << " was assigned by copy assignment " << std::endl;
+	logMessage(ASSIGN_OP,  "Bureaucrat " + _name + " assigned copy");
 	return *this;
 }
 
 /* Destructor */
 Bureaucrat::~Bureaucrat()
 {
-	std::cout << "Bureaucrat " << _name << " was destroyed by destructor " << std::endl;
+	logMessage(DESTRUCTOR, "Bureaucrat " + _name + " destroyed");
 }
 
 std::string Bureaucrat::getName() const
@@ -53,18 +52,19 @@ int Bureaucrat::getGrade() const
 
 void Bureaucrat::incrementGrade()
 { // decreases
-	// std::cout << "Incrementing --" << std::endl;
+	logMessage(LOG, "Incrementing --" );
 	validateGrade(_grade - 1);
 	--_grade;
-	std::cout << _name << "'s grande incremented to: " << _grade << std::endl;
+	std::cout << C_GREEN << "[SUCCESS] " << C_RESET << _name << "Incremented to " << _grade << std::endl;
 }
 
 void Bureaucrat::decrementGrade()
 { // increases
-	// std::cout << "Decrementing ++" << std::endl;
+	logMessage(LOG, "Decrementing ++" );
 	validateGrade(_grade + 1);
 	++_grade;
-	std::cout << _name << "Decremented to " << _grade << std::endl;
+	std::cout << C_GREEN << "[SUCCESS] " << C_RESET << _name << "'s grade decremented to " << _grade << std::endl;
+
 }
 
 void Bureaucrat::signForm(Form &f) // add & to avoid creating a copy of f (without destructior uis called right after exception)
@@ -80,8 +80,7 @@ void Bureaucrat::signForm(Form &f) // add & to avoid creating a copy of f (witho
 	}
 }
 
-// // stream - allows to print the object props
 std::ostream &operator<<(std::ostream &os, const Bureaucrat &b)
 {
-	return os << C_YELLOW << "Name: " << C_RESET << b.getName() << C_YELLOW << " Grade: " << C_RESET << b.getGrade();
+	return os << C_GRAY << "Name: " << C_RESET << b.getName() << C_GRAY << " Grade: " << C_RESET << b.getGrade();
 }

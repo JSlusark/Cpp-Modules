@@ -46,7 +46,7 @@ AForm *createShrubbery(const std::string &target)
 
 AForm *Intern::makeForm(const std::string &name, const std::string &target) const
 {
-	std::cout << C_GRAY << "[LOG]" << C_RESET << "Received request to create form " << name << std::endl;
+	std::cout << C_GRAY << "[LOG]" << C_RESET << " Intern received request to create form " << name << std::endl;
 
 	const t_form formsList[3] = {
 		{"presidential pardon", &createPresidential},
@@ -58,10 +58,10 @@ AForm *Intern::makeForm(const std::string &name, const std::string &target) cons
 	{
 		if (formsList[i].name == name)
 		{
-			std::cout << C_GREEN << "[SUCCESS]" << C_RESET << "Intern successfully creates " << name << std::endl;
+			std::cout << C_GREEN << "[SUCCESS]" << C_RESET << " Intern successfully creates " << name << std::endl;
 			return formsList[i].object(target);
 		}
 	}
-	std::cout << C_RED << "[FAIL]" << C_RESET << "Intern caught an error in the request, form \"" << name << "\" does not exist" << std::endl;
+	std::cout << C_RED << "[ERROR]" << C_RESET << " Intern caught an error in the request, form \"" << name << "\" does not exist" << std::endl;
 	return NULL;
 }

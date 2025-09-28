@@ -36,11 +36,6 @@ Array<T> &Array<T>::operator=(const Array<T> &other)
 {
 	if (this != &other)
 	{
-		// delete[] _data; // has to have [] as data is allocated with new (i.e. returns pointer to first element of array)
-		// _size = other._size;
-		// _data = new T[other._size];
-		// for (unsigned int i = 0; i < _size; ++i)
-		// 	_data[i] = other._data[i];
 		T *newData = new T[other._size]; // allocate first
 		for (unsigned int i = 0; i < other._size; ++i)
 			newData[i] = other._data[i];

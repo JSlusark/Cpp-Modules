@@ -23,13 +23,15 @@ AForm::AForm(const std::string &name, int gradeCanSign, int gradeCanExec) : _nam
 {
 	validateGrade(_gradeCanSign);
 	validateGrade(_gradeCanExec);
-	std::cout << "AForm " << _name << " created by parametarise constructor " << std::endl;
+		logMessage(PARAM_C,  "AForm " + _name + " created");
+
 }
 
 /* Copy constructor: constructs new object as a copy of an object */
 AForm::AForm(const AForm &other) : _name(other._name), _isSigned(other._isSigned), _gradeCanSign(other._gradeCanSign), _gradeCanExec(other._gradeCanExec)
 {
-	std::cout << "AForm " << _name << " created by copy constructor " << std::endl;
+	logMessage(COPY_C,  "AForm " + _name + " copy created");
+
 }
 
 /* Copy assignment operator: we copy attributes only as object was already constucted */
@@ -40,14 +42,16 @@ AForm &AForm::operator=(const AForm &other)
 		// only non-const member is _isSigned
 		this->_isSigned = other._isSigned;
 	}
-	std::cout << "AForm " << _name << " was assigned by copy assignment " << std::endl;
+	logMessage(ASSIGN_OP,  "Form " + _name + " assigned copy");
+
 	return *this;
 }
 
 /* Destructor */
 AForm::~AForm()
 {
-	std::cout << "AForm " << _name << " was destroyed by destructor " << std::endl;
+	logMessage(DESTRUCTOR, "Form " + _name + " destroyed");
+
 }
 
 // getters

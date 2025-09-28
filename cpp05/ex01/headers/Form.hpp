@@ -5,7 +5,7 @@
 #include <iostream>
 #include <exception>
 #include <iosfwd> // for std::ostream forward-decl
-#include "./colors.hpp"
+#include "./utils.hpp"
 
 // Forward declaration: breaks circular include (form.hpp present in bureaucrat)
 class Bureaucrat;
@@ -40,7 +40,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return (C_RED "[Exception]" C_RESET "Form grade is too high ( < 1)");
+			return (C_RED "[EXCEPTION]" C_RESET "Bureacrat grade is too high to sign form");
 		}
 	};
 	class GradeTooLowException : public std::exception
@@ -48,7 +48,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return (C_RED "[Exception]" C_RESET " Form grade is too low ( > 150)");
+			return (C_RED "[EXCEPTION]" C_RESET " Bureacrat grade is too low to sign form");
 		}
 	};
 };

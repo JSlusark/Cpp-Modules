@@ -1,69 +1,65 @@
 #include <iostream>
 #include "../headers/Bureaucrat.hpp"
 #include "../headers/Form.hpp"
-#include "../headers/colors.hpp"
+#include "../headers/utils.hpp"
 
 int main()
 {
-  std::cout << C_GREEN << "\nBureaucrat form management program starting..." << C_RESET << std::endl;
+  // std::cout << C_GREEN << "\nBureaucrat form management program starting..." << C_RESET << std::endl;
   try
   {
+    logMessage(LOG, "Initialising Bureaucrats...");
     Bureaucrat maria("Maria", 150);
     Bureaucrat charlie("Charlie", 1);
-    // Bureaucrat sam("Sam", 151); // test this to see how the catch stops the program
-    // Bureaucrat sandra("Sandra", 1); // test this to see how the catch stops the program
+    std::cout << maria << "\n"
+              << charlie << std::endl;
+    logMessage(LOG, "Initialising forms...");
     Form a("A-form", 3, 3);
     Form b("Another-form", 149, 149);
-    // Form c("Invalid signature", 151, 3); //  test this to see how the catch stops the program
-    // Form d("Invalid execution", 150, 0); //  test this to see how the catch stops the program
 
-    std::cout << "\n 👩‍💻 Welcome to the 42 company, we are now assigning some bureaucrats for your program:\n"
-              << maria << "\n"
-              << charlie << std::endl;
-
-    std::cout << "\n📋 The 42 company received a form that needs approval (A) " << std::endl;
+    testTitle(0, "A-form needs approval");
+    logMessage(LOG, "A-form detatils:");
     std::cout << a << std::endl;
-
-    std::cout << "\n👩‍💼 Maria tries to sign A-form with grade 151 but fails" << std::endl;
+    logMessage(LOG, "👩‍💼 Maria attempts to sign A-form with grade 150 but fails");
     maria.signForm(a);
     std::cout << a << std::endl;
-
-    std::cout << "\n👨‍💼 Charlie helps by signing the form himself with grade 1 " << std::endl;
+    logMessage(LOG, "👨‍💼 Charlie helps by signing the form himself with grade 1 successfully");
     charlie.signForm(a);
     std::cout << a << std::endl;
-    std::cout << "\n👨‍💼 Charlie forgot if he signed A-form and goes to check" << std::endl;
-    std::cout << "👨‍💼 ..." << std::endl;
+    logMessage(DEBUG, "👨‍💼 Charlie forgot if he signed A-form and goes back to check");
+    logMessage(DEBUG, "👨‍💼 ...");
     if (!a.getSignedStatus())
     {
-      std::cout << "\n👨‍💼 ...Charlie finally signs the form" << std::endl;
+      logMessage(SUCCESS, "👨‍💼...Charlie finally signed the form");
       charlie.signForm(a);
     }
     else
-      std::cout << "👨‍💼 ...Charlie notices that he already signed A-form!" << std::endl;
+      logMessage(WARNING, "👨‍💼 ...Charlie notices that he already signed A-form, nothing happens");
     std::cout << a << std::endl;
 
-    std::cout << "\n\n📋 The 42 company received Another-form " << std::endl;
+    std::cout << std::endl;
+    testTitle(1, "Another-form needs approval");
     std::cout << b << std::endl;
-    std::cout << "\n👩‍💼 Maria tries to  sign Another-form but fails" << std::endl;
+    logMessage(LOG, "👩‍💼 Maria attempts to sign Another-form with grade 150 but fails");
     maria.signForm(b);
-    std::cout << "\n👩‍💼 Maria is tired to rely on Charlies and levels up 🔥" << std::endl; // comment for sad story
-    maria.incrementGrade();                                                                          // comment for sad story
-    maria.signForm(b);
-    std::cout << b << std::endl;
+    logMessage(WARNING, "👩‍💼 Maria is tired to rely on Charlie and levels up 🔥"); // comment for sad story
+    maria.incrementGrade();                                                                  // comment for sad story
+    std::cout << maria << std::endl;                                                         // comment for sad story
+    maria.signForm(b);                                                                       // comment for sad story
+    std::cout << b << std::endl;                                                             // comment for sad story
     if (!b.getSignedStatus())
     {
-      std::cout << "\n👨‍💼 Charlie is annoyed at Maria to have to rely on signing all the forms for her 💨" << std::endl;
+      logMessage(WARNING, "👨‍💼 Charlie is annoyed at Maria to have to rely on signing all the forms for her 💨 🔥");
       charlie.signForm(b);
       std::cout << b << std::endl;
-      std::cout << "👩‍💼 Maria might better go find another job 💧\n"
-                << std::endl;
+      logMessage(WARNING, "👩‍💼Maria might better go find another job 💧");
     }
     else
-      std::cout << "👩‍💼 Maria tells Charlie not to bother with signing Another-form as she was able to do it on her own 💅 \n " << std::endl;
+      logMessage(SUCCESS, "👩‍💼 Maria tells Charlie not to bother with signing Another-form  💅");
+    logMessage(LOG, "Exiting program...");
   }
   catch (std::exception &e)
   {
     std::cout << e.what() << std::endl; // needed to catch errors in the custuction
   }
-  std::cout << C_GREEN << "Bureaucrat form management program exiting..." << C_RESET << std::endl;
 }

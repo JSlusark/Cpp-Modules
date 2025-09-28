@@ -3,13 +3,13 @@
 /* Parametarised constructor */
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string &target) : AForm("ShrubberyCreation", 145, 137), _target(target)
 {
-	std::cout << "ShrubberyCreationForm created by parametarise constructor " << std::endl;
+		logMessage(PARAM_C, "ShrubberyCreationForm created");
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm &other)
 	: AForm(other), _target(other._target)
 {
-	std::cout << "ShrubberyCreationForm copied" << std::endl;
+	logMessage(COPY_C, "ShrubberyCreationForm copy created");
 }
 
 ShrubberyCreationForm &ShrubberyCreationForm::operator=(const ShrubberyCreationForm &other)
@@ -19,13 +19,14 @@ ShrubberyCreationForm &ShrubberyCreationForm::operator=(const ShrubberyCreationF
 		AForm::operator=(other); // delegate to base assignment
 		_target = other._target;
 	}
-	std::cout << "ShrubberyCreationForm assigned" << std::endl;
+	logMessage(ASSIGN_OP, "ShrubberyCreationForm assigned copy");
 	return *this;
 }
 
 ShrubberyCreationForm::~ShrubberyCreationForm()
 {
-	std::cout << "ShrubberyCreationForm destroyed" << std::endl;
+	logMessage(DESTRUCTOR, "ShrubberyCreationForm destroyed");
+
 }
 
 void ShrubberyCreationForm::executeForm() const

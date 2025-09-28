@@ -3,13 +3,13 @@
 /* Parametarised constructor */
 RobotomyRequestForm::RobotomyRequestForm(const std::string &target) : AForm("Robotomy", 72, 45), _target(target)
 {
-	std::cout << "RobotomyRequestForm created by parametarise constructor " << std::endl;
+		logMessage(PARAM_C, "RobotomyRequestForm created");
 }
 
 RobotomyRequestForm::RobotomyRequestForm(const RobotomyRequestForm &other)
 	: AForm(other), _target(other._target)
 {
-	std::cout << "RobotomyRequestForm copied" << std::endl;
+	logMessage(COPY_C, "RobotomyRequestForm copy created");
 }
 
 RobotomyRequestForm &RobotomyRequestForm::operator=(const RobotomyRequestForm &other)
@@ -19,13 +19,14 @@ RobotomyRequestForm &RobotomyRequestForm::operator=(const RobotomyRequestForm &o
 		AForm::operator=(other); // delegate to base assignment
 		_target = other._target;
 	}
-	std::cout << "RobotomyRequestForm assigned" << std::endl;
+	logMessage(ASSIGN_OP, "RobotomyRequestForm assigned copy");
 	return *this;
 }
 
 RobotomyRequestForm::~RobotomyRequestForm()
 {
-	std::cout << "RobotomyRequestForm destroyed" << std::endl;
+	logMessage(DESTRUCTOR, "RobotomyRequestForm destroyed");
+
 }
 
 void RobotomyRequestForm::executeForm() const

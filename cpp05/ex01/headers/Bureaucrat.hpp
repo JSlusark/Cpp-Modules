@@ -6,7 +6,7 @@
 #include <exception>
 #include <iosfwd> // for std::ostream forward-decl
 #include "./Form.hpp"
-#include "./colors.hpp"
+#include "./utils.hpp"
 
 class Bureaucrat
 {
@@ -49,7 +49,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return (C_RED "Exception:" C_RESET "Grade is too high ( < 1)");
+			return (C_RED "[EXCEPTION] " C_RESET "Grade is too high ( < 1)");
 		}
 	};
 	class GradeTooLowException : public std::exception
@@ -57,7 +57,7 @@ public:
 	public:
 		const char *what() const throw()
 		{
-			return (C_RED "Exception:" C_RESET "Grade is too low ( > 150)");
+			return (C_RED "[EXCEPTION] " C_RESET "Grade is too low ( > 150)");
 		}
 	};
 };
