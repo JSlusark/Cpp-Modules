@@ -47,6 +47,16 @@ void Span::addNumber(int number)
 	_container.push_back(number); // adds up number to vector
 }
 
+void Span::addNumber(int *arr, size_t size) // New overload for array with size
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        if (_container.size() >= _MAX) // as pushes starts from 0 and goes to N-1
+            throw LimitReachedException();
+        _container.push_back(arr[i]); // adds up number to vector
+    }
+}
+
 void Span::addNumber(const std::vector<int> &range) // we lose sizeof value as it decays to pointer
 {
 	for (size_t i = 0; i < range.size(); i++)
@@ -57,6 +67,18 @@ void Span::addNumber(const std::vector<int> &range) // we lose sizeof value as i
 	};
 }
 
+void Span::addNumber(int start, int end)
+{
+    if (start > end)
+        std::swap(start, end);  // Ensure ascending order
+
+    for (int i = start; i <= end; ++i)
+    {
+        if (_container.size() >= _MAX)
+            throw LimitReachedException();
+        _container.push_back(i);
+    }
+}
 
 int Span::shortestSpan() const
 {
@@ -94,4 +116,16 @@ const char *Span::LimitReachedException::what() const throw()
 const char *Span::UncomparableException::what() const throw()
 {
 	return "Exception: Not enough numbers to find a span";
+}
+
+void Span::printAll()
+{
+  std::cout << "[ ";
+  for (size_t i = 0; i < _container.size(); ++i)
+  {
+    std::cout << _container[i];
+    if (i < _container.size() - 1)
+      std::cout << ", ";
+  }
+  std::cout << " ]" << std::endl;
 }
