@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
-#include <stdexcept>  
+#include <stdexcept>
 
 /* COLORS */
 #define C_RESET "\033[0m"
@@ -33,7 +33,7 @@ inline void logMessage(const std::string &type, const std::string &message)
 inline void testTitle(const int number, const std::string &title)
 {
 	std::cout << C_CYAN
-			  << "================== TEST N" << number << ": " << title << " =================="
+			  << "====== TEST N" << number << ": " << title << " ======"
 			  << C_RESET << std::endl;
 };
 
