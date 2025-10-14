@@ -1,15 +1,14 @@
 #include "../headers/BitcoinExchange.hpp"
 
-
 /* --------------------------- CONSTRUCTORS --------------------------- */
 
 BitcoinExchange::BitcoinExchange(const std::string &input_file) : ref_file("data.csv"), input_file(input_file)
 {
     try
     {
-        storeData(ref_file, ref_data);
         storeData(input_file, input_data);
-        logMessage(SUCCESS, "BitcoinExchange data was stored in the map");
+        storeData(ref_file, ref_data);
+        // logMessage(SUCCESS, "BitcoinExchange inputdata was stored in the map");
         // printData(ref_data, ref_file);     // For debugging purposes
         printData(input_data, input_file); // For debugging purposes
     }
@@ -49,7 +48,7 @@ BitcoinExchange::~BitcoinExchange() {
 void BitcoinExchange::storeData(const std::string &fileName, std::map<std::string, float> &data)
 {
     std::ifstream fileStream(fileName.c_str());
-    logMessage(LOG, "Initiating data from file: " C_YELLOW  +  fileName + C_RESET);
+    logMessage(LOG, "Initiating data from file: " C_YELLOW + fileName + C_RESET);
     checkFile(fileName, fileStream); // checks reference file);
     std::string line, date, exchangeRate;
     float rate;
@@ -66,14 +65,13 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
             // trim white space for date
             date.erase(0, date.find_first_not_of(" \t\r"));
             date.erase(date.find_last_not_of(" \t\r") + 1);
-            addEntry(data, date, rate, line);// adds entry to map if date is valid or overwrites if date already exists
+            addEntry(data, date, rate, line); // adds entry to map if date is valid or overwrites if date already exists
         }
     }
     if (data.empty())
-        throw std::invalid_argument(ERROR "No valid data found in file");
+        throw std::invalid_argument(EXCEPTION "No valid data found in file");
+    logMessage(SUCCESS, fileName + " mapped data was stored successfully into BitcoinExchange exchange object");
 }
-
-
 
 /* --------------------------- HELPER FUNCTIONS --------------------------- */
 
@@ -82,7 +80,7 @@ void BitcoinExchange::checkFile(const std::string &fileName, std::ifstream &file
 {
     checkExtension(fileName);
     if (!fileStream.is_open()) // it closes automatically
-        throw std::invalid_argument(ERROR "An error occurred while opening the file");
+        throw std::invalid_argument(EXCEPTION "An error occurred while opening the file");
     logMessage(SUCCESS, "file opened successfully");
 }
 
@@ -90,7 +88,7 @@ void BitcoinExchange::checkExtension(const std::string &fileName)
 {
     std::string ext = fileName.substr(fileName.find_last_of(".") + 1);
     if (ext != "csv")
-        throw std::invalid_argument(ERROR "Invalid extension, please use .csv");
+        throw std::invalid_argument(EXCEPTION "Invalid extension, please use .csv");
     logMessage(SUCCESS, "file uses correct file extension");
 }
 
@@ -141,4 +139,33 @@ void BitcoinExchange::printData(std::map<std::string, float> &data, const std::s
     {
         std::cout << it->first << " => " << it->second << std::endl;
     }
+}
+
+bool checkDaysInMonth()
+{
+    // make sure that olnly - and numbers are used
+    if (date.length() != 10 || date[4] != '-' || date[7] != '-')
+    {
+        logMessage(ERROR, "Invalid date format, line is not YYYY-MM-DD: " + line);
+        return false;
+    }
+    char dash1, dash2;
+    int year, month, day;
+    std::stringstream y(date.substr(0, 4)), m(date.substr(5, 2)), d(date.substr(8, 2));
+    if (!(y >> year) || !(m >> month) || !(d >> day))
+    {
+        logMessage(ERROR, "Invalid date format, date did not include digits: " + line);
+        return false;
+    }
+
+    // numeric range checks
+    if (year < 2009 || month < 1 || month > 12 || day < 1)
+        return false;
+
+    int daysInMonth[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+    if (leap) daysInMonth[1] = 29;
+    if (day > daysInMonth[month - 1])
+        return false;
+    return true;
 }
