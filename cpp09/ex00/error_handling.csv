@@ -1,6 +1,6 @@
 date,exchange_rate
 
-invalid: will be printed as errors
+THESE SHOULD NOT BE SAVED IN INPUT_DATA:
 2009-01-01,!2
 2009-01-01,
 ,2
@@ -13,12 +13,12 @@ invalid: will be printed as errors
 2009-01-01,abddc
 ,
 2009-01-02, 0 1
+2009-01-02, 0,
+2009-01-02,,
 
-
-normal will be printed normally:
+THESE SHOULD BE SAVED IN INPUT_DATA:
+2019-01-02,-1
 2009-01-11,0
-
-
 11, 2
 11, 22
 2009-01-05,0

@@ -1,23 +1,17 @@
 #include "../headers/BitcoinExchange.hpp"
 
-BitcoinExchange::BitcoinExchange(const std::string &filename)
+
+/* --------------------------- CONSTRUCTORS --------------------------- */
+
+BitcoinExchange::BitcoinExchange(const std::string &input_file) : ref_file("data.csv"), input_file(input_file)
 {
-
-    std::string error;
-    if (!hasCSVExtension(filename, error) || !dataCollected(filename, error))
-        throw std::invalid_argument(error);
-    if (data.empty())
-    {
-        // logMessage(WARNING, "File was empty or no valid data found");
-        throw std::invalid_argument(C_RED "No valid data found in file" C_RESET);
-    }
-    logMessage(SUCCESS, "BitcoinExchange data was stored in the map");
-    printData(); // For debugging purposes
-
     try
     {
-        /* code */
-        // collect data
+        storeData(ref_file, ref_data);
+        storeData(input_file, input_data);
+        logMessage(SUCCESS, "BitcoinExchange data was stored in the map");
+        // printData(ref_data, ref_file);     // For debugging purposes
+        printData(input_data, input_file); // For debugging purposes
     }
     catch (const std::exception &e)
     {
@@ -27,14 +21,20 @@ BitcoinExchange::BitcoinExchange(const std::string &filename)
 
 BitcoinExchange::BitcoinExchange(BitcoinExchange &o)
 {
-    data = o.data; // Properly copy the data map
+    input_data = o.input_data; // Properly copy the data map
+    ref_data = o.ref_data;     // Properly copy the data map
+    ref_file = o.ref_file;
+    input_file = o.input_file;
 }
 
 BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange &o)
 {
     if (this != &o)
     {
-        data = o.data;
+        input_data = o.input_data; // Properly copy the data map
+        ref_data = o.ref_data;     // Properly copy the data map
+        ref_file = o.ref_file;
+        input_file = o.input_file;
     }
     // logMessage(ASSIGN_OP, "Span attributes assigned");
     return *this;
@@ -44,21 +44,82 @@ BitcoinExchange::~BitcoinExchange() {
     // logMessage(DESTRUCTOR, "Span object destroyed");
 };
 
-// HELPERS
+/* --------------------------- MAIN FUNCTIONS --------------------------- */
 
-bool BitcoinExchange::hasCSVExtension(const std::string &filename, std::string &error)
+void BitcoinExchange::storeData(const std::string &fileName, std::map<std::string, float> &data)
 {
-    std::string ext = filename.substr(filename.find_last_of(".") + 1);
-    if (ext != "csv")
+    std::ifstream fileStream(fileName.c_str());
+    logMessage(LOG, "Initiating data from file: " C_YELLOW  +  fileName + C_RESET);
+    checkFile(fileName, fileStream); // checks reference file);
+    std::string line, date, exchangeRate;
+    float rate;
+    std::getline(fileStream, line); // skips header
+    while (std::getline(fileStream, line))
     {
-        error = "Invalid extension, please use .csv";
-        return false;
+        if (line.empty())
+            continue; // ignores blank lines and goes to next iteration
+        std::stringstream lineStream(line);
+        if (skipEntry(lineStream, line, date, exchangeRate, rate))
+            continue;
+        else
+        {
+            // trim white space for date
+            date.erase(0, date.find_first_not_of(" \t\r"));
+            date.erase(date.find_last_not_of(" \t\r") + 1);
+            addEntry(data, date, rate, line);// adds entry to map if date is valid or overwrites if date already exists
+        }
     }
-    logMessage(SUCCESS, "Correct file extension used");
-    return true;
+    if (data.empty())
+        throw std::invalid_argument(ERROR "No valid data found in file");
 }
 
-bool convertToDouble(const std::string &exchangeRate, double &rate)
+
+
+/* --------------------------- HELPER FUNCTIONS --------------------------- */
+
+/* IN STORE DATA - used to check if the file is valid and exists  */
+void BitcoinExchange::checkFile(const std::string &fileName, std::ifstream &fileStream)
+{
+    checkExtension(fileName);
+    if (!fileStream.is_open()) // it closes automatically
+        throw std::invalid_argument(ERROR "An error occurred while opening the file");
+    logMessage(SUCCESS, "file opened successfully");
+}
+
+void BitcoinExchange::checkExtension(const std::string &fileName)
+{
+    std::string ext = fileName.substr(fileName.find_last_of(".") + 1);
+    if (ext != "csv")
+        throw std::invalid_argument(ERROR "Invalid extension, please use .csv");
+    logMessage(SUCCESS, "file uses correct file extension");
+}
+
+/* IN STORE DATA - used in main loop that checks entries on each line of the file  */
+bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line, std::string &date, std::string &exchangeRate, float &rate)
+{
+    if (!std::getline(lineStream, date, ',') || !std::getline(lineStream, exchangeRate))
+    {
+        logMessage(ERROR, C_CYAN "Invalid line found, date and/or rate field are empty:'" C_RESET + line);
+        return true;
+    }
+    if (!convertToFloat(exchangeRate, rate))
+    {
+        logMessage(ERROR, C_YELLOW "Invalid line found, rate is not a float:'" C_RESET + line);
+        return true; // skip this line and continue to the next
+    }
+    return false;
+}
+
+void BitcoinExchange::addEntry(std::map<std::string, float> &data, const std::string &date, float rate, const std::string &line)
+{
+
+    // std::cout << date << C_CYAN "|" C_RESET << rate << std::endl; // Debug: printing the parsed values
+    if (data.find(date) != data.end()) // if date already exists in map, warn user
+        logMessage(WARNING, "Duplicate date entry found, overwriting rate:" C_RESET + line);
+    data[date] = rate;
+}
+
+bool BitcoinExchange::convertToFloat(const std::string &exchangeRate, float &rate)
 {
     std::stringstream stream(exchangeRate);
     stream >> std::ws;     // skips leading spaces
@@ -70,68 +131,12 @@ bool convertToDouble(const std::string &exchangeRate, double &rate)
     return true;
 }
 
-
-bool BitcoinExchange::dataCollected(const std::string &fileName, std::string &error)
+/* PRINT DEBUGGING */
+void BitcoinExchange::printData(std::map<std::string, float> &data, const std::string &fileName) const
 {
-    // create inputFile
-    std::ifstream fileStream(fileName.c_str()); // ifstream opens and reads from filename, needs cstr of path, it stores *fd, buffer to read data in chuncks and state flags
-    if (!fileStream.is_open())                  // still need to check if open
-    {
-        error = "An error occurred while opening the file";
-        return false;
-    }
-    logMessage(SUCCESS, "File was opened successfully");
-    std::string date;
-    std::string exchangeRate;
-    std::string line;
-    std::getline(fileStream, line); // skips header
-    while (std::getline(fileStream, line))
-    {
-        if (line.empty())
-            continue; // ignores blank lines and goes to next iteration
-
-        std::stringstream lineStream(line);
-        if (!std::getline(lineStream, date, ',') || !std::getline(lineStream, exchangeRate))
-        {
-            // error = "Invalid line format:'" + line + "'\nExpected 'date,exchange_rate'";
-            logMessage(ERROR, C_CYAN "Invalid line format:'" C_RESET + line);
-            continue;
-        }
-        else
-        {
-            if (date.empty()) // add this to save space in map and not save
-            {
-                logMessage(ERROR, C_RED "Invalid date found:'" C_RESET + line);
-                continue;
-            }
-            double rate;
-            if (!convertToDouble(exchangeRate, rate))
-            {
-                logMessage(ERROR, C_YELLOW "Invalid exchange rate found:'" C_RESET + line);
-                continue; // skip this line and continue to the next
-                //  continue; // reject non-numeric "abddc"
-            }
-            // trim white space for date and warns of rate overwriting
-            date.erase(0, date.find_first_not_of(" \t\r"));
-            date.erase(date.find_last_not_of(" \t\r") + 1);
-            std::cout << date << C_CYAN "|" C_RESET << rate << std::endl; // Debug: print the parsed values
-            if (data.find(date) != data.end())                            // if date already exists in map
-            {
-                logMessage(WARNING, "Found new rate for previously logged date, overwriting:" C_RESET + line);
-            }
-            data[date] = rate;
-        }
-    }
-    return true;
-}
-
-const std::map<std::string, double> &BitcoinExchange::getData() const { return data; }
-
-void BitcoinExchange::printData() const
-{
-    // std::map<std::string, double> data = getData();
-    logMessage(DEBUG, "Printing data map contents:");
-    std::map<std::string, double>::const_iterator it;
+    // std::map<std::string, float> data = getData();
+    logMessage(DEBUG, "Printing data map contents for: " + fileName);
+    std::map<std::string, float>::const_iterator it;
     for (it = data.begin(); it != data.end(); ++it)
     {
         std::cout << it->first << " => " << it->second << std::endl;
