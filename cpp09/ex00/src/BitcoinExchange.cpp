@@ -100,7 +100,7 @@ bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line
         logMessage(ERROR, C_CYAN "Invalid line found, date and/or rate field are empty:'" C_RESET + line);
         return true;
     }
-    if (!convertToFloat(exchangeRate, rate))
+    if (!convertToNumber(exchangeRate, rate))
     {
         logMessage(ERROR, C_YELLOW "Invalid line found, rate is not a float:'" C_RESET + line);
         return true; // skip this line and continue to the next
@@ -117,11 +117,15 @@ void BitcoinExchange::addEntry(std::map<std::string, float> &data, const std::st
     data[date] = rate;
 }
 
-bool BitcoinExchange::convertToFloat(const std::string &exchangeRate, float &rate)
+template <typename Num>
+bool BitcoinExchange::convertToNumber(const std::string &s, Num &type)
 {
-    std::stringstream stream(exchangeRate);
-    stream >> std::ws;     // skips leading spaces
-    if (!(stream >> rate)) // float extraction fails
+    // Basic check: ensure Num is not std::string (using typeid)
+    assert(typeid(Num) != typeid(std::string) && "convertToNumber: Num must be a numeric type, not std::string");
+   
+    std::stringstream stream(s); // stream adapts based on the num type passed
+    stream >> std::ws;           // skips leading spaces
+    if (!(stream >> type))       // extraction to type fails
         return false;
     stream >> std::ws; // skips trailing spaces
     if (!stream.eof()) // if something  is left (letters, extra chars)
@@ -141,7 +145,8 @@ void BitcoinExchange::printData(std::map<std::string, float> &data, const std::s
     }
 }
 
-bool checkDaysInMonth()
+/* checks if date is invalid */
+bool BitcoinExchange::checkDaysInMonth(const std::string &date, const std::string &line)
 {
     // make sure that olnly - and numbers are used
     if (date.length() != 10 || date[4] != '-' || date[7] != '-')
@@ -149,23 +154,37 @@ bool checkDaysInMonth()
         logMessage(ERROR, "Invalid date format, line is not YYYY-MM-DD: " + line);
         return false;
     }
-    char dash1, dash2;
+    // i do not need to convert to a number though as I can compare strings
+    // as digits??
+
+    // Extract and convert to int for numeric checks
     int year, month, day;
-    std::stringstream y(date.substr(0, 4)), m(date.substr(5, 2)), d(date.substr(8, 2));
-    if (!(y >> year) || !(m >> month) || !(d >> day))
+    if (!convertToNumber(date.substr(0, 4), year) ||
+        !convertToNumber(date.substr(5, 2), month) ||
+        !convertToNumber(date.substr(8, 2), day))
     {
-        logMessage(ERROR, "Invalid date format, date did not include digits: " + line);
+        logMessage(ERROR, "Invalid date, non-numeric parts: " + line);
         return false;
     }
 
-    // numeric range checks
+    // Numeric range checks
     if (year < 2009 || month < 1 || month > 12 || day < 1)
+    {
+        logMessage(ERROR, "Date out of range: " + line);
         return false;
+    }
 
-    int daysInMonth[] = {31,28,31,30,31,30,31,31,30,31,30,31};
-    bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
-    if (leap) daysInMonth[1] = 29;
+    // Days in month
+    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    // February has 28 days normally, but 29 in leap years (every 4 year vy approxiamtion)
+    bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)); // exepct for century years (unless divisble by 400)
+    if (leap)
+        daysInMonth[1] = 29;
     if (day > daysInMonth[month - 1])
+    {
+        logMessage(ERROR, "Invalid day for month: " + line);
         return false;
+    }
+
     return true;
 }

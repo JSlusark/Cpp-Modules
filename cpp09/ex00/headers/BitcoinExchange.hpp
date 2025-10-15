@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <cassert>  // For assert
+#include <typeinfo> // For typeid (C++98)
 
 class BitcoinExchange
 {
@@ -24,11 +26,13 @@ public:
 
     /* Helper functiosn used in storeData */
     void checkFile(const std::string &filename, std::ifstream &fileStream); // Changed to take ifstream reference
-    void checkExtension(const std::string &filename);                       // Changed to const std::string &
-    bool convertToFloat(const std::string &exchangeRate, float &rate);
+    void checkExtension(const std::string &filename);
+    bool checkDaysInMonth(const std::string &date, const std::string &line);
     bool skipEntry(std::stringstream &lineStream, std::string &line, std::string &date, std::string &exchangeRate, float &rate);
     void addEntry(std::map<std::string, float> &data, const std::string &date, float rate, const std::string &line);
 
-    void printData(std::map<std::string, float> &data, const std::string &fileName) const; // For debugging purposes
+    template <typename Num>
+    bool convertToNumber(const std::string &str, Num &conversion);
 
+    void printData(std::map<std::string, float> &data, const std::string &fileName) const; // For debugging purposes
 };
