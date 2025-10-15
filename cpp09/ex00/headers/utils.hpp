@@ -2,6 +2,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <sstream>
 
 /* COLORS */
 #define C_RESET "\033[0m"
@@ -34,6 +35,12 @@ inline void logMessage(const std::string &type, const std::string &message)
 	// logMessage(ERROR, std::string("the user ") + user.name + " is not subscribed to " + web.domain);
 	std::cout << type << message << std::endl;
 };
+
+inline std::string asString(int value) {
+    std::stringstream ss;
+    ss << value;
+    return ss.str();
+}
 
 inline void testTitle(const int number, const std::string &title)
 {

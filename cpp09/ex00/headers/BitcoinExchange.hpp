@@ -27,12 +27,12 @@ public:
     /* Helper functiosn used in storeData */
     void checkFile(const std::string &filename, std::ifstream &fileStream); // Changed to take ifstream reference
     void checkExtension(const std::string &filename);
-    bool checkDaysInMonth(const std::string &date, const std::string &line);
-    bool skipEntry(std::stringstream &lineStream, std::string &line, std::string &date, std::string &exchangeRate, float &rate);
-    void addEntry(std::map<std::string, float> &data, const std::string &date, float rate, const std::string &line);
+    bool isValidDate(const std::string &date, const std::string &line, int line_i);
+    bool skipEntry(std::stringstream &lineStream, std::string &line, std::string &date, std::string &exchangeRate, float &rate, int line_i);
+    void addEntry(std::map<std::string, float> &data, const std::string &date, float rate, const std::string &line, int line_i);
 
     template <typename Num>
     bool convertToNumber(const std::string &str, Num &conversion);
 
-    void printData(std::map<std::string, float> &data, const std::string &fileName) const; // For debugging purposes
+    void printData() const;
 };
