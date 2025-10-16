@@ -15,6 +15,7 @@ private:
     std::string input_file;
     std::map<std::string, float> input_data;
     std::map<std::string, float> ref_data;
+    std::map<std::string, float> converted_data;
 
 public:
     BitcoinExchange(const std::string &filename);
@@ -34,5 +35,5 @@ public:
     template <typename Num>
     bool convertToNumber(const std::string &str, Num &conversion);
 
-    void printData() const;
+    void printConversion();
 };
