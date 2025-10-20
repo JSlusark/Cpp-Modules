@@ -6,8 +6,13 @@ BitcoinExchange::BitcoinExchange(const std::string &input_file) : ref_file("data
 {
     try
     {
-        storeData(ref_file, ref_data);
-        storeData(input_file, input_data);
+        storeData(ref_file, ref_data, REF_TYPE);
+        storeData(input_file, input_data, INPUT_TYPE);
+
+        // logMessage(SUCCESS, input_file + "was stored as a BitcoinExchange exchange object");
+        // logMessage(LOG, "Converting "+ input_file + "rates from "+ ref_file+" rates");
+
+        // logMessage(SUCCESS, input_file + " rates converted");
 
         // logMessage(SUCCESS, "BitcoinExchange inputdata was stored in the map");
         // printData(ref_data, ref_file);     // For debugging purposes
@@ -46,11 +51,12 @@ BitcoinExchange::~BitcoinExchange() {
 
 /* --------------------------- MAIN FUNCTIONS --------------------------- */
 
-void BitcoinExchange::storeData(const std::string &fileName, std::map<std::string, float> &data)
+void BitcoinExchange::storeData(const std::string &fileName, std::map<std::string, float> &data, const std::string type)
 {
     std::ifstream fileStream(fileName.c_str());
-    logMessage(LOG, "Initiating data from file: " C_YELLOW + fileName + C_RESET);
-    checkFile(fileName, fileStream); // checks reference file);
+    logMessage(LOG, "Initiating data from "+ type +" file: " C_YELLOW + fileName + C_RESET);
+    checkFile(fileName, fileStream); // checks .csv and openable , triggers catch if error occurs
+    // collectkeys();
     std::string line, date, exchangeRate;
     float rate;
     std::getline(fileStream, line); // skips header
@@ -59,22 +65,22 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
         if (line.empty())
             continue; // ignores blank lines and goes to next iteration
         std::stringstream lineStream(line);
-        if (skipEntry(lineStream, line, date, exchangeRate, rate))
+        if (skipEntry(lineStream, line, date, exchangeRate, rate, type))
             continue;
         else
         {
+           //logMessage(DEBUG, line);
             addEntry(data, date, rate); // adds entry to map if date is valid or overwrites if date already exists
-            if(fileName == input_file)
-                printConversion(date);
+            if (type == INPUT_TYPE)
+                printConversion(date); // not separating converts due to the exercise printing req
         }
         // logMessage(C_GREEN "[ADDED]" C_RESET, " '" + line + "'" C_RESET);
     }
+    // ends here
     if (data.empty())
-        throw std::invalid_argument(EXCEPTION "No valid data found in file");
-    if (fileName == ref_file)
-        logMessage(SUCCESS, fileName + "was mapped successfully into BitcoinExchange exchange object");
-    else
-        logMessage(SUCCESS, fileName + " converted successfully");
+        throw std::invalid_argument(EXCEPTION "No valid data found in file, mapped data is empty");
+    logMessage(SUCCESS, fileName + " was stored as a " + INPUT_TYPE + " BitcoinExchange exchange object");
+
 }
 
 /*_________________________________________________________ HELPER FUNCTIONS_________________________________________________________ */
@@ -104,7 +110,7 @@ void BitcoinExchange::printConversion(std::string date)
         }
         else
         {
-            logMessage(ERROR, "No earliest date found:" + date + " , " + asString(input_data[date]) );
+            logMessage(ERROR, "No earliest date found:" + date + " , " + asString(input_data[date]));
         }
     }
 }
@@ -113,6 +119,12 @@ void BitcoinExchange::printConversion(std::string date)
 /************************** USED IN STORE DATA**************************/
 /**********************************************************************/
 
+void BitcoinExchange::addEntry(std::map<std::string, float> &data, const std::string &date, float rate)
+{
+
+    // std::cout << date << C_CYAN "|" C_RESET << rate << std::endl; // Debug: printing the parsed values
+    data[date] = rate;
+}
 /* Nested functions to check file format and existence*/
 void BitcoinExchange::checkFile(const std::string &fileName, std::ifstream &fileStream)
 {
@@ -130,9 +142,12 @@ void BitcoinExchange::checkExtension(const std::string &fileName)
     logMessage(SUCCESS, "file uses correct file extension");
 }
 
+
 /* Nested functions to check file entry lines in main loop, skips or add based on conditions */
-bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line, std::string &date, std::string &exchangeRate, float &rate)
+bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line, std::string &date, std::string &exchangeRate, float &rate, const std::string &type)
 {
+    std::map<std::string, float> mapped_data;
+    type != REF_TYPE ? mapped_data =input_data : mapped_data = ref_data;
     // trim white space for date
     date.erase(0, date.find_first_not_of(" \t\r"));
     date.erase(date.find_last_not_of(" \t\r") + 1);
@@ -156,22 +171,15 @@ bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line
         logMessage(ERROR, "Invalid rate range: " + line);
         return true; // skip this line and continue to the next
     }
-    if (input_data.find(date) != input_data.end()) // if date already exists in map, warn user
+    if (mapped_data.find(date) != mapped_data.end()) // i need to use the map based on what file i use
     {
-        logMessage(ERROR, "Duplicate found: " + line);
+        // decided to not save dups
+        logMessage(ERROR, "Duplicate found: '" + line + "'");
         return true;
-        // logMessage(WARNING, "Duplicate date entry found.\n          Overwriting with: " C_YELLOW " <line " + asString(line_i) + "> " C_RESET + line);
     }
     return false;
 }
 
-void BitcoinExchange::addEntry(std::map<std::string, float> &data, const std::string &date, float rate)
-{
-
-    // std::cout << date << C_CYAN "|" C_RESET << rate << std::endl; // Debug: printing the parsed values
-
-    data[date] = rate;
-}
 
 /* Helper functions to check date and rate numbers*/
 bool BitcoinExchange::isValidDate(const std::string &date, const std::string &line)
