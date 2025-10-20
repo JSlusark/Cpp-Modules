@@ -54,7 +54,7 @@ BitcoinExchange::~BitcoinExchange() {
 void BitcoinExchange::storeData(const std::string &fileName, std::map<std::string, float> &data, const std::string type)
 {
     std::ifstream fileStream(fileName.c_str());
-    logMessage(LOG, "Initiating data from "+ type +" file: " C_YELLOW + fileName + C_RESET);
+    logMessage(LOG, "Initiating data from " + type + " file: " C_YELLOW + fileName + C_RESET);
     checkFile(fileName, fileStream); // checks .csv and openable , triggers catch if error occurs
     // collectkeys();
     std::string line, date, exchangeRate;
@@ -66,10 +66,13 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
             continue; // ignores blank lines and goes to next iteration
         std::stringstream lineStream(line);
         if (skipEntry(lineStream, line, date, exchangeRate, rate, type))
+        {
+            if (type == INPUT_TYPE)
+                logMessage(ERROR, error_message);
             continue;
+        }
         else
         {
-           //logMessage(DEBUG, line);
             addEntry(data, date, rate); // adds entry to map if date is valid or overwrites if date already exists
             if (type == INPUT_TYPE)
                 printConversion(date); // not separating converts due to the exercise printing req
@@ -80,7 +83,6 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
     if (data.empty())
         throw std::invalid_argument(EXCEPTION "No valid data found in file, mapped data is empty");
     logMessage(SUCCESS, fileName + " was stored as a " + INPUT_TYPE + " BitcoinExchange exchange object");
-
 }
 
 /*_________________________________________________________ HELPER FUNCTIONS_________________________________________________________ */
@@ -97,7 +99,7 @@ void BitcoinExchange::printConversion(std::string date)
     {
         std::string ref_date = ref_it->first;
         float ref_rate = ref_it->second;
-        logMessage("", date + " , " + asString(input_data[date]) + " => " + asString(ref_rate));
+        logMessage("", date + " => " + asString(input_data[date]) + " = " + asString(ref_rate * input_data[date]));
     }
     else
     {
@@ -106,11 +108,11 @@ void BitcoinExchange::printConversion(std::string date)
         {
             std::string closest_date = ref_it->first;
             float closest_rate = ref_it->second;
-            logMessage("", date + " , " + asString(input_data[date]) + " => " + asString(closest_rate));
+            logMessage("", date + " => " + asString(input_data[date]) + " = " + asString(closest_rate * input_data[date]));
         }
         else
         {
-            logMessage(ERROR, "No earliest date found:" + date + " , " + asString(input_data[date]));
+            logMessage(ERROR, "No earliest date found:" + date + " => " + asString(input_data[date]));
         }
     }
 }
@@ -142,44 +144,40 @@ void BitcoinExchange::checkExtension(const std::string &fileName)
     logMessage(SUCCESS, "file uses correct file extension");
 }
 
-
 /* Nested functions to check file entry lines in main loop, skips or add based on conditions */
 bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line, std::string &date, std::string &exchangeRate, float &rate, const std::string &type)
 {
     std::map<std::string, float> mapped_data;
-    type != REF_TYPE ? mapped_data =input_data : mapped_data = ref_data;
-    // trim white space for date
-    date.erase(0, date.find_first_not_of(" \t\r"));
-    date.erase(date.find_last_not_of(" \t\r") + 1);
+    type != REF_TYPE ? mapped_data = input_data : mapped_data = ref_data;
+
     if (!std::getline(lineStream, date, ',') || !std::getline(lineStream, exchangeRate))
     {
-        logMessage(ERROR, "Found empty field: " + line);
+        error_message = "Invalid format: " + line;
         return true;
     }
+    // trim white space for date
+    // date.erase(0, date.find_first_not_of(" \t\r"));
+    // date.erase(date.find_last_not_of(" \t\r") + 1);
     if (!isValidDate(date, line))
-    {
-        // logMessage(ERROR, "Invalid date: " + line);
         return true;
-    }
     if (!convertToNumber(exchangeRate, rate))
     {
-        logMessage(ERROR, "Invalid rate number: " + line);
+        error_message = "Invalid rate number: " + line;
         return true; // skip this line and continue to the next
     }
     if (rate < 0 || rate > 1000)
     {
-        logMessage(ERROR, "Invalid rate range: " + line);
+        error_message = "Invalid rate range: " + line;
         return true; // skip this line and continue to the next
     }
     if (mapped_data.find(date) != mapped_data.end()) // i need to use the map based on what file i use
     {
         // decided to not save dups
-        logMessage(ERROR, "Duplicate found: '" + line + "'");
+        error_message = "Duplicate found: '" + line + "'";
         return true;
     }
     return false;
 }
-
 
 /* Helper functions to check date and rate numbers*/
 bool BitcoinExchange::isValidDate(const std::string &date, const std::string &line)
@@ -187,7 +185,7 @@ bool BitcoinExchange::isValidDate(const std::string &date, const std::string &li
     // make sure that olnly - and numbers are used
     if (date.length() != 10 || date[4] != '-' || date[7] != '-')
     {
-        logMessage(ERROR, "Date is wrong format " + line);
+        error_message = "Date is wrong format " + line;
         return false;
     }
 
@@ -196,10 +194,7 @@ bool BitcoinExchange::isValidDate(const std::string &date, const std::string &li
     if (!convertToNumber(date.substr(0, 4), year) ||
         !convertToNumber(date.substr(5, 2), month) ||
         !convertToNumber(date.substr(8, 2), day))
-    {
-        logMessage(ERROR, "Date is not numeric " + line);
         return false;
-    }
 
     // Days in month - 0 to 11
     int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -210,7 +205,7 @@ bool BitcoinExchange::isValidDate(const std::string &date, const std::string &li
     // Numeric range checks
     if (year < 2009 || month < 1 || month > 12 || day < 1 || day > daysInMonth[month - 1])
     {
-        logMessage(ERROR, "Date out of range: " + line);
+        error_message = "Date out of range: " + line;
         return false;
     }
     return true;
@@ -222,12 +217,28 @@ bool BitcoinExchange::convertToNumber(const std::string &s, Num &type)
     // Basic check: ensure Num is not std::string (using typeid)
     assert(typeid(Num) != typeid(std::string) && "convertToNumber: Num must be a numeric type, not std::string");
 
+    if (s.empty())
+    {
+        error_message = "Rate is empty: " + s;
+        return false;
+    }
+    if (::isspace(s[0]))
+    {
+        error_message = "Rate starts with space (invalid format): " + s;
+        return false;
+    }
     std::stringstream stream(s); // stream adapts based on the num type passed
     stream >> std::ws;           // skips leading spaces
     if (!(stream >> type))       // extraction to type fails
+    {
+        error_message = "Float stream extraction failed at line:" + s;
         return false;
+    }
     stream >> std::ws; // skips trailing spaces
     if (!stream.eof()) // if something  is left (letters, extra chars)
+    {
+        error_message = "Found non_digit types at line:" + s;
         return false;
+    }
     return true;
 }

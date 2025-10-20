@@ -18,6 +18,7 @@ private:
     std::map<std::string, float> input_data;
     std::map<std::string, float> ref_data;
     std::map<std::string, float> converted_data;
+    std::string error_message;
 
 public:
     BitcoinExchange(const std::string &filename);
