@@ -5,7 +5,13 @@ https://cdn.intra.42.fr/pdf/pdf/173137/en.subject.pdf
 2. ex01 use set as it only needs to store unique values
 3. ex02 use vector and deque as they allow duplicates and maintain order
 
-EX 00 - MAP
+EX 00 - MAP - ✅ need to doublecheck things before submitting
+Explanation of choice:
+https://www.geeksforgeeks.org/when-to-use-map-in-cpp/
+https://www.codingninjas.com/codestudio/library/when-to-use-map-in-cpp
+https://www.educative.io/answers/what-are-the-advantages-of-using-map-in-cpp
+https://www.geeksforgeeks.org/map-associative-container-in-cpp-stl/
+https://www.cplusplus.com/reference/map/map/
 Because key pair values matches csv structure, keeps data sorted and manages some error handling for us (unique keys/dates, lower_bound).
 - map<date, value> ->	Stores key–value pairs efficiently.
 - std::map::lower_bound() -> allows binary-search for the key and steps one iterator back to get the previous date, so that we can find the nearest date if the exact date is not present in the database.
@@ -14,6 +20,7 @@ Because key pair values matches csv structure, keeps data sorted and manages som
 - each key is unique : meaning it handles error handling if for example we have duplicates no duplicate dates.
 - value should be in float as bitcoin prices can have decimal values.
 - input can be processed line by line and inserted into the map as we read it, making it memory efficient.
+
 
 
 EX01 - STACK AS THE LIFO PRINCIPLE HELPS REPLICATING THE RPN CALCULATION LOGIC.

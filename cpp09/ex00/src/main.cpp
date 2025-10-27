@@ -8,6 +8,9 @@ int main(int argc, char const **argv)
         BitcoinExchange conversion(argv[1]);
     }
     else
+    {
         logMessage(WARNING, "Program needs a .csv file to convert");
+        return 1;
+    }
     return 0;
 }
