@@ -4,6 +4,7 @@
 #include <vector>
 #include <deque>
 #include <climits>
+#include <cstdlib> // For atol
 
 bool isValidNumber(std::string &s, int &conversion)
 {
@@ -34,6 +35,7 @@ bool isValidNumber(std::string &s, int &conversion)
     return true;
 }
 
+/* ./PmergeMe $(shuf -i 1-10 -n 3000 | tr "\n" " ") */
 int main(int argc, char **argv)
 {
     if (argc < 2)
@@ -50,9 +52,20 @@ int main(int argc, char **argv)
             std::string s = argv[i];
             if (!isValidNumber(s, conversion))
                 return 1;
-            std::cout << "arg:" << s << "  int:" << conversion << " " << std::endl;
             arr.push_back(conversion);
         }
+
+        logMessage(LOG, "Unsorted arguments");
+        for (size_t i = 0; i < arr.size(); ++i)
+            std::cout << arr[i] << " ";
+        std::cout << std::endl;
+
+        fordJohnsonSort(arr);
+
+        logMessage(LOG, "Arguments where sorted in x moves");
+        for (size_t i = 0; i < arr.size(); ++i)
+            std::cout << arr[i] << " ";
+        std::cout << std::endl;
     }
     return 0;
 }
