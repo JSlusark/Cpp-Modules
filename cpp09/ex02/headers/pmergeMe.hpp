@@ -2,33 +2,32 @@
 #include <iostream>
 #include <vector>
 #include <deque>
+int recursion_n = 0; // global to debug iteration
 
 // debugging functions
 void printVector(const std::vector<int> &vec)
 {
-	std::cout << "[";
-	for (size_t i = 0; i < vec.size(); ++i)
-	{
-		std::cout << vec[i];
-		if (i < vec.size() - 1)
-			std::cout << ", ";
-	}
-	std::cout << "]" << std::endl;
+    std::cout << "[";
+    for (size_t i = 0; i < vec.size(); ++i)
+    {
+        std::cout << vec[i];
+        if (i < vec.size() - 1)
+            std::cout << ", ";
+    }
+    std::cout << "]" << std::endl;
 }
 
 void printPairs(const std::vector<std::pair<int, int> > &pairs)
 {
-	std::cout << "[";
-	for (size_t i = 0; i < pairs.size(); ++i)
-	{
-		std::cout << "(" << pairs[i].first << ", " << pairs[i].second << ")";
-		if (i < pairs.size() - 1)
-			std::cout << ", ";
-	}
-	std::cout << "]" << std::endl;
+    std::cout << "[";
+    for (size_t i = 0; i < pairs.size(); ++i)
+    {
+        std::cout << "(" << pairs[i].first << ", " << pairs[i].second << ")";
+        if (i < pairs.size() - 1)
+            std::cout << ", ";
+    }
+    std::cout << "]" << std::endl;
 }
-
-
 
 void fordJohnsonSort(std::vector<int> &arr)
 {
@@ -46,9 +45,9 @@ void fordJohnsonSort(std::vector<int> &arr)
 
     std::vector<std::pair<int, int> > pairs; // the main pairs
     std::vector<int> pend;                  // holds the small key of each created keyPair
-    std::vector<int> main;             // holds the big key of each created keyPair
+    std::vector<int> main;                  // holds the big key of each created keyPair
 
-    // Assigns values to each vector type
+    // Assigns values to each vector type - CREATE CHAINS();
     for (size_t i = 0; i < arr.size() - remainder; i += 2) // if remainder exists we leave it out
     {
         // creates key value pairs in ascending order and pushes to pairs
@@ -64,11 +63,24 @@ void fordJohnsonSort(std::vector<int> &arr)
         main.push_back(big); // to process recursively?
     }
 
+    // Recursively applies the fordJohnson until main chain has only 2 keys
+    logMessage( C_GRAY"------ START RECURSION N:" + asString(recursion_n), "------" C_RESET);
     logMessage("", C_GREEN "Vector of pairs" C_RESET);
     printPairs(pairs);
     logMessage("", C_CYAN "Pend chain - holds big values from created keyPairs" C_RESET);
     printVector(pend);
     logMessage("", C_YELLOW "Main chain - holds big values from created keyPairs" C_RESET);
     printVector(main);
-    std::cout << (remainder ? "Remainder found:" + asString(remainderValue) : "No remainder found") <<std::endl;
+    std::cout << (remainder ? C_RED "Remainder found:" + asString(remainderValue) + C_RESET : C_GREEN "No remainder found") + C_RESET << std::endl;
+    if (main.size() > 2)
+    {
+        recursion_n++;
+        fordJohnsonSort(main);
+    }
+    else if (main.size() == 2)
+    {
+        if (main[0] > main[1])
+            std::swap(main[0], main[1]);
+    }
+    logMessage(C_GRAY"------ END RECURSION N:" + asString(recursion_n--), "------" C_RESET);
 }
