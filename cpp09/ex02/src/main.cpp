@@ -58,10 +58,11 @@ int main(int argc, char **argv)
         logMessage(LOG, "Unsorted arguments");
         for (size_t i = 0; i < arr.size(); ++i)
             std::cout << arr[i] << " ";
-        std::cout << std::endl;
+        std::cout << "\n" << std::endl;
 
         fordJohnsonSort(arr);
 
+        std::cout << "\n" << std::endl;
         logMessage(LOG, "Arguments where sorted in x moves");
         for (size_t i = 0; i < arr.size(); ++i)
             std::cout << arr[i] << " ";
