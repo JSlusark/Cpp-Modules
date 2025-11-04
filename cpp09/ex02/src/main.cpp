@@ -60,13 +60,24 @@ int main(int argc, char **argv)
             std::cout << arr[i] << " ";
         std::cout << "\n" << std::endl;
 
-        int moves = 0;
-        fordJohnsonSort(arr, moves);
+        int iterations = 0;
+        int steps = 0;
+        fordJohnsonSort(arr, iterations);
 
-        logMessage(SUCCESS, "Arguments where sorted in " + asString(moves) + " moves");
+        logMessage(LOG, "Final sort completed in " + asString(iterations) + " iterations and in"+  asString(steps) + " steps.");
         for (size_t i = 0; i < arr.size(); ++i)
             std::cout << arr[i] << " ";
         std::cout << std::endl;
+
+        if(std::is_sorted(arr.begin(), arr.end()))
+        {
+            logMessage(SUCCESS, C_GREEN "Array was successfully sorted" C_RESET);
+        }
+        else
+        {
+            logMessage(ERROR, C_RED "Array is was not sorted correctly!" C_RESET);
+        }
     }
+
     return 0;
 }

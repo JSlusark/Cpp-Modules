@@ -38,28 +38,32 @@ void printPairs(const std::vector<std::pair<int, int> > &pairs)
 
     We have to calculate the indexes
 */
-std::vector<size_t> generateJacobsthal(size_t n) // n is size of pend_chain
+std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_chain
 {
-    logMessage(C_GRAY "[JACOB]" C_RESET, "Pending_size:" + asString(n));
-
     std::vector<size_t> sequence; // empty vector
-    if (n == 0)        // means that there are no pending elements, but where does this decrease?!
+    if (pend_size == 0)           // means that there are no pending elements, but where does this decrease?!
         return sequence;
-    sequence.push_back(0); // seq starts always with 0
-    size_t n2 = 0;  // previous iteration previous jacobstahl (n - 2)
-    size_t n1 = 1;  // current iteration previous jacobstahl (n -1)
-    size_t curr_i = 2;
+    size_t n2 = 0; // previous iteration previous jacobstahl (n - 2)
+    size_t n1 = 1; // current iteration previous jacobstahl (n -1)
+
+    logMessage("", C_YELLOW "Added to sequence:" + asString(pend_size) + C_RESET);
+    logMessage("", "J(0)=" + asString(n2) + C_GRAY "       Base case" C_RESET);
+    sequence.push_back(n2); // seq starts always with 0
+    logMessage("", "J(1)=" + asString(n1) + C_GRAY "       Base case" C_RESET);
+    // we skip adding 1 as that is already in the sequence
+
+    size_t n = 2;
     while (true)
     {
-        // if next = a shouldn't we skip it?
-        size_t curr = n1 + 2 * n2; // why this calculation, what does it do and why this logic
-        logMessage(C_GRAY "[JACOB]" C_RESET, " J(" + asString(curr_i) + "):" + asString(curr) + " = J(" + asString(curr_i - 1)+ "):" + asString(n1) + " * 2 + J(" + asString(curr_i -2) +"):" + asString(n2));
-        curr_i++;
-        if (curr >= n)
+        /* https://mathworld.wolfram.com/JacobsthalNumber.html */
+        size_t curr = n1 + 2 * n2; // (J_(n)= J(n-1) + 2+ J(n-2)
+        if (curr >= pend_size)
         {
-            logMessage(C_GRAY "[JACOB ENDS]" C_RESET, "curr:" + asString(curr) + " >= pending size:" + asString(n));
+            logMessage("", "Stopped adding. Curr(" + asString(curr) + ") reached pend_size(" + asString(n) + ")");
             break;
         }
+        logMessage("", "J(" + asString(n) + ")=" + asString(curr) + C_GRAY "       J(" + asString(n - 1) + "):" + asString(n1) + " + 2 * J(" + asString(n - 2) + "):" + asString(n2) + C_RESET);
+        n++;
         sequence.push_back(curr); // we add number of the jacobstahl sequence to the sequence
         n2 = n1;
         n1 = curr;
@@ -74,10 +78,16 @@ std::vector<size_t> generateJacobsthal(size_t n) // n is size of pend_chain
         }
     }
     sequence.insert(sequence.end(), full_sequence.begin(), full_sequence.end());
-    logMessage(C_GRAY "[JACOB SEQUENCE]" C_RESET, "");
+    logMessage(C_YELLOW "Jacob sequence created:" C_RESET, "");
     printVector(sequence);
     return sequence;
 }
+
+// void binaryInsert(std::vector<int> &main, int value)
+// {
+//     std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), value);
+//     main.insert(it, value);
+// }
 
 void fordJohnsonSort(std::vector<int> &arr, int &moves)
 {
@@ -115,14 +125,14 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves)
 
     // Recursively applies the fordJohnson until main_chain chain has only 2 keys
     int moves_bt = moves;
-    logMessage(C_GRAY "------------ START RECURSION N" + asString(moves), "------------" C_RESET);
-    logMessage("", C_GREEN "N" + asString(moves) + "_Pairs:" C_RESET);
-    std::cout << (remainder ? C_RED "N" + asString(moves) + "_Remainder:" C_RESET + asString(remainderValue) + C_RESET : C_GREEN "No remainder found") + C_RESET << std::endl;
+    logMessage(C_GRAY "------------ START ITERATION N" + asString(moves), "------------" C_RESET);
+    logMessage("", C_PURPLE "Created Pairs:" C_RESET);
     printPairs(pairs);
-    logMessage("", C_CYAN "N" + asString(moves) + "_Main_chain:" C_RESET);
+    logMessage("", C_MAGENTA "Extracted Main chain:" C_RESET);
     printVector(main_chain);
-    logMessage("", C_CYAN "N" + asString(moves) + "_Pending_chain:" C_RESET);
-    printVector(pending_chain);
+    logMessage("", C_MAGENTA "Extracted Pending chain:" C_RESET);
+    printVector(pending_chain); // + remainder to add inside before jacobstahl insertion
+    std::cout << (remainder ? C_RED "_Remainder:" C_RESET + asString(remainderValue) + C_RESET : C_GREEN "No remainder found in iteration") + C_RESET << std::endl;
 
     if (main_chain.size() > 2) // recurses until bigchain is 2 numbers
     {
@@ -137,20 +147,21 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves)
 
     /*
         I apply the jacobstall for every iteration, small chain is
-        inserted to big chain at every iteraion until end of recursion
+        inserted to big chain at every iteraion until end of ITERATION
     */
-    logMessage(C_GRAY "[JACOB]" C_RESET, "calculating for N" + asString(moves_bt) + "_Pending_chain:");
+    logMessage("", C_YELLOW "Creating Jacobstyle sequence from extracted pending chain of size " + asString(pending_chain.size()) + ":" + C_RESET);
     printVector(pending_chain);
     std::vector<size_t> jacob = generateJacobsthal(pending_chain.size());
 
-    // for (size_t i = 0; i < jacob.size(); i++)
-    // {
-    //     if(jacob[i] < pending_chain.size())
-    //     {
-    //         insertSorted(main, pend)
-    //     }
-    //     /* code */
-    // }
+    for (size_t i = 0; i < jacob.size(); i++)
+    {
+        if (jacob[i] < pending_chain.size())
+        {
+            // insertSorted(main, pend)
+            std::vector<int>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), pending_chain[jacob[i]]);
+            main_chain.insert(it, pending_chain[jacob[i]]);
+        }
+    }
 
     // for (size_t idx : jacob)
     // {
@@ -160,15 +171,16 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves)
     //     }
     // }
 
-    // // Step 5: Handle remainderValue
+    // // Step 5: Handle remainderValue // <---- this needs to be added to the pend before jacobstahl insertion?
+    // answer: yes it does
     // if (remainder)
     // {
     //     insertSorted(main, remainderValue);
     // }
 
     arr = main_chain;
-    logMessage("", C_YELLOW "N" + asString(moves_bt) + "_Final Result:" C_RESET);
+    logMessage("", C_MAGENTA "Sorted main chain:" C_RESET);
     printVector(arr);
 
-    logMessage(C_GRAY "------------ END RECURSION N" + asString(moves_bt), "------------" C_RESET);
+    logMessage(C_GRAY "------------ END ITERATION N" + asString(moves_bt), "------------" C_RESET);
 }
