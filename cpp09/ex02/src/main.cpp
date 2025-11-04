@@ -60,10 +60,10 @@ int main(int argc, char **argv)
             std::cout << arr[i] << " ";
         std::cout << "\n" << std::endl;
 
-        fordJohnsonSort(arr);
+        int moves = 0;
+        fordJohnsonSort(arr, moves);
 
-        std::cout << "\n" << std::endl;
-        logMessage(LOG, "Arguments where sorted in x moves");
+        logMessage(SUCCESS, "Arguments where sorted in " + asString(moves) + " moves");
         for (size_t i = 0; i < arr.size(); ++i)
             std::cout << arr[i] << " ";
         std::cout << std::endl;

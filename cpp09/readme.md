@@ -52,66 +52,190 @@ How:
 - inserting the remaining ones in an order that keeps the list size small for as long as possible.
 
 In short from my understanding to replicate the algorithm we have to do the following:
-- we divide the list into pairs
-- we then sort each vakue in pair from smallest to largest
-- we create 2 sub-containers, one for the largest values of each pair and one for the smallest values of each pair
-- we have to sort the biggest values first  by recursively applying the same pairing and subcontainer logic until we reach a base case of 1 or 2 elements
-- we backtrack to the previous subcontainer and start inserting the smallest values into the sorted largest values container
-- we use the jacobsthal sequence to determine the order in which we insert values from the smallest values subcontainer into the sorted largest values subcontainer. This can be done also just with a binary search but the jacobsthal sequence ensures a smaller number of comparisons/movements to insert each value from sub into main.
-- we repeat this process until all values are sorted
+
+1. merge sort phase:
+- we divide the list of numbers into pairs
+- we order each pair from small to big
+- we create 2 sub-containers: main and pending.
+- pending container holds the smallest values of each pair
+- main container holds the largest values of each pair
+- we call this process recursively until our main container has 1 or 2 elements (base case) 
+
+2. insertion phase:
+- once our main container has 1 or 2 elements, we backtrack the recursion to binary insert the pending values into the sorted main container
+- at each recursion the main container is already sorted from the previous steps
+- before inserting each value from the pending container we need to calculate the Jacobsthal sequence for the pending values to determine the optimal insertion order that ensures the minimum number of comparisons/movements.
+
+in short: Binary search handles the "where to insert" part; Jacobsthal handles the "in what order to insert" part to minimize total comparisons. It's optimized for the merge-like behavior of the algorithm
 
 
-Exampe list of numbers:
-6,2,1,5,7,4,9,8
+bash-5.1$ ./PmergeMe 8 6 7 9 3 1 4 5 2
+[LOG] Unsorted arguments
+8 6 7 9 3 1 4 5 2 
 
-1. Pairing and sorting each pair:
-[2,6] [1,5] [4,7] [8,9]
-main [6,5,7,9]
-sub [2,1,4,8]
+------------ START RECURSION N0------------
+N0_Pairs:
+[(6, 8), (7, 9), (1, 3), (4, 5)]
+N0_Main chain:
+[8, 9, 3, 5]
+N0_Pending chain:
+[6, 7, 1, 4]
+N0_Remainder:2
+------------ START RECURSION N1------------
+N1_Pairs:
+[(8, 9), (3, 5)]
+N1_Main chain:
+[9, 5]
+N1_Pending chain:
+[8, 3]
+No remainder found
+N1_Final Result:
+[5, 9]
 
-2. new pairing and sorting of main:
-[6,5] [7,9]
-main [6,7]
-sub [5,9]
+- generate Jacobsthal sequence for pending [8,3] has size 2.
 
-3. new pairing and sorting of main:
-[6,7]
-main [7]
-sub [6]
+------------ END RECURSION N1------------
+N0_Final Result:
+[5, 9] <- insert pending [8, 3] into main using jacobsthal sequence
+------------ END RECURSION N0------------
 
-Base case reached, we recurse back to the sub values to insert them into the sorted main values:
-3. sub [6] with main [7]
-2. sub [5,9] with main [6,7] (Jacob sequence optimisation is used on 5 only as total S is 0,2?)
-1. sub [2,1,4,8] with main [5,6,7,9] (Jacob sequence optimisation is used on 2,1,4 only as total S is 0,1,2 and 4 is skipped)
-This is typically done via jacobsthal sequence with binary search, but also using just a normal binary search insert each value from sub into main would suffice. However this does not ensure the minimum number of comparisons/movements to insert each value from sub into main like the jacobsthal sequence does.
-Binary search handles the "where to insert" part; Jacobsthal handles the "in what order to insert" part to minimize total comparisons. It's optimized for the merge-like behavior of the algorithm
+
+We recurse back and have to insert pending into the sorted main values and use the jacobsthal sequence.
+The Jacobsthal sequence is a list of numbers where each new number is made by adding the previous number and twice the one before that.
+
+Sequence: 0, 1, 1, 3, 5, 11, 21, 43, 85, 171 ...etc.
+
+First 0 and 1 are given by default:
+J(0) = 0 (given, base case).
+J(1) = 1 (given, base case).
+
+Then each next number is calculated as follows:
+J(2) = J(1) + 2 * J(0) = 1 + 2*0 = 1.
+J(3) = J(2) + 2 * J(1) = 1 + 2*1 = 3.
+J(4) = J(3) + 2 * J(2) = 3 + 2*1 = 5.
+J(5) = J(4) + 2 * J(3) = 5 + 2*3 = 11.
+J(6) = J(5) + 2 * J(4) = 11 + 2*5 = 21.
+J(7) = J(6) + 2 * J(5) = 21 + 2*11 = 43.
+J(8) = J(7) + 2 * J(6) = 43 + 2*21 = 85.
+J(9) = J(8) + 2 * J(7) = 85 + 2*43 = 171.
+
+In practice:
+S(n) = S(n-1) + 2 * S(n-2) for n > 1
+- S(n - 1 ) is the previous number from the current iteration.
+- S(n - 2) is the previous number from the previous iteration. This is multiplied by 2.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+It determine the optimal order of insertion by:
+- taking the size of the pending container, which will represent how many iterations we need to perform the jacobsthal sequence.
+- in each iteration we calculate the jacobsthal sequence S(n) - 1 where n is the number of iterations starting from 1
+- we skip duplicate results and results >= size of pending container
+- if the resulting sequence size is smaller than the pending container size, we fill in the missing indices from left to right.
+Example:
+For pending [8,3] with size 2:
+0 → [ 0 ]
+1-1=0 → [0] skip duplicte and move on
+Fill in from left to right to reach size amount: [0,1]
+- the jacobsthal sequence S(n) is calculated as:
+  S(0) = 0
+  S(1) = 1
+  S(n) = S(n-1) + 2 * S(n-2) for n > 1
+  Sequence: 0, 1, 1, 3, 5, 11, 21, 23,
+- for every number in the jacobsthal sequence we calculate S(n) - 1 where n is the number of iterations starting from 1
+
+
+ inserting "anchors" first to reduce binary search steps).
+
+
+
+
+
+
+
+
+
+
+ splitting the pending container into smaller chunks and inserting them in the main container in that order.
+Example:
+- For pending [2,1,4,8] with size 4:
+  0 → [ 0 ]
+  1-1=0 → [0] skip duplicte and move on
+  1-1=0 → [0] skip duplicte and move on
+  3-1=2 → [0,2]
+  5-1=4 → [0,2] we skip as 4 >= size 4
+  Fill in from left to right to reach size amount: [0,1,2]
+  This means we apply the binary search insert in the first 3 indices of pending and rest(8) uses just normal binary search insert.
+
+
+
+
+3. pending [6] with main [7]
+2. pending [5,9] with main [6,7] (Jacob sequence optimisation is used on 5 only as total S is 0,2?)
+1. pending [2,1,4,8] with main [5,6,7,9] (Jacob sequence optimisation is used on 2,1,4 only as total S is 0,1,2 and 4 is skipped)
+This is typically done via jacobsthal sequence with binary search, but also using just a normal binary search insert each value from pending into main would suffice. However this does not ensure the minimum number of comparisons/movements to insert each value from pending into main like the jacobsthal sequence does.
+
 
 
 HOW THE SEQUENCE CLACULATION WORKS AND WHY IT SAVES COMPARISONS
 Jacobstahl sequence: 0, 1, 1, 3, 5, 11, 21, ...
-- We have to calculate the indexes sequence for every element in the sub container.
-- This means that the resulting numbers of the sequence also have to have the same size as the sub container.
+- We have to calculate the indexes sequence for every element in the pending container.
+- This means that the resulting numbers of the sequence also have to have the same size as the pending container.
 Process:
 	- We always start with index 0 -> results in 0 as the first element of the sequence.
 	- From 1 upwards, the result is the next S(n) - 1.
 	- Duplicate result is not added to the sequence
-	- If result >= size of sub we stop calculating.
-	- If the resulting sequence size is smaller than the sub container size, we fill in the missing indices from left to right.
+	- If result >= size of pending we stop calculating.
+	- If the resulting sequence size is smaller than the pending container size, we fill in the missing indices from left to right.
 Example:
-Sub [2,1,4,8] with sie 4.
+pend [2,1,4,8] with sie 4.
 0 → [ 0 ]
 1-1=0 → [0] skip duplicte and move on
 1-1=0 → [0] skip duplicte and move on
 3-1=2 → [0,2]
 5-1=4 → [0,2] we skip as 4 >= size 4
 Fill in from left to right to reach size amount: [0,1,2]
-This means we apply the binary search insert in the first 3 indices of sub and rest(8) uses just normal binary search insert.
+This means we apply the binary search insert in the first 3 indices of pending and rest(8) uses just normal binary search insert.
 
 Jacobsthal insertions (2, 1, 4): The order inserts "anchors" first (e.g., 2 sets a left boundary), so later inserts (1, 4) reuses comparison results, reducing steps in binary search (~5-6 total for these 3 vs. ~7-8 in sequential).
 
 
 Another example:
-For Sub [2,1,4,8,5] (Size 5)
+For pend [2,1,4,8,5] (Size 5)
 Raw indices: [0] (start)
 1-1=0 → skip duplicate → [0]
 1-1=0 → skip → [0]
@@ -124,7 +248,7 @@ Fill gaps from left to right:
 - Between 0 and 2: add 1 → [0,1,2,4]
 - Between 2 and 4: add 3 → [0,1,2,3,4]
 Final indices: [0,1,2,3,4] (matches size 5, no skips).
-This means we apply the binary search insert in all indices of sub cobtainer.
+This means we apply the binary search insert in all indices of pending cobtainer.
 
 I realy hope i got it right because it's really frustrating especially as I don't remember much of advanced math
 and feel so ashemed of it :(
