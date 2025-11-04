@@ -89,7 +89,7 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
 //     main.insert(it, value);
 // }
 
-void fordJohnsonSort(std::vector<int> &arr, int &moves)
+void fordJohnsonSort(std::vector<int> &arr, int &moves, int &steps)
 {
     /*
     checking md notes and also link to make sure steps are correct
@@ -137,7 +137,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves)
     if (main_chain.size() > 2) // recurses until bigchain is 2 numbers
     {
         moves++;
-        fordJohnsonSort(main_chain, moves);
+        fordJohnsonSort(main_chain, moves, steps);
     }
     else if (main_chain.size() == 2)
     {
@@ -153,6 +153,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves)
     printVector(pending_chain);
     std::vector<size_t> jacob = generateJacobsthal(pending_chain.size());
 
+    int jacob_insertions = 0;
     for (size_t i = 0; i < jacob.size(); i++)
     {
         if (jacob[i] < pending_chain.size())
@@ -160,8 +161,13 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves)
             // insertSorted(main, pend)
             std::vector<int>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), pending_chain[jacob[i]]);
             main_chain.insert(it, pending_chain[jacob[i]]);
+            jacob_insertions++;
+            steps++; // count each insertion as a step/comparison movement
         }
     }
+
+    // Log how many combinations (insertions) were performed in this iteration using Jacobsthal order
+    logMessage(LOG, "Jacobsthal insertions in iteration " + asString(moves_bt) + ": " + asString(jacob_insertions));
 
     // for (size_t idx : jacob)
     // {
@@ -179,7 +185,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves)
     // }
 
     arr = main_chain;
-    logMessage("", C_MAGENTA "Sorted main chain:" C_RESET);
+    logMessage("", C_MAGENTA "Sorted main chain in " + asString(jacob_insertions) +   " steps" C_RESET);
     printVector(arr);
 
     logMessage(C_GRAY "------------ END ITERATION N" + asString(moves_bt), "------------" C_RESET);

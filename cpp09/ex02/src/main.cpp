@@ -58,24 +58,21 @@ int main(int argc, char **argv)
         logMessage(LOG, "Unsorted arguments");
         for (size_t i = 0; i < arr.size(); ++i)
             std::cout << arr[i] << " ";
-        std::cout << "\n" << std::endl;
+        std::cout << "\n"
+                  << std::endl;
 
         int iterations = 0;
         int steps = 0;
-        fordJohnsonSort(arr, iterations);
+        fordJohnsonSort(arr, iterations, steps);
 
-        logMessage(LOG, "Final sort completed in " + asString(iterations) + " iterations and in"+  asString(steps) + " steps.");
-        for (size_t i = 0; i < arr.size(); ++i)
-            std::cout << arr[i] << " ";
-        std::cout << std::endl;
-
-        if(std::is_sorted(arr.begin(), arr.end()))
-        {
-            logMessage(SUCCESS, C_GREEN "Array was successfully sorted" C_RESET);
-        }
+        if (std::is_sorted(arr.begin(), arr.end()))
+            logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(steps) + " steps." C_RESET);
         else
         {
             logMessage(ERROR, C_RED "Array is was not sorted correctly!" C_RESET);
+            for (size_t i = 0; i < arr.size(); ++i)
+                std::cout << arr[i] << " ";
+            std::cout << std::endl;
         }
     }
 
