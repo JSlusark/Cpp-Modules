@@ -3,15 +3,17 @@
 #include <vector>
 #include <deque>
 #include <algorithm>
+#include <limits> // <--- added
 
 // debugging functions
 template <typename T>
-void printVector(T &container)
+void printVector(T &container, size_t remainder, bool show)
 {
     std::cout << "[";
     for (size_t i = 0; i < container.size(); ++i)
     {
-        std::cout << container[i];
+        // cast element to size_t to avoid signed/unsigned comparison warning
+        std::cout << (((static_cast<size_t>(container[i]) == remainder) && (show)) ? C_RED : "") << container[i] << C_RESET;
         if (i < container.size() - 1)
             std::cout << ", ";
     }
@@ -46,7 +48,7 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
     size_t n2 = 0; // previous iteration previous jacobstahl (n - 2)
     size_t n1 = 1; // current iteration previous jacobstahl (n -1)
 
-    logMessage("", C_YELLOW "Added to sequence:" + asString(pend_size) + C_RESET);
+    logMessage("", C_YELLOW "Added to sequence:" C_RESET);
     logMessage("", "J(0)=" + asString(n2) + C_GRAY "       Base case" C_RESET);
     sequence.push_back(n2); // seq starts always with 0
     logMessage("", "J(1)=" + asString(n1) + C_GRAY "       Base case" C_RESET);
@@ -74,12 +76,12 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
     {
         if (std::find(sequence.begin(), sequence.end(), i) == sequence.end())
         {
-            full_sequence.push_back(i); // fills up missing indexes
+            full_sequence.push_back(i); // fills up missing indexes <-------- IS THIS RIGHT?????
         }
     }
     sequence.insert(sequence.end(), full_sequence.begin(), full_sequence.end());
     logMessage(C_YELLOW "Jacob sequence created:" C_RESET, "");
-    printVector(sequence);
+    printVector(sequence, 1, false); // as no remander neers to be highlighted here
     return sequence;
 }
 
@@ -129,10 +131,19 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves, int &steps)
     logMessage("", C_PURPLE "Created Pairs:" C_RESET);
     printPairs(pairs);
     logMessage("", C_MAGENTA "Extracted Main chain:" C_RESET);
-    printVector(main_chain);
+    printVector(main_chain, remainder ? static_cast<size_t>(remainderValue) : std::numeric_limits<size_t>::max(), false);
+    if (remainder)
+    {
+        // If there's a remainder element, add it to the pending chain and print it
+        std::cout << C_RED << "Remainder: " << C_RESET << asString(remainderValue) << C_RESET << std::endl;
+        pending_chain.push_back(remainderValue);
+    }
+    else
+    {
+        std::cout << C_GREEN << "No remainder found in this iteration" << C_RESET << std::endl;
+    }
     logMessage("", C_MAGENTA "Extracted Pending chain:" C_RESET);
-    printVector(pending_chain); // + remainder to add inside before jacobstahl insertion
-    std::cout << (remainder ? C_RED "_Remainder:" C_RESET + asString(remainderValue) + C_RESET : C_GREEN "No remainder found in iteration") + C_RESET << std::endl;
+    printVector(pending_chain, remainder ? static_cast<size_t>(remainderValue) : std::numeric_limits<size_t>::max(), true); // pass actual remainder value when present
 
     if (main_chain.size() > 2) // recurses until bigchain is 2 numbers
     {
@@ -150,7 +161,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves, int &steps)
         inserted to big chain at every iteraion until end of ITERATION
     */
     logMessage("", C_YELLOW "Creating Jacobstyle sequence from extracted pending chain of size " + asString(pending_chain.size()) + ":" + C_RESET);
-    printVector(pending_chain);
+    printVector(pending_chain, remainder ? static_cast<size_t>(remainderValue) : std::numeric_limits<size_t>::max(), true);
     std::vector<size_t> jacob = generateJacobsthal(pending_chain.size());
 
     int jacob_insertions = 0;
@@ -186,7 +197,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &moves, int &steps)
 
     arr = main_chain;
     logMessage("", C_MAGENTA "Sorted main chain in " + asString(jacob_insertions) +   " steps" C_RESET);
-    printVector(arr);
+    printVector(arr, remainder, true);
 
     logMessage(C_GRAY "------------ END ITERATION N" + asString(moves_bt), "------------" C_RESET);
 }
