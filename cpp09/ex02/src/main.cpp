@@ -66,7 +66,7 @@ int main(int argc, char **argv)
         fordJohnsonSort(arr, iterations, steps);
 
         if (std::is_sorted(arr.begin(), arr.end()))
-            logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(steps) + " steps." C_RESET);
+            logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(steps) + " combinations." C_RESET);
         else
         {
             logMessage(ERROR, C_RED "Array is was not sorted correctly!" C_RESET);
