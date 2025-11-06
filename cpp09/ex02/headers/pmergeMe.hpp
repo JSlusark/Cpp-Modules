@@ -32,7 +32,6 @@ void printPairs(const std::vector<std::pair<int, int> > &pairs, int remainder)
     std::cout << "]" << std::endl;
 }
 
-
 std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_chain
 {
     logMessage(DEBUG, "Generating Jacobsthal sequence for pend[" + asString(pend_size) + "]");
@@ -75,9 +74,10 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
     return sequence;
 }
 
-
-/* 
-TODO: i have problems when container size is 2
+/*
+PROBLEMS:
+- i have problems when container size is 2
+- the jacobstahl sequence should be generated before the main chain is sorted so that we keep pairing info???
 */
 void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
 {
@@ -118,11 +118,11 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
 
     // Recursively applies the fordJohnson until main chain has only 2 keys
     printPairs(pairs, remainderValue);
-    printVector(main, "Main", -1); //-1 as remainder needs to be printed in pend
+    printVector(main, "Main", -1);             //-1 as remainder needs to be printed in pend
     printVector(pend, "Pend", remainderValue); // show remainder as part of pending chain
     if (has_remainder)
-        pend.push_back(remainderValue);            // adds remainder to pend to be inserted last
-    if (main.size() > 2)                       // recurses until bigchain is 2 numbers
+        pend.push_back(remainderValue); // adds remainder to pend to be inserted last
+    if (main.size() > 2)                // recurses until bigchain is 2 numbers
     {
         iteration++;
         fordJohnsonSort(main, iteration, comparisons);
@@ -149,10 +149,24 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
             // pend = [6, 7, 1, 4]
             // jacob = [0, 2, 1, 3]
 
-            // Binary insert: returns the position where to insert the pend[jacob[i]] value
-            std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), pend[n]);
-            main.insert(it, pend[n]);
-            comparisons++;
+            // Easy Binary insert: returns the position where to insert the pend[jacob[i]] value but does not count comparisons
+            // std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), pend[n]); 
+            // main.insert(it, pend[n]);
+
+            // Custom binary search to count comparisons
+            size_t left = 0;
+            size_t right = main.size();
+            while (left < right)
+            {
+                size_t mid = left + (right - left) / 2;
+                comparisons++; // Count each comparison
+                if (pend[n] > main[mid])
+                    left = mid + 1;
+                else
+                    right = mid;
+            }
+            // Insert at the found position
+            main.insert(main.begin() + left, pend[n]);
             logMessage("", C_GRAY "Inserted pend[" + asString(n) + "]:" + asString(pend[n]) + C_RESET);
         }
     }
