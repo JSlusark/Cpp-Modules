@@ -6,6 +6,18 @@
 #include <climits>
 #include <cstdlib> // For atol
 #include <algorithm>
+#include <cmath>
+
+int maxComparisons(int n)
+{
+    int sum = 0;
+    for (int k = 1; k <= n; ++k)
+    {
+        double value = (3.0 / 4.0) * k;
+        sum += static_cast<int>(ceil(log2(value)));
+    }
+    return sum;
+}
 
 template <typename T>
 bool is_sorted(const T &container)
@@ -17,7 +29,6 @@ bool is_sorted(const T &container)
     }
     return true;
 }
-
 
 bool isValidNumber(std::string &s, int &conversion)
 {
@@ -75,11 +86,21 @@ int main(int argc, char **argv)
                   << std::endl;
 
         int iterations = 0;
-        int steps = 0;
-        fordJohnsonSort(arr, iterations, steps);
+        int comparisons = 0;
+        fordJohnsonSort(arr, iterations, comparisons);
+        // fordJohnsonSort(arr, iterations);
+
+        int max_comp = maxComparisons(arr.size());
+
 
         if (is_sorted(arr))
-            logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(steps) + " combinations." C_RESET);
+        {
+            logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations." C_RESET);
+            if (comparisons <= max_comp)
+                logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(comparisons) + " comparisons (within limit " + asString(max_comp) + ")." C_RESET);
+            else
+                logMessage(ERROR, C_RED "Array was sorted but exceeded comparison limit (" + asString(comparisons) + " > " + asString(max_comp) + ")!" C_RESET);
+        }
         else
         {
             logMessage(ERROR, C_RED "Array is was not sorted correctly!" C_RESET);
