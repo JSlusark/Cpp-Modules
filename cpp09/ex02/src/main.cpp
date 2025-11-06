@@ -5,6 +5,19 @@
 #include <deque>
 #include <climits>
 #include <cstdlib> // For atol
+#include <algorithm>
+
+template <typename T>
+bool is_sorted(const T &container)
+{
+    for (size_t i = 0; i < container.size() - 1; i++)
+    {
+        if (container[i] > container[i + 1])
+            return false;
+    }
+    return true;
+}
+
 
 bool isValidNumber(std::string &s, int &conversion)
 {
@@ -65,7 +78,7 @@ int main(int argc, char **argv)
         int steps = 0;
         fordJohnsonSort(arr, iterations, steps);
 
-        if (std::is_sorted(arr.begin(), arr.end()))
+        if (is_sorted(arr))
             logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(steps) + " combinations." C_RESET);
         else
         {
