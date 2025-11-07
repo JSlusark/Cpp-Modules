@@ -78,36 +78,41 @@ int main(int argc, char **argv)
                 return 1;
             arr.push_back(conversion);
         }
+        
+        // test jacobstahl generation
+        size_t test_size = atoi(argv[1]);
+        std::vector<size_t> jacob = generateJacobsthal(test_size);
+        
 
-        logMessage(LOG, "Unsorted arguments");
-        for (size_t i = 0; i < arr.size(); ++i)
-            std::cout << arr[i] << " ";
-        std::cout << "\n"
-                  << std::endl;
-
-        int iterations = 0;
-        int comparisons = 0;
-        fordJohnsonSort(arr, iterations, comparisons);
-        // fordJohnsonSort(arr, iterations);
-
-        int max_comp = maxComparisons(arr.size());
+        // logMessage(LOG, "Unsorted arguments");
+        // for (size_t i = 0; i < arr.size(); ++i)
+        //     std::cout << arr[i] << " ";
+        // std::cout << "\n"
+        //           << std::endl;
+        
 
 
-        if (is_sorted(arr))
-        {
-            logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations." C_RESET);
-            if (comparisons <= max_comp)
-                logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(comparisons) + " comparisons (within limit " + asString(max_comp) + ")." C_RESET);
-            else
-                logMessage(ERROR, C_RED "Array was sorted but exceeded comparison limit (" + asString(comparisons) + " > " + asString(max_comp) + ")!" C_RESET);
-        }
-        else
-        {
-            logMessage(ERROR, C_RED "Array is was not sorted correctly!" C_RESET);
-            for (size_t i = 0; i < arr.size(); ++i)
-                std::cout << arr[i] << " ";
-            std::cout << std::endl;
-        }
+        // int iterations = 0;
+        // int comparisons = 0;
+        // fordJohnsonSort(arr, iterations, comparisons);
+
+        // int max_comp = maxComparisons(arr.size());
+
+        // if (is_sorted(arr))
+        // {
+        //     logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations." C_RESET);
+        //     if (comparisons <= max_comp)
+        //         logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations and in " + asString(comparisons) + " comparisons (within limit " + asString(max_comp) + ")." C_RESET);
+        //     else
+        //         logMessage(ERROR, C_RED "Array was sorted but exceeded comparison limit (" + asString(comparisons) + " > " + asString(max_comp) + ")!" C_RESET);
+        // }
+        // else
+        // {
+        //     logMessage(ERROR, C_RED "Array is was not sorted correctly!" C_RESET);
+        //     for (size_t i = 0; i < arr.size(); ++i)
+        //         std::cout << arr[i] << " ";
+        //     std::cout << std::endl;
+        // }
     }
 
     return 0;

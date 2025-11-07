@@ -110,6 +110,7 @@ J(0) = 0 (given, base case).
 J(1) = 1 (given, base case).
 
 Then each next number is calculated as follows:
+
 J(2) = J(1) + 2 * J(0) = 1 + 2*0 = 1.
 J(3) = J(2) + 2 * J(1) = 1 + 2*1 = 3.
 J(4) = J(3) + 2 * J(2) = 3 + 2*1 = 5.
@@ -120,9 +121,10 @@ J(8) = J(7) + 2 * J(6) = 43 + 2*21 = 85.
 J(9) = J(8) + 2 * J(7) = 85 + 2*43 = 171.
 
 In practice:
-S(n) = S(n-1) + 2 * S(n-2) for n > 1
-- S(n - 1 ) is the previous number from the current iteration.
-- S(n - 2) is the previous number from the previous iteration. This is multiplied by 2.
+J(n) = J(n-1) + 2 * J(n-2) 
+for n > 1
+- J(n - 1 ) is the previous number from the current iteration.
+- J(n - 2) is the previous number from the previous iteration. This is multiplied by 2.
 
 
 
