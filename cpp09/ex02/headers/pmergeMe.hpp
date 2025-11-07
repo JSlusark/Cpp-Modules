@@ -38,7 +38,7 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
         https://mathworld.wolfram.com/JacobsthalNumber.html
         https://www.geeksforgeeks.org/dsa/jacobsthal-and-jacobsthal-lucas-numbers/
     */
-    logMessage(DEBUG, "Generating Jacobsthal sequence for pend[" + asString(pend_size) + "]");
+    // logMessage(DEBUG, "Generating Jacobsthal sequence for pend[" + asString(pend_size) + "]");
     std::vector<size_t> seq;              // empty vector
     if (pend_size == 0 || pend_size == 1) // means that there are no pending elements, but where does this decrease?!
     {
@@ -63,7 +63,7 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
         j1 = j;
     }
     // logMessage("", "Stoped Jacobstahl collection stopped at " + asString(j));
-    printVector(seq, "Sequence", -1);
+    // printVector(seq, "Sequence", -1);
 
     // Fill gaps to reach size n
     std::vector<size_t> filled;
@@ -112,8 +112,8 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
         }
 
     }
-    printVector(filled, "Insertion order", -1);
-    return seq;
+    printVector(filled, "Order", -1);
+    return filled;
 }
 
 /*
@@ -125,9 +125,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
 {
     if (arr.size() <= 1) // 1 n does not need to be sorted
         return;
-    int iteration_bt = iteration;
 
-    logMessage(C_GRAY "------------ START ITERATION N" + asString(iteration), "------------\n" C_RESET);
 
     logMessage(DEBUG, "Created containers");
     std::vector<std::pair<int, int> > pairs;    // pair container
@@ -163,12 +161,15 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
     printVector(main, "Main", -1);             //-1 as remainder needs to be printed in pend
     printVector(pend, "Pend", remainderValue); // show remainder as part of pending chain
     if (has_remainder)
-        pend.push_back(remainderValue); // adds remainder to pend to be inserted last
+    pend.push_back(remainderValue); // adds remainder to pend to be inserted last
 
     if (main.size() > 2) // recurses until bigchain is 2 numbers
     {
         iteration++;
+        logMessage(C_GRAY "\n------------ RECURSION LEVEL:" + asString(iteration), "------------\n" C_RESET);
         fordJohnsonSort(main, iteration, comparisons);
+        int iteration_bt = iteration;
+        logMessage(C_GRAY "\n------------ END RECURSION LEVEL:" + asString(iteration_bt), "------------\n" C_RESET);
     }
     else if (main.size() == 2)
     {
@@ -179,50 +180,56 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
         }
     }
 
-    logMessage(DEBUG, "Current containers on backtrack:");
-    printPairs(pairs, remainderValue);
+    logMessage(DEBUG, "Backtracking...");
     printVector(main, "Main", -1); // -1 as remainder needs to be printed in pend
     printVector(pend, "Pend", -1); //  -1 as remainder is already in pend at this point
-    logMessage(DEBUG, "Backtracking - Inserting pend into iteration main chain");
 
     std::vector<size_t> jacob = generateJacobsthal(pend.size()); // removed to earlier point as pairing info is lost after recursive sort of main chain
-    logMessage(DEBUG, "Binary insert of pend into main via Jacobsthal sequence");
+    // size of jacob insertion sequence == size of pend
+    // logMessage("", "pend size:" + asString( pend.size()));
+    // logMessage("", "jacob size:" + asString( jacob.size()));
     for (size_t i = 0; i < jacob.size(); i++)
     {
-        size_t n = jacob[i]; // index of number chosen to insert from pend to main
-        if (n < pend.size()) // to avoid out of bounds
-        {
+        // std::cout << i <<std::endl;
+        size_t n = jacob[i] - 1; // js number - 1 to start from index 0
+        logMessage("", C_GRAY "Inserting pend[" + asString(n) + "]:" + asString(pend[n]) + C_RESET);
+
+        std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), pend[n]);
+        main.insert(it, pend[n]);
+
+        // if (n < pend.size()) // to avoid out of bounds
+        // {
             // main = [3, 5, 8, 9] (sorted)
             // pend = [6, 7, 1, 4]
             // jacob = [0, 2, 1, 3]
 
             // Easy Binary insert: returns the position where to insert the pend[jacob[i]] value but does not count comparisons
             //
-            std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), pend[n]);
-            main.insert(it, pend[n]);
+            // std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), pend[n]);
+            // main.insert(it, pend[n]);
 
             // Custom binary search to count comparisons
             // IMPORTANT: DOES NOT COUNT RELATIONSHIP OF PEND ELEMENTS TO ITS BIG PAIR IN MAIN CHAIN!!!
-            size_t left = 0;
-            size_t right = main.size();
-            while (left < right)
-            {
-                size_t mid = left + (right - left) / 2;
-                comparisons++; // Count each comparison
-                if (pend[n] > main[mid])
-                    left = mid + 1;
-                else
-                    right = mid;
-            }
-            // Insert at the found position
-            main.insert(main.begin() + left, pend[n]);
-            logMessage("", C_GRAY "Inserted pend[" + asString(n) + "]:" + asString(pend[n]) + C_RESET);
-        }
+            // size_t left = 0;
+            // size_t right = main.size();
+            // while (left < right)
+            // {
+            //     size_t mid = left + (right - left) / 2;
+            //     comparisons++; // Count each comparison
+            //     if (pend[n] > main[mid])
+            //         left = mid + 1;
+            //     else
+            //         right = mid;
+            // }
+            // // Insert at the found position
+            // main.insert(main.begin() + left, pend[n]);
+        //     logMessage("", C_GRAY "Inserted pend[" + asString(n) + "]:" + asString(pend[n]) + C_RESET);
+        //     n++;
+        // }
     }
     logMessage(DEBUG, "Current number of comparisons: " + asString(comparisons));
 
     arr = main;
     printVector(arr, "Sorted main:", -1);
 
-    logMessage(C_GRAY "\n------------ END ITERATION N" + asString(iteration_bt), "------------\n" C_RESET);
 }
