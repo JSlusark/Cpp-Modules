@@ -56,46 +56,63 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
         j = (j1) + (2 * (j2));
         if (j < pend_size) // adds only if last generated j is < size
         {
-            logMessage("", "J(" + asString(i) + ") = " + asString(j) + C_GRAY "     formula: j = " + asString(j1) + " + (2 * " + asString(j2) + ")" + C_RESET);
+            // logMessage("", "J(" + asString(i) + ") = " + asString(j) + C_GRAY "     formula: j = " + asString(j1) + " + (2 * " + asString(j2) + ")" + C_RESET);
             seq.push_back(j);
         }
         j2 = j1;
         j1 = j;
     }
-    logMessage("", "Stoped Jacobstahl collection stopped at " + asString(j));
-    printVector(seq, "Jacobsthal sequence", -1);
+    // logMessage("", "Stoped Jacobstahl collection stopped at " + asString(j));
+    printVector(seq, "Sequence", -1);
 
     // Fill gaps to reach size n
     std::vector<size_t> filled;
-    /* 
+    /*
         https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91
         For the Jacobsthal number of 3, we insert 2 elements (3 - 1), b3, b2.
         For the Jacobsthal number of 5, we insert 2 elements (5 - 3), b5, b4.
         For the Jacobsthal number of 11, we insert 6 elements (11 - 5), b11, b10, b9, b8,
     */
-    logMessage(LOG, "Sequence[" + asString(seq.size()) + "] - insert numbers to filled");
+    // logMessage(LOG, "Sequence[" + asString(seq.size()) + "] - insert numbers to filled");
     for (size_t i = 0; i < seq.size(); i++)
     {
+        // std::cout << "index" << i<< std::endl;
         if (i == 0)
         {
             filled.push_back(seq[i]);
-            logMessage("", "Added:" + asString(seq[i]));
+            // logMessage("", "Added:" + asString(seq[i]));
             continue;
         }
         size_t a = seq[i - 1]; // prev
         size_t b = seq[i];     // curr
-        logMessage(LOG, "seq[" + asString(i - 1) + "]:" + asString(a) +
-                            "    seq[" + asString(i) + "]:" + asString(b));
-         logMessage(LOG, "Adding from " + asString(b) + " to " + asString(a + 1) );
+        // logMessage(LOG, "seq[" + asString(i - 1) + "]:" + asString(a) +
+        //                     "    seq[" + asString(i) + "]:" + asString(b));
+        //  logMessage(LOG, "Adding from " + asString(b) + " to " + asString(a + 1) );
 
         for (size_t n = b; n > a; n--)
         {
-            logMessage("", "fill: " + asString(n));
+            // logMessage("", "fill: " + asString(n));
             filled.push_back(n);
             // printVector(filled, "Jacobsthal insertion order", -1);
         }
     }
-    printVector(filled, "Jacobsthal insertion order", -1);
+    if(pend_size > seq.back())
+    {
+        size_t a = seq.back(); // prev
+        size_t b = pend_size;     // curr
+        // logMessage(LOG, "last_j:" + asString(a) +
+        //                     "    pend_size:" + asString(b));
+        //  logMessage(LOG, "Adding from " + asString(b) + " to " + asString(a + 1) );
+
+        for (size_t n = b; n > a; n--)
+        {
+            // logMessage("", "fill: " + asString(n));
+            filled.push_back(n);
+            // printVector(filled, "Jacobsthal insertion order", -1);
+        }
+
+    }
+    printVector(filled, "Insertion order", -1);
     return seq;
 }
 
