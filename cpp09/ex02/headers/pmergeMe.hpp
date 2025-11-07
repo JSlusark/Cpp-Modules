@@ -122,7 +122,7 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
         }
 
     }
-    printVector(filled, "Order", -1);
+    // printVector(filled, "Order", -1);
     return filled;
 }
 
@@ -149,6 +149,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
         arr.pop_back(); // store and removes last element to allow pairing of elements in loop
     }
     // Assigns values to each container
+    // std::vector<int> mainIndices; // ??? parallel to main, stores original index or pair id
     for (size_t i = 0; i < arr.size(); i += 2) // we proceed by 2 elements at a time
     {
         int a = arr[i];     // first (smallest)
@@ -164,6 +165,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
         // from each value in the pair, it adds the smallest(a) to pend and biggest(b) to main chain
         pend.push_back(a);
         main.push_back(b); // to process recursively?
+        //  mainIndices.push_back(i/2); // pair ID??
     }
 
     // Recursively applies the fordJohnson until main chain has only 2 keys
@@ -191,6 +193,7 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
     }
 
     logMessage(DEBUG, "Backtracking...");
+    printPairs(pairs, remainderValue);
     printVector(main, "Main", -1); // -1 as remainder needs to be printed in pend
     printVector(pend, "Pend", -1); //  -1 as remainder is already in pend at this point
 
@@ -202,11 +205,17 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
     {
         // std::cout << i <<std::endl;
         size_t j = jacob[i] - 1; // js number - 1 to start from index 0
-        logMessage("", C_GRAY "Inserting j(" + asString(jacob[i]) + ") at pend[" + asString(j) + "]:" + asString(pend[j]) + C_RESET);
+        size_t value = pend[j];
+        size_t partner = pairs[j].second; // WHAAAAAAAt
+        std::vector<int>::iterator upperBound =std::find(main.begin(), main.end(), partner);
+
+        logMessage("", C_GRAY "j(" + asString(jacob[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair <"+ asString(value) + ", " + asString(partner) + ">" + C_RESET);
+
+       // locates 'upperBoundValue' in main
         CountingCompare comp(comparisons);
         // need to consider the subrange!
-        std::vector<int>::iterator pos = std::lower_bound(main.begin(), main.end(), pend[j], comp);
-        main.insert(pos, pend[j]);
+        std::vector<int>::iterator pos = std::lower_bound(main.begin(), upperBound, value, comp);
+        main.insert(pos, value);
 
     }
     logMessage(DEBUG, "Current number of comparisons: " + asString(comparisons));
