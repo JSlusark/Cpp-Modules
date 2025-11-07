@@ -85,6 +85,7 @@ int main(int argc, char **argv)
 
 
         logMessage(LOG, "Args:");
+        size_t original_size = arr.size();
         for (size_t i = 0; i < arr.size(); ++i)
             std::cout << arr[i] << " ";
         std::cout << "\n"
@@ -96,7 +97,7 @@ int main(int argc, char **argv)
 
         // printVector("Final:", arr, -1);
         int max_comp = maxComparisons(arr.size());
-        if (is_sorted(arr))
+        if (is_sorted(arr) && (original_size == arr.size()))
         {
             logMessage(SUCCESS, C_GREEN "Array was successfully sorted in " + asString(iterations) + " iterations." C_RESET);
             if (comparisons <= max_comp)

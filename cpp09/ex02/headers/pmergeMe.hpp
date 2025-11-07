@@ -5,6 +5,16 @@
 #include <algorithm>
 #include <limits> // <--- added
 
+struct CountingCompare {
+    int &counter;
+    CountingCompare(int &c) : counter(c) {}
+    bool operator()(int a, int b) {
+        counter++;
+        return a < b;
+    }
+};
+
+
 // debugging functions
 template <typename T>
 void printVector(T &container, const std::string &name, int remainder)
@@ -191,41 +201,13 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
     for (size_t i = 0; i < jacob.size(); i++)
     {
         // std::cout << i <<std::endl;
-        size_t n = jacob[i] - 1; // js number - 1 to start from index 0
-        logMessage("", C_GRAY "Inserting pend[" + asString(n) + "]:" + asString(pend[n]) + C_RESET);
+        size_t j = jacob[i] - 1; // js number - 1 to start from index 0
+        logMessage("", C_GRAY "Inserting j(" + asString(jacob[i]) + ") at pend[" + asString(j) + "]:" + asString(pend[j]) + C_RESET);
+        CountingCompare comp(comparisons);
+        // need to consider the subrange!
+        std::vector<int>::iterator pos = std::lower_bound(main.begin(), main.end(), pend[j], comp);
+        main.insert(pos, pend[j]);
 
-        std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), pend[n]);
-        main.insert(it, pend[n]);
-
-        // if (n < pend.size()) // to avoid out of bounds
-        // {
-            // main = [3, 5, 8, 9] (sorted)
-            // pend = [6, 7, 1, 4]
-            // jacob = [0, 2, 1, 3]
-
-            // Easy Binary insert: returns the position where to insert the pend[jacob[i]] value but does not count comparisons
-            //
-            // std::vector<int>::iterator it = std::lower_bound(main.begin(), main.end(), pend[n]);
-            // main.insert(it, pend[n]);
-
-            // Custom binary search to count comparisons
-            // IMPORTANT: DOES NOT COUNT RELATIONSHIP OF PEND ELEMENTS TO ITS BIG PAIR IN MAIN CHAIN!!!
-            // size_t left = 0;
-            // size_t right = main.size();
-            // while (left < right)
-            // {
-            //     size_t mid = left + (right - left) / 2;
-            //     comparisons++; // Count each comparison
-            //     if (pend[n] > main[mid])
-            //         left = mid + 1;
-            //     else
-            //         right = mid;
-            // }
-            // // Insert at the found position
-            // main.insert(main.begin() + left, pend[n]);
-        //     logMessage("", C_GRAY "Inserted pend[" + asString(n) + "]:" + asString(pend[n]) + C_RESET);
-        //     n++;
-        // }
     }
     logMessage(DEBUG, "Current number of comparisons: " + asString(comparisons));
 
