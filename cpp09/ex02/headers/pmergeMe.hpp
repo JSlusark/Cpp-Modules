@@ -5,40 +5,56 @@
 #include <algorithm>
 #include <limits> // <--- added
 
-struct CountingCompare {
+struct CountingCompare
+{
     int &counter;
     CountingCompare(int &c) : counter(c) {}
-    bool operator()(int a, int b) {
+    bool operator()(int a, int b)
+    {
         counter++;
         return a < b;
     }
 };
 
-
 // debugging functions
 template <typename T>
-void printVector(T &container, const std::string &name, int remainder)
+void printVector(const T &container, const std::string &name, int remainder)
 {
-    std::cout << C_PURPLE << name << ":" << C_RESET " [";
+    std::cout << C_PURPLE << name << ":" << C_RESET << " [";
     for (size_t i = 0; i < container.size(); ++i)
     {
-        std::cout << container[i];
-        if (i < container.size() - 1)
+        bool isRem = (container[i] == static_cast<typename T::value_type>(remainder));
+        if (isRem) std::cout << C_RED;
+        else       std::cout << C_RESET;
+
+        std::cout << container[i] << C_RESET;
+
+        if (i + 1 < container.size())
             std::cout << ", ";
     }
-    remainder > -1 ? std::cout << ", " << C_RED << remainder << C_RESET << "]" << std::endl : std::cout << "]" << std::endl;
+    std::cout << "]" << std::endl;
 }
 
 void printPairs(const std::vector<std::pair<int, int> > &pairs, int remainder)
 {
-    std::cout << C_YELLOW "Pairs:" << C_RESET " [";
+    std::cout << C_YELLOW "Pairs:" << C_RESET << " [";
+    bool first = true;
+
     for (size_t i = 0; i < pairs.size(); ++i)
     {
+        if (!first) std::cout << ", ";
+        first = false;
+
         std::cout << "(" << pairs[i].first << ", " << pairs[i].second << ")";
-        if (i < pairs.size() - 1)
-            std::cout << ", ";
     }
-    remainder > -1 ? std::cout << ", (" << C_RED << remainder << C_RESET << ")" : std::cout << "";
+
+    if (remainder > -1)
+    {
+        if (!first) std::cout << ", ";
+        std::cout << "(" << C_RED << remainder << C_RESET << ")";
+        first = false;
+    }
+
     std::cout << "]" << std::endl;
 }
 
@@ -106,10 +122,10 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
             // printVector(filled, "Jacobsthal insertion order", -1);
         }
     }
-    if(pend_size > seq.back())
+    if (pend_size > seq.back())
     {
         size_t a = seq.back(); // prev
-        size_t b = pend_size;     // curr
+        size_t b = pend_size;  // curr
         // logMessage(LOG, "last_j:" + asString(a) +
         //                     "    pend_size:" + asString(b));
         //  logMessage(LOG, "Adding from " + asString(b) + " to " + asString(a + 1) );
@@ -120,7 +136,6 @@ std::vector<size_t> generateJacobsthal(size_t pend_size) // n is size of pend_ch
             filled.push_back(n);
             // printVector(filled, "Jacobsthal insertion order", -1);
         }
-
     }
     // printVector(filled, "Order", -1);
     return filled;
@@ -136,9 +151,8 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
     if (arr.size() <= 1) // 1 n does not need to be sorted
         return;
 
-
     logMessage(DEBUG, "Created containers");
-    std::vector<std::pair<int, int> > pairs;    // pair container
+    std::vector<std::pair<int, int> > pairs;    // pair container IS PROBLEMATIC WHEN ODD SIZE!!!
     std::vector<int> pend;                     // smaller values container
     std::vector<int> main;                     // bigger values container
     int has_remainder = (arr.size() % 2 != 0); // if even it's false(0), if odd it's true(1)
@@ -146,34 +160,46 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
     if (has_remainder)
     {
         remainderValue = arr.back();
-        arr.pop_back(); // store and removes last element to allow pairing of elements in loop
+        //     // arr.pop_back(); // store and removes last element to allow pairing of elements in loop
+        //     arr.push_back(-1); // ADDING NEGATIVE NUMBER AS A FLAG TO INDICATE PAIR HAS NO PARTNER (-1)
     }
     // Assigns values to each container
     // std::vector<int> mainIndices; // ??? parallel to main, stores original index or pair id
     for (size_t i = 0; i < arr.size(); i += 2) // we proceed by 2 elements at a time
     {
-        int a = arr[i];     // first (smallest)
-        int b = arr[i + 1]; // second (biggest)
-        if (a > b)          // swaps content for ascending order
+        int a;
+        int b;
+        // creates the fake pair for the remainder
+        if (arr[i] == remainderValue && i == (arr.size() - 1)) // checking arr.size ensure we don't select duplicate values if present
         {
-            std::swap(a, b);
-            comparisons++; // increment comparison count from ford-johnson
+            a = remainderValue;
+            b = -1;
         }
+        else
+        {
+            // creates and sorts the real pairs before pusing to pairs
+            a = arr[i];     // first (smallest)
+            b = arr[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
+            if (a > b)          // swaps content for ascending order
+            {
+                std::swap(a, b);
+                comparisons++; // increment comparison count from ford-johnson
+            }
+        }
+
         std::pair<int, int> keyPair(a, b);
         pairs.push_back(keyPair);
-
-        // from each value in the pair, it adds the smallest(a) to pend and biggest(b) to main chain
-        pend.push_back(a);
-        main.push_back(b); // to process recursively?
-        //  mainIndices.push_back(i/2); // pair ID??
+        if(b != -1) // avoid dummy value gets pushed to main chain
+            main.push_back(b); // only true values are pushed to chain
+        pend.push_back(a); // adds all small numbers + odd one to the pend
     }
 
     // Recursively applies the fordJohnson until main chain has only 2 keys
     printPairs(pairs, remainderValue);
     printVector(main, "Main", -1);             //-1 as remainder needs to be printed in pend
     printVector(pend, "Pend", remainderValue); // show remainder as part of pending chain
-    if (has_remainder)
-    pend.push_back(remainderValue); // adds remainder to pend to be inserted last
+    // if (has_remainder)
+    //     pend.push_back(remainderValue); // adds remainder to pend to be inserted last
 
     if (main.size() > 2) // recurses until bigchain is 2 numbers
     {
@@ -201,26 +227,30 @@ void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons)
     // size of jacob insertion sequence == size of pend
     // logMessage("", "pend size:" + asString( pend.size()));
     // logMessage("", "jacob size:" + asString( jacob.size()));
+    logMessage(DEBUG, "Inserting pending elements into main chain via Jacobsthal sequence");
     for (size_t i = 0; i < jacob.size(); i++)
     {
         // std::cout << i <<std::endl;
         size_t j = jacob[i] - 1; // js number - 1 to start from index 0
-        size_t value = pend[j];
-        size_t partner = pairs[j].second; // WHAAAAAAAt
-        std::vector<int>::iterator upperBound =std::find(main.begin(), main.end(), partner);
+        int value = pend[j];
+        int partner = pairs[j].second; // BUG TO FIX: this is invalid if number is odd and not paired!!
+        std::vector<int>::iterator partnerPosition;
 
-        logMessage("", C_GRAY "j(" + asString(jacob[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair <"+ asString(value) + ", " + asString(partner) + ">" + C_RESET);
+        if (partner == -1) // means that the number in pend had no partner and it's not in main chain
+            partnerPosition = main.end();
+        else
+            partnerPosition = std::find(main.begin(), main.end(), partner);
 
-       // locates 'upperBoundValue' in main
+        // pair <remainderValue, -1> if it hits remainder value
+        logMessage("", C_GRAY "j(" + asString(jacob[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair <" + asString(value) + ", " + asString(partner) + ">" + C_RESET);
+
         CountingCompare comp(comparisons);
         // need to consider the subrange!
-        std::vector<int>::iterator pos = std::lower_bound(main.begin(), upperBound, value, comp);
+        std::vector<int>::iterator pos = std::lower_bound(main.begin(), partnerPosition, value, comp);
         main.insert(pos, value);
-
     }
     logMessage(DEBUG, "Current number of comparisons: " + asString(comparisons));
 
     arr = main;
     printVector(arr, "Sorted main:", -1);
-
 }
