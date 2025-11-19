@@ -1,10 +1,19 @@
-
 #pragma once
+#include <iostream>
+#include <climits>
+#include <cstdlib> // For atol
+#include <algorithm>
+#include <cmath>
+#include <vector>
+#include <deque>
 #include <string>
 #include <iostream>
 #include <sstream>
 
-/* COLORS */
+
+
+/* ------------------------------COLOR CODES----------------------------- */
+
 #define C_RESET "\033[0m"
 #define C_GREEN "\033[38;2;0;255;128m"
 #define C_YELLOW "\033[38;2;255;255;0m"
@@ -14,7 +23,7 @@
 #define C_CYAN "\033[38;2;0;255;255m"
 #define C_GRAY "\033[38;2;150;150;150m"
 
-/* --------------------- LOG TYPES --------------------- */
+/* --------------------- LOGGERS --------------------- */
 #define LOG C_GRAY "[LOG] " C_RESET
 #define SUCCESS C_GREEN "[SUCCESS] " C_RESET
 #define WARNING C_YELLOW "[WARNING] " C_RESET
@@ -36,12 +45,6 @@ inline void logMessage(const std::string &type, const std::string &message)
 	std::cout << type << message << std::endl;
 };
 
-inline std::string asString(int value) {
-    std::stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
 inline void testTitle(const int number, const std::string &title)
 {
 	std::cout << C_CYAN
@@ -49,3 +52,45 @@ inline void testTitle(const int number, const std::string &title)
 			  << C_RESET << std::endl;
 };
 
+
+/* ---------------------- UNAVAILABLE CPP98 FUNCTIONS --------------------- */
+inline std::string asString(int value) {
+    std::stringstream ss;
+    ss << value;
+    return ss.str();
+}
+
+
+/* ------------------------------ARGS CHECK----------------------------- */
+bool isValidNumber(std::string &s, int &conversion);
+
+
+/* ----------------------------RESULT CHECK------------------------------- */
+template <typename T>
+bool is_sorted(const T &container);
+int maxComparisons(int n);
+
+
+/* ------------------------------PRINTING----------------------------- */
+template <typename T>
+void showSequence(std::string state, const T &container, size_t containerSize);
+
+template <typename T>
+void showContainer(const T &container, const std::string &name, int remainder);
+
+void showPairs(const std::vector<std::pair<int, int> > &pairs, int remainder);
+
+
+/* ------------------------------ INCLUDE DEFINITIONS ------------------------------ */
+#include "../src/debug.tpp"
+
+
+
+
+
+
+
+
+
+
+/* ----------------------------------------------------------- */

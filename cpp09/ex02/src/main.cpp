@@ -1,79 +1,10 @@
-#include "../headers/utils.hpp"
 #include "../headers/pmergeMe.hpp"
-#include <iostream>
-#include <vector>
-#include <deque>
-#include <climits>
-#include <cstdlib> // For atol
-#include <algorithm>
-#include <cmath>
-
 #include <ctime>      // clock()
 #include <sys/time.h> // gettimeofday()
 
 #include <iomanip> // for std::setprecision, std::fixed
 #include <sstream> // for std::ostringstream
 
-int maxComparisons(int n)
-{
-    int sum = 0;
-    for (int k = 1; k <= n; ++k)
-    {
-        double value = (3.0 / 4.0) * k;
-        sum += static_cast<int>(ceil(log2(value)));
-    }
-    return sum;
-}
-
-template <typename T>
-bool is_sorted(const T &container)
-{
-    for (size_t i = 0; i < container.size() - 1; i++)
-    {
-        if (container[i] > container[i + 1])
-            return false;
-    }
-    return true;
-}
-
-template <typename T>
-void printContainer(std::string state, const T &container, size_t containerSize)
-{
-    std::cout << state << ": ";
-    for (size_t i = 0; i < containerSize; ++i)
-        std::cout << container[i] << ", ";
-    std::cout << "\n"
-              << std::endl;
-}
-
-bool isValidNumber(std::string &s, int &conversion)
-{
-    if (s.empty())
-    {
-        logMessage(ERROR, "Found empty argument");
-        return false;
-    }
-    if (s[0] == '+') // erases the initial + so that isdigit does not throw error for valid +n numbers
-        s.erase(0, 1);
-
-    for (size_t i = 0; i < s.length(); i++) // runs loop inside the string (after first + if found)
-    {
-        if (!isdigit(s[i])) //
-        {
-            logMessage(ERROR, "Arguments should be valid positive intergers. Invalid argument:'" + s + "'");
-            return false;
-        }
-    }
-
-    long bound = atol(s.c_str());
-    if (bound > INT_MAX || bound < 0)
-    {
-        logMessage(ERROR, "Passed argument bigger thant INT_MAX:'" + s + "'");
-        return false;
-    }
-    conversion = bound;
-    return true;
-}
 
 /* ./PmergeMe $(shuf -i 1-10 -n 3000 | tr "\n" " ") */
 int main(int argc, char **argv)
@@ -95,7 +26,7 @@ int main(int argc, char **argv)
             arr.push_back(conversion);
         }
         size_t initialSize = arr.size();
-        printContainer("Before", arr, initialSize);
+        showSequence("Before", arr, initialSize);
         int iterations = 0;
         int comparisons = 0;
 
@@ -109,7 +40,7 @@ int main(int argc, char **argv)
         fordJohnsonSort(arr, iterations, comparisons);
         // timer ends here
         std::clock_t cpu_end = std::clock();
-        printContainer("After", arr, initialSize);
+        showSequence("After", arr, initialSize);
 
         size_t endSize = arr.size();
         if (!is_sorted(arr))

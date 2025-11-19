@@ -5,9 +5,11 @@ SRCDIR    := src
 INCDIR    := headers
 OBJDIR    := obj
 
-HEADERS = utils.hpp \
-		pmergeMe.hpp
-SRC = main.cpp 
+HEADERS = pmergeMe.hpp \
+		debug.hpp
+SRC = main.cpp \
+	  pmergeMe.cpp \
+	  debug.cpp
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
