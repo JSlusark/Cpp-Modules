@@ -15,20 +15,12 @@ private: // private per recursion?
     int remainderValue;
     int has_remainder;
 
-    std::vector<size_t> generateJacobsthal() // n is size of pend_chain
+    std::vector<size_t> findNumbers(size_t pend_size)
     {
-        size_t pend_size = pend.size();
-        // std::cout << "hello" << std::endl;
-        /*
-            https://mathworld.wolfram.com/JacobsthalNumber.html
-            https://www.geeksforgeeks.org/dsa/jacobsthal-and-jacobsthal-lucas-numbers/
-        */
-        // logMessage(DEBUG, "Generating Jacobsthal sequence for pend[" + asString(pend_size) + "]");
         std::vector<size_t> seq;              // empty vector
         if (pend_size == 0 || pend_size == 1) // means that there are no pending elements, but where does this decrease?!
         {
             seq.push_back(pend_size); // adds 0 or 1 to seq depending on size
-            // showContainer(seq, "Jacobsthal seq", -1);
             return seq;
         }
         size_t j = 0;  // i assign this so i can start the loop?
@@ -40,64 +32,44 @@ private: // private per recursion?
             //         1    +    0
             j = (j1) + (2 * (j2));
             if (j < pend_size) // adds only if last generated j is < size
-            {
-                // logMessage("", "J(" + asString(i) + ") = " + asString(j) + C_GRAY "     formula: j = " + asString(j1) + " + (2 * " + asString(j2) + ")" + C_RESET);
                 seq.push_back(j);
-            }
             j2 = j1;
             j1 = j;
         }
-        // logMessage("", "Stoped Jacobstahl collection stopped at " + asString(j));
-        // showContainer(seq, "Sequence", -1);
+        return seq;
+    }
 
-        // Fill gaps to reach size n
+    std::vector<size_t> filledSequence(std::vector<size_t> &seq, size_t pend_size)
+    {
         std::vector<size_t> filled;
-        /*
-            https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91
-            For the Jacobsthal number of 3, we insert 2 elements (3 - 1), b3, b2.
-            For the Jacobsthal number of 5, we insert 2 elements (5 - 3), b5, b4.
-            For the Jacobsthal number of 11, we insert 6 elements (11 - 5), b11, b10, b9, b8,
-        */
-        // logMessage(LOG, "Sequence[" + asString(seq.size()) + "] - insert numbers to filled");
         for (size_t i = 0; i < seq.size(); i++)
         {
-            // std::cout << "index" << i<< std::endl;
             if (i == 0)
             {
                 filled.push_back(seq[i]);
-                // logMessage("", "Added:" + asString(seq[i]));
                 continue;
             }
             size_t a = seq[i - 1]; // prev
             size_t b = seq[i];     // curr
-            // logMessage(LOG, "seq[" + asString(i - 1) + "]:" + asString(a) +
-            //                     "    seq[" + asString(i) + "]:" + asString(b));
-            //  logMessage(LOG, "Adding from " + asString(b) + " to " + asString(a + 1) );
 
             for (size_t n = b; n > a; n--)
-            {
-                // logMessage("", "fill: " + asString(n));
                 filled.push_back(n);
-                // showContainer(filled, "Jacobsthal insertion order", -1);
-            }
         }
         if (pend_size > seq.back())
         {
             size_t a = seq.back(); // prev
             size_t b = pend_size;  // curr
-            // logMessage(LOG, "last_j:" + asString(a) +
-            //                     "    pend_size:" + asString(b));
-            //  logMessage(LOG, "Adding from " + asString(b) + " to " + asString(a + 1) );
-
             for (size_t n = b; n > a; n--)
-            {
-                // logMessage("", "fill: " + asString(n));
                 filled.push_back(n);
-                // showContainer(filled, "Jacobsthal insertion order", -1);
-            }
         }
         // showContainer(filled, "Order", -1);
         return filled;
+    }
+
+    std::vector<size_t> generateJacobsthal() // n is size of pend_chain
+    {
+        std::vector<size_t> sequence = findNumbers(pend.size());
+        return filledSequence(sequence, pend.size());
     }
 
     void createChains()
@@ -134,6 +106,17 @@ private: // private per recursion?
 
 public:
     int recursionID;
+
+    struct CountComparisons // functor to count comparisons
+    {
+        int &counter;
+        CountComparisons(int &c) : counter(c) {}
+        bool operator()(int a, int b)
+        {
+            counter++;
+            return a < b;
+        }
+    };
 
     PmergeMe(std::vector<int> input, int &iteration, int &comparisons)
         : input(input),
@@ -176,10 +159,7 @@ public:
     {
         return comparisonCount;
     }
-    // const int getRecursionID() const
-    // {
-    //     return recursionID;
-    // }
+
 
     void printStatus()
     {
