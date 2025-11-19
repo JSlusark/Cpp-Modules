@@ -1,5 +1,6 @@
 #pragma once
 #include "./debug.hpp"
+#include "./fordJohnsonSort.hpp"
 #include <iostream>
 #include <vector>
 #include <deque>
@@ -20,3 +21,4 @@ struct CountingCompare
 
 std::vector<size_t> generateJacobsthal(size_t pend_size);
 void fordJohnsonSort(std::vector<int> &arr, int &iteration, int &comparisons);
+
