@@ -23,6 +23,9 @@ void insertionPhase(PmergeMe &set)
 
         PmergeMe::CountComparisons comparisons(set.getComparisonCount());
 
+        // NOTE: FOUND BUG PERHAPS! number at J(1) should always go at beginning of main chain and i should skip the 
+        // comparison/binary insertion pat and can just add at beggining
+
         // need to consider the subrange!
         std::vector<int>::iterator pos = std::lower_bound(set.getMain().begin(), partnerPosition, value, comparisons);
         set.getMain().insert(pos, value);
@@ -34,15 +37,15 @@ void insertionPhase(PmergeMe &set)
 
 void pairingPhase(PmergeMe &set, int &iteration, int &comparisons)
 {
-    logMessage("", "We move forward in the recursion to create pair numbers and divide them in chains");
-    logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(set.recursionID), "------------\n" C_RESET);
     set.printStatus();
+    logMessage("", "Comparisons from pairing: " + asString(set.getComparisonCount()));
     if (set.getMain().size() > 1)
     {
+        logMessage("", "We move forward in the recursion to create pair numbers and divide them in chains");
+        logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(set.recursionID), "------------\n" C_RESET);
         iteration++;
         fordJohnsonSort(set.getMain(), iteration, comparisons);
     }
-    logMessage("", "Comparisons from pairing: " + asString(set.getComparisonCount()));
 }
 
 void fordJohnsonSort(std::vector<int> &input, int &iteration, int &comparisons)
@@ -51,8 +54,8 @@ void fordJohnsonSort(std::vector<int> &input, int &iteration, int &comparisons)
     return;
     
     PmergeMe set(input, iteration, comparisons);
-    pairingPhase(set, iteration, comparisons);
-    insertionPhase(set);
+    pairingPhase(set, iteration, comparisons); 
+    insertionPhase(set); // if main
     
     // Updating global input and comparison
     input = set.getMain();

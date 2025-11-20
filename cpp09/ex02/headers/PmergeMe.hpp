@@ -76,31 +76,33 @@ private: // private per recursion?
     {
         for (size_t i = 0; i < input.size(); i += 2) // we proceed by 2 input at a time
         {
-            int a;
-            int b;
+            int min;
+            int max;
             // creates the fake pair for the remainder
             if (input[i] == remainderValue && i == (input.size() - 1)) // checking input.size ensure we don't select duplicate values if present
             {
-                a = remainderValue;
-                b = -1;
+                min = remainderValue;
+                max = -1;
             }
             else
             {
                 // creates and sorts the real pairs before pusing to pairs
-                a = input[i];     // first (smallest)
-                b = input[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
-                if (a > b)        // swaps content for ascending order
+                // logMessage(DEBUG, "")
+                min = input[i];     // first (smallest)
+                max = input[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
+                if (min > max)        // swaps content for ascending order
                 {
-                    std::swap(a, b);
+                    std::swap(min, max);
+                    logMessage(DEBUG, "swapped to < " + asString(min) + ", " + asString(max) +" >" );
                     comparisonCount++; // increment comparison count from ford-johnson
                 }
             }
 
-            std::pair<int, int> keyPair(a, b);
+            std::pair<int, int> keyPair(min, max);
             pairs.push_back(keyPair);
-            if (b != -1)           // avoid dummy value gets pushed to main chain
-                main.push_back(b); // only true values are pushed to chain
-            pend.push_back(a);     // adds all small numbers + odd one to the pend
+            if (max != -1)           // avoid dummy value gets pushed to main chain
+                main.push_back(max); // only true values are pushed to chain
+            pend.push_back(min);     // adds all small numbers + odd one to the pend
         }
     }
 

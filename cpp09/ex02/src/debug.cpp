@@ -52,9 +52,9 @@ void showPairs(const std::vector<std::pair<int, int> > &pairs, int has_remainder
     for (size_t i = 0; i < pairs.size(); ++i)
     {
         if(has_remainder && pairs[i].second == -1) // the 
-            std::cout <<  C_RED " < " << pairs[i].first << " > " C_RESET;
+            std::cout <<  C_RED " <" << pairs[i].first << "> " C_RESET;
         else 
-            std::cout << " <" << pairs[i].first << ", " << pairs[i].second << "> ";
+            std::cout << " <" << pairs[i].first << "," << pairs[i].second << "> ";
         if(i < (pairs.size() -1))
             std::cout << ",";
     }
