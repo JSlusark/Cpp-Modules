@@ -32,7 +32,7 @@ int main(int argc, char **argv)
         // timer starts before algo
         // CPU time: benchmark algorithm's computational cost.
         // Wall time: measure user-perceived duration.
-        logMessage("", C_YELLOW "FordJohnson Algorythm starts\n" C_RESET);
+        logMessage("", C_YELLOW "FordJohnson Algorythm starts" C_RESET);
         struct timeval tv_start;
         gettimeofday(&tv_start, 0);
         std::clock_t cpu_start = std::clock();
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         fordJohnsonSort(arr, iterations, comparisons);
         // timer ends here
         std::clock_t cpu_end = std::clock();
-        logMessage("", C_YELLOW "\nFordJohnson Algorythm ends" C_RESET);
+        logMessage("", C_YELLOW "FordJohnson Algorythm ends" C_RESET);
         showSequence("After", arr, initialSize);
 
         size_t endSize = arr.size();
@@ -64,13 +64,13 @@ int main(int argc, char **argv)
                 cpuFmt.setf(std::ios::fixed);
                 cpuFmt << std::setprecision(5) << cpu_micro_double;
 
-                logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterations) + " iterations and in " + asString(comparisons) + "/" + asString(max_comp) + " comparison count." C_RESET);
+                logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterations) + " iterations and in " + C_GREEN + asString(comparisons) + C_RESET + "/" + asString(max_comp) + " comparison count." C_RESET);
                 logMessage(LOG, C_CYAN "Time taken to process " + asString(initialSize) +
                                     " elements: " + cpuFmt.str() + " us" C_RESET);
             }
             else
             {
-                logMessage(ERROR, C_RED "Container was sorted but exceeded comparison limit (" + asString(comparisons) + " > " + asString(max_comp) + ")!" C_RESET);
+                logMessage(ERROR, "Container was sorted but exceeded comparison limit: " C_RED + asString(comparisons) + C_RESET +"/" + asString(max_comp) + ")!" C_RESET);
                 return 1;
             }
         }

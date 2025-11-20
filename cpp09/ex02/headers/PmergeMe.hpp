@@ -74,6 +74,7 @@ private: // private per recursion?
 
     void createChains()
     {
+        // NOTE!!!! IF SIZE OF PAIRS IS 2 I SHOULD NOT SWITCH!!!!
         for (size_t i = 0; i < input.size(); i += 2) // we proceed by 2 input at a time
         {
             int min;
@@ -94,7 +95,7 @@ private: // private per recursion?
                 {
                     std::swap(min, max);
                     counter++; // increment comparison count from ford-johnson
-                    logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >    Counter:" + asString(counter) + C_RESET);
+                    logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) +  " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
                 }
             }
 
@@ -116,7 +117,7 @@ public:
         bool operator()(int a, int b)
         {
             counter++;
-            logMessage("", "Compared " + asString(a) + " with " + asString(b) + C_CYAN"   Counter: " C_RESET + asString(counter));
+            logMessage("", C_GRAY "Compared " + asString(a) + " with " + asString(b) + C_CYAN"   Counter: " C_RESET + asString(counter));
             return a < b;
         };
     };
