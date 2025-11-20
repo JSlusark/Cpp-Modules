@@ -3,8 +3,9 @@
 
 void insertionPhase(PmergeMe &set)
 {
-    logMessage("", "We backtrack the recursion and use Jacobstahl index and partner info for binary insertion");
-    showContainer(set.getMain(), "Previous merge", set.getRemainderValue(), set.getRemainderInfo());
+    logMessage("", "We move backward in the previous recursion...");
+    logMessage(C_CYAN "Recursion level: " C_RESET, asString(set.getRecursionLvl()));
+    // showContainer(set.getMain(), "Previous merge", set.getRemainderValue(), set.getRemainderInfo());
     for (size_t i = 0; i < set.getJacobsthal().size(); i++)
     {
         size_t j = set.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
@@ -16,48 +17,57 @@ void insertionPhase(PmergeMe &set)
             partnerPosition = set.getMain().end();
         else
             partnerPosition = std::find(set.getMain().begin(), set.getMain().end(), partner);
-        if(partner == -1)
-            logMessage("", C_GRAY "j(" + asString(set.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd  <   " + asString(value) + "   >" + C_RESET);
+        std::string message;
+        if (partner == -1)
+            message = "j(" + asString(set.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd  <   " + asString(value) + "   > to be inserted in main";
         else
-            logMessage("", C_GRAY "j(" + asString(set.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " >" + C_RESET);
+            message = "j(" + asString(set.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to be inserted in main";
 
-        PmergeMe::CountComparisons comparisons(set.getComparisonCount());
+        showContainer(set.getMain(), C_GRAY + message + C_RESET, set.getRemainderValue() , set.getRemainderInfo()); 
+        PmergeMe::CountComparisons comparisons(set.getCounter()); // i might need to initialise this somewhere else?
 
-        // NOTE: FOUND BUG PERHAPS! number at J(1) should always go at beginning of main chain and i should skip the 
+        // NOTE: FOUND BUG PERHAPS! number at J(1) should always go at beginning of main chain and i should skip the
         // comparison/binary insertion pat and can just add at beggining
 
         // need to consider the subrange!
-        std::vector<int>::iterator pos = std::lower_bound(set.getMain().begin(), partnerPosition, value, comparisons);
+        // if()
+        // needs to start from higher bound and then move lower no? here it moves from begin to partner position no?
+        std::vector<int>::iterator pos = std::upper_bound(set.getMain().begin(), partnerPosition, value, comparisons);
         set.getMain().insert(pos, value);
     }
-    logMessage("", "Comparisons from insertions: " + asString(set.getComparisonCount()));
     showContainer(set.getMain(), "Current merge", set.getRemainderValue(), set.getRemainderInfo());
-    logMessage(C_GRAY "\n------------ EXITED RECURSION LEVEL:" + asString(set.recursionID), "------------\n" C_RESET);
+    logMessage("", C_CYAN "Current total count: " C_RESET + asString(set.getCounter()));
+    if (set.getRecursionLvl() > 0)
+        logMessage(C_GRAY "\n------------ EXITED RECURSION LEVEL:" + asString(set.recursionLvl), "------------\n" C_RESET);
 }
 
 void pairingPhase(PmergeMe &set, int &iteration, int &comparisons)
 {
-    set.printStatus();
-    logMessage("", "Comparisons from pairing: " + asString(set.getComparisonCount()));
+    (void)comparisons;
+    // logMessage("", "Counter: " + asString(set.getCounter()));
+    set.containerStatus();
     if (set.getMain().size() > 1)
     {
-        logMessage("", "We move forward in the recursion to create pair numbers and divide them in chains");
-        logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(set.recursionID), "------------\n" C_RESET);
+        logMessage("", "We move forward in the next recursion...");
         iteration++;
-        fordJohnsonSort(set.getMain(), iteration, comparisons);
+        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(set.getRecursionLvl()) , "------------\n" C_RESET);
+        fordJohnsonSort(set.getMain(), iteration, set.getCounter());
     }
 }
 
 void fordJohnsonSort(std::vector<int> &input, int &iteration, int &comparisons)
 {
     if (input.size() <= 1) // 1 n does not need to be sorted
-    return;
-    
+        return;
+    if (iteration > 0)
+        logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(iteration), "------------\n" C_RESET);
+    logMessage(C_CYAN "Recursion level: " C_RESET, asString(iteration));
+    showSequence("Received container", input, input.size());
     PmergeMe set(input, iteration, comparisons);
-    pairingPhase(set, iteration, comparisons); 
+    pairingPhase(set, iteration, comparisons);
     insertionPhase(set); // if main
-    
+
     // Updating global input and comparison
     input = set.getMain();
-    comparisons += set.getComparisonCount();
+    comparisons = set.getCounter();
 }

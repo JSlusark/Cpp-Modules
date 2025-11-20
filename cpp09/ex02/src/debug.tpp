@@ -23,8 +23,7 @@ void showSequence(std::string state, const T &container, size_t containerSize)
         if (i < (container.size() - 1))
             std::cout << ", ";
     }
-    std::cout << "\n"
-              << std::endl;
+    std::cout << std::endl;
 }
 
 template <typename T> // for pend and main chains

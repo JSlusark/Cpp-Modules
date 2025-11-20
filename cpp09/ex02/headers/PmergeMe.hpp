@@ -11,7 +11,7 @@ private: // private per recursion?
     std::vector<int> main;                  // bigger values container
     std::vector<size_t> jacobsthal;
 
-    int comparisonCount;
+    int counter;
     int remainderValue;
     int has_remainder;
 
@@ -90,11 +90,11 @@ private: // private per recursion?
                 // logMessage(DEBUG, "")
                 min = input[i];     // first (smallest)
                 max = input[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
-                if (min > max)        // swaps content for ascending order
+                if (min > max)      // swaps content for ascending order
                 {
                     std::swap(min, max);
-                    logMessage(DEBUG, "swapped to < " + asString(min) + ", " + asString(max) +" >" );
-                    comparisonCount++; // increment comparison count from ford-johnson
+                    counter++; // increment comparison count from ford-johnson
+                    logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >    Counter:" + asString(counter) + C_RESET);
                 }
             }
 
@@ -107,7 +107,7 @@ private: // private per recursion?
     }
 
 public:
-    int recursionID;
+    int recursionLvl;
 
     struct CountComparisons // functor to count comparisons
     {
@@ -116,16 +116,17 @@ public:
         bool operator()(int a, int b)
         {
             counter++;
+            logMessage("", "Compared " + asString(a) + " with " + asString(b) + C_CYAN"   Counter: " C_RESET + asString(counter));
             return a < b;
-        }
+        };
     };
 
     PmergeMe(std::vector<int> input, int &iteration, int &comparisons)
         : input(input),
-          comparisonCount(comparisons),
+          counter(comparisons),
           remainderValue(-1),
           has_remainder(0),
-          recursionID(iteration)
+          recursionLvl(iteration)
     {
         has_remainder = (input.size() % 2 != 0); // if even it's false(0), if odd it's true(1)
         if (has_remainder)
@@ -167,16 +168,19 @@ public:
         return remainderValue;
     }
 
-    int &getComparisonCount()
+    int &getCounter()
     {
-        return comparisonCount;
+        return counter;
+    }
+    int &getRecursionLvl()
+    {
+        return recursionLvl;
     }
 
-
-    void printStatus()
+    void containerStatus()
     {
-        logMessage(C_CYAN "Recursion level: " C_RESET, asString(recursionID));
         showPairs(pairs, remainderValue);
+        // logMessage("", "Counter: " + asString(counter));
         showContainer(main, "Main", remainderValue, has_remainder);
         showContainer(pend, "Pend", remainderValue, has_remainder);
     }
@@ -187,7 +191,7 @@ public:
         if (main[0] > main[1])
         {
             std::swap(main[0], main[1]);
-            comparisonCount++; // increment comparison count also here
+            counter++; // increment comparison count also here
         }
     }
 };
