@@ -7,11 +7,10 @@ bool is_sorted(const T &container)
     for (size_t i = 0; i < container.size() - 1; i++)
     {
         if (container[i] > container[i + 1])
-        return false;
+            return false;
+    }
+    return true;
 }
-return true;
-}
-
 
 /* ------------------------------PRINTING----------------------------- */
 template <typename T> // for initial and final sequences
@@ -19,25 +18,32 @@ void showSequence(std::string state, const T &container, size_t containerSize)
 {
     std::cout << state << ": ";
     for (size_t i = 0; i < containerSize; ++i)
-        std::cout << container[i] << ", ";
+    {
+        std::cout << container[i];
+        if (i < (container.size() - 1))
+            std::cout << ", ";
+    }
     std::cout << "\n"
               << std::endl;
 }
 
 template <typename T> // for pend and main chains
-void showContainer(const T &container, const std::string &name, int remainder)
+void showContainer(const T &container, const std::string &name, int remainderValue, int hasRemainder)
 {
-    std::cout << C_PURPLE << name << ":" << C_RESET << " [";
+    // logMessage(DEBUG, "remainderValue:'" + asString(remainderValue) + "'   hasRemainder:'" + asString(hasRemainder) + "' ");
+    std::cout << name << ":" << C_RESET << " [ ";
     for (size_t i = 0; i < container.size(); ++i)
     {
-        bool isRem = (container[i] == static_cast<typename T::value_type>(remainder));
-        if (isRem) std::cout << C_RED;
-        else       std::cout << C_RESET;
+        if (hasRemainder && (container[i] == remainderValue))
+            std::cout << C_RED << container[i] << C_RESET;
+        else
+            std::cout << container[i];
 
-        std::cout << container[i] << C_RESET;
-
-        if (i + 1 < container.size())
+        if (i < (container.size() - 1))
             std::cout << ", ";
+
+        // if (i + 1 < container.size())
+        //     std::cout << ", ";
     }
-    std::cout << "]" << std::endl;
+    std::cout << " ]" << std::endl;
 }

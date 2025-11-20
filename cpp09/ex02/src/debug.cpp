@@ -46,25 +46,17 @@ int maxComparisons(int n)
 /* ------------------------------PRINTING----------------------------- */
 
 
-void showPairs(const std::vector<std::pair<int, int> > &pairs, int remainder)
+void showPairs(const std::vector<std::pair<int, int> > &pairs, int has_remainder)
 {
     std::cout << C_YELLOW "Pairs:" << C_RESET << " [";
-    bool first = true;
-
     for (size_t i = 0; i < pairs.size(); ++i)
     {
-        if (!first) std::cout << ", ";
-        first = false;
-
-        std::cout << "(" << pairs[i].first << ", " << pairs[i].second << ")";
+        if(has_remainder && pairs[i].second == -1) // the 
+            std::cout <<  C_RED " < " << pairs[i].first << " > " C_RESET;
+        else 
+            std::cout << " <" << pairs[i].first << ", " << pairs[i].second << "> ";
+        if(i < (pairs.size() -1))
+            std::cout << ",";
     }
-
-    if (remainder > -1)
-    {
-        if (!first) std::cout << ", ";
-        std::cout << "(" << C_RED << remainder << C_RESET << ")";
-        first = false;
-    }
-
     std::cout << "]" << std::endl;
 }

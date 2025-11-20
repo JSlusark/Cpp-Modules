@@ -155,6 +155,16 @@ public:
         return jacobsthal;
     }
 
+    int &getRemainderInfo()
+    {
+        return has_remainder;
+    }
+
+    int &getRemainderValue()
+    {
+        return remainderValue;
+    }
+
     int &getComparisonCount()
     {
         return comparisonCount;
@@ -165,8 +175,8 @@ public:
     {
         logMessage(C_CYAN "Recursion level: " C_RESET, asString(recursionID));
         showPairs(pairs, remainderValue);
-        showContainer(main, "Main", -1); // -1 as remainder needs to be printed in pend
-        showContainer(pend, "Pend", -1); //  -1 as remainder is already in pend at this point
+        showContainer(main, "Main", remainderValue, has_remainder);
+        showContainer(pend, "Pend", remainderValue, has_remainder);
     }
 
     // change with sort pair
