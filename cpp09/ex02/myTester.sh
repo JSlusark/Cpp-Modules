@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 PROGRAM="./PmergeMe"
+GREEN="\033[32m"
+RED="\033[31m"
+RESET="\033[0m"
+
 
 # ======== GET INPUT NUMBERS ========
 if [ $# -lt 1 ]; then
@@ -12,7 +16,20 @@ NUMBERS=("$@")
 
 fail_count=0
 fails=()
-perm_count=0
+permutations=0
+total_perms=0
+
+# first compute total permutations (n!)
+factorial() {
+    local n=$1
+    local result=1
+    for ((i=2; i<=n; i++)); do
+        result=$((result * i))
+    done
+    echo $result
+}
+
+total_perms=$(factorial ${#NUMBERS[@]})
 
 permute() {
     local arr=("$@")
@@ -21,7 +38,6 @@ permute() {
     local c=()
     for ((i=0; i<n; i++)); do c[i]=0; done
 
-    # first permutation
     run_test "${arr[@]}"
 
     local i=1
@@ -33,7 +49,6 @@ permute() {
                 swap_index=${c[$i]}
             fi
 
-            # swap
             tmp=${arr[$i]}
             arr[$i]=${arr[$swap_index]}
             arr[$swap_index]=$tmp
@@ -51,25 +66,34 @@ permute() {
 
 run_test() {
     local args=("$@")
-    echo "Running: $PROGRAM ${args[*]}"
-    $PROGRAM "${args[@]}"
+
+    # silents program execution (ergo -> printing)
+    $PROGRAM "${args[@]}" > /dev/null 2>&1
     ret=$?
 
-    perm_count=$((perm_count + 1))
+    permutations=$((permutations + 1))
 
     if [ $ret -ne 0 ]; then
         fail_count=$((fail_count + 1))
         fails+=("${args[*]}")
     fi
+
+    ok_count=$((permutations - fail_count))
+
+    # overwrites console 
+    printf "\r[%d/%d] SUCCESS=${GREEN}%d${RESET}  FAIL=${RED}%d${RESET}" \
+        "$permutations" "$total_perms" "$ok_count" "$fail_count"
 }
 
 # run all permutations
 permute "${NUMBERS[@]}"
 
-# summary
+# print final newline
 echo
+
+# summary
 echo "======================="
-echo "Total permutations: $perm_count"
+echo "Total permutations: $permutations"
 echo "Failures: $fail_count"
 
 if [ $fail_count -gt 0 ]; then

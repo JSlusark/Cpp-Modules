@@ -74,7 +74,6 @@ private: // private per recursion?
 
     void createChains()
     {
-        // NOTE!!!! IF SIZE OF PAIRS IS 2 I SHOULD NOT SWITCH!!!!
         for (size_t i = 0; i < input.size(); i += 2) // we proceed by 2 input at a time
         {
             int min;
@@ -82,6 +81,7 @@ private: // private per recursion?
             // creates the fake pair for the remainder
             if (input[i] == remainderValue && i == (input.size() - 1)) // checking input.size ensure we don't select duplicate values if present
             {
+                // break;
                 min = remainderValue;
                 max = -1;
             }
@@ -93,9 +93,10 @@ private: // private per recursion?
                 max = input[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
                 if (min > max)      // swaps content for ascending order
                 {
+                    // i should swap also the container in chain
                     std::swap(min, max);
                     counter++; // increment comparison count from ford-johnson
-                    logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) +  " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
+                    logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
                 }
             }
 
@@ -117,7 +118,7 @@ public:
         bool operator()(int a, int b)
         {
             counter++;
-            logMessage("", C_GRAY "Compared " + asString(a) + " with " + asString(b) + C_CYAN"   Counter: " C_RESET + asString(counter));
+            logMessage("", C_GRAY "Compared " + asString(b) + " with " + asString(a) + C_CYAN"   Counter: " C_RESET + asString(counter));
             return a < b;
         };
     };
@@ -194,5 +195,41 @@ public:
             std::swap(main[0], main[1]);
             counter++; // increment comparison count also here
         }
+    }
+
+    void updatePend()
+    {
+        // std::vector<int> updatedPend;
+
+        // for (size_t i = 0; i < pairs.size(); ++i)
+        //     updatedPend.push_back(pairs[i].first);
+        // if(has_remainder)
+        //     updatedPend.push_back(remainderValue);
+
+        // showContainer(updatedPend, "Pend", remainderValue, has_remainder);
+
+        // pend = updatedPend;
+
+        std::vector<int> updatedPend;
+
+        for (size_t i = 0; i < main.size(); ++i)
+        {
+            // std::vector<int>::iterator pair = std::find(main.begin(), main.end(), main[i]);
+            // std::cout << "< " << *pair << " >" << std::endl;
+
+            int big = main[i];
+            // since the pair will be <first, second>, how can i put the first value of pair in updated pend
+
+            for (size_t j = 0; j < pairs.size(); ++j)
+            {
+                if (pairs[j].second == big)
+                    updatedPend.push_back(pairs[j].first);
+            };
+        }
+        
+        if(has_remainder)
+            updatedPend.push_back(remainderValue);
+        // showContainer(updatedPend, "Pend", remainderValue, has_remainder);
+        pend = updatedPend;
     }
 };
