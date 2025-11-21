@@ -1,22 +1,27 @@
 #!/usr/bin/env bash
 
-# ========= CONFIG =========
-NUMBERS=(1 2 3 4 5)
 PROGRAM="./PmergeMe"
-# ==========================
+
+# ======== GET INPUT NUMBERS ========
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 n1 n2 n3 ..."
+    exit 1
+fi
+NUMBERS=("$@")
+# ===================================
 
 fail_count=0
 fails=()
+perm_count=0
 
 permute() {
     local arr=("$@")
     local n=${#arr[@]}
 
-    # Heap's algorithm
     local c=()
     for ((i=0; i<n; i++)); do c[i]=0; done
 
-    # First permutation
+    # first permutation
     run_test "${arr[@]}"
 
     local i=1
@@ -50,6 +55,8 @@ run_test() {
     $PROGRAM "${args[@]}"
     ret=$?
 
+    perm_count=$((perm_count + 1))
+
     if [ $ret -ne 0 ]; then
         fail_count=$((fail_count + 1))
         fails+=("${args[*]}")
@@ -62,13 +69,14 @@ permute "${NUMBERS[@]}"
 # summary
 echo
 echo "======================="
-echo "Total permutations: 120"
+echo "Total permutations: $perm_count"
 echo "Failures: $fail_count"
 
 if [ $fail_count -gt 0 ]; then
     echo "Failing permutations:"
+    > failures.txt
     for f in "${fails[@]}"; do
-        echo "$f"
-    done > failures.txt
+        echo "$f" | tee -a failures.txt
+    done
     echo "Saved failing inputs to failures.txt"
 fi
