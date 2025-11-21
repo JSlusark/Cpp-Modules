@@ -70,7 +70,7 @@ int main(int argc, char **argv)
             }
             else
             {
-                logMessage(ERROR, "Container was sorted but exceeded comparison limit: " C_RED + asString(comparisons) + C_RESET +"/" + asString(max_comp) + ")!" C_RESET);
+                logMessage(ERROR, "Container was sorted but exceeded comparison limit for container of "  + asString(endSize) + " numbers: " C_RED + asString(comparisons) + C_RESET +"/" + asString(max_comp) + ")!" C_RESET);
                 return 1;
             }
         }
