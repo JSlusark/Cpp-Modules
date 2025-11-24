@@ -62,21 +62,24 @@ void insertionPhase(PmergeMe &set)
 void pairingPhase(PmergeMe &set, int &iteration, int &comparisons)
 {
     (void)comparisons;
-    // logMessage("", "Counter: " + asString(set.getCounter()));
+    logMessage("", "Counter: " + asString(set.getCounter()));
     set.containerStatus();
     if (set.getMain().size() > 1)
     {
         logMessage("", "We move forward in the next recursion...");
         iteration++;
         // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(set.getRecursionLvl()) , "------------\n" C_RESET);
-        fordJohnsonSort(set.getMain(), iteration, set.getCounter());
+        sortContainer(set.getMain(), iteration, set.getCounter());
     }
 }
 
-void fordJohnsonSort(std::vector<int> &input, int &iteration, int &comparisons)
+void sortContainer(std::vector<int> &input, int &iteration, int &comparisons)
 {
     if (input.size() <= 1) // 1 n does not need to be sorted
-        return;
+     {
+         logMessage(LOG, "???");
+           return;
+    }
     if (iteration > 0)
         logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(iteration), "------------\n" C_RESET);
     logMessage(C_CYAN "Recursion level: " C_RESET, asString(iteration));
@@ -85,7 +88,94 @@ void fordJohnsonSort(std::vector<int> &input, int &iteration, int &comparisons)
     pairingPhase(set, iteration, comparisons);
     insertionPhase(set); // if main
 
+
     // Updating global input and comparison
     input = set.getMain();
     comparisons = set.getCounter();
+}
+
+// -----------------------------CLASS FUNCTION-----------------------------------------
+
+fordJohnsonSort::fordJohnsonSort(int argc, char **argv, std::vector<int> received_container) // vect will me a template later
+    : iterations(0),
+      comparisons(0),
+      container(received_container),
+      cpu_start(0),
+      cpu_end(0)
+{
+    for (int i = 1; i < argc; ++i)
+    {
+        int conversion;
+        std::string s = argv[i];
+        if (!isValidNumber(s, conversion))
+            throw std::runtime_error("Invalid argument: " + s);
+        container.push_back(conversion);
+    }
+    containerSize = container.size();
+    comparisonsLimit = maxComparisons(containerSize);
+    comparisonsLimit = maxComparisons(containerSize);
+    showSequence("Before", container, containerSize);
+}
+
+fordJohnsonSort::~fordJohnsonSort() {}
+
+void fordJohnsonSort::startSorting()
+{
+    logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
+
+    // timer starts here - create function?
+    gettimeofday(&tv_start, 0);
+    cpu_start = std::clock();
+
+    showSequence("before sort", container, containerSize);
+    sortContainer(container, iterations, comparisons);
+    // logMessage(LOG, "after sort container!!");
+
+
+    // timer ends here - create function?
+    cpu_end = std::clock();
+    gettimeofday(&tv_end, 0);
+
+    logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
+}
+
+int fordJohnsonSort::incorrectSort()
+{
+    size_t resultSize = container.size(); // to make sure the insertion part did not skip any number in the way
+    if (containerSize != resultSize)
+    {
+        errorMessage = "Container size was not preserved after sorting! Size before sort: " + asString(containerSize) + ", Size after sort: " + asString(resultSize);
+        return 1;
+    }
+    if (comparisons > comparisonsLimit)
+    {
+        errorMessage = "Container was sorted but exceeded comparison limit for container of " + asString(resultSize) + " numbers: " C_RED + asString(comparisons) + C_RESET + "/" + asString(comparisonsLimit) + ")!";
+        return 1;
+    }
+    if (!is_sorted(container))
+    {
+        errorMessage = "Container is was not sorted correctly!";
+        return 1;
+    }
+
+    return 0;
+}
+
+void fordJohnsonSort::showResults()
+{
+    showSequence("After", container, containerSize);
+    if (incorrectSort()) // i dont want to trhow error as the code went as expected but if this hits it means that the algo failed
+        logMessage(ERROR, errorMessage);
+    else
+    {
+        // convert time?
+        double cpu_micro_double = (double)(cpu_end - cpu_start) / CLOCKS_PER_SEC * 1e6;
+        std::ostringstream cpuFmt;
+        cpuFmt.setf(std::ios::fixed);
+        cpuFmt << std::setprecision(5) << cpu_micro_double;
+
+        logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterations) + " iterations and in " + C_GREEN + asString(comparisons) + C_RESET + "/" + asString(comparisonsLimit) + " comparison count." C_RESET);
+        logMessage(LOG, C_CYAN "Time taken to process " + asString(containerSize) +
+                            " elements: " + cpuFmt.str() + " us" C_RESET);
+    }
 }

@@ -15,7 +15,7 @@ bool isValidNumber(std::string &s, int &conversion)
     {
         if (!isdigit(s[i])) //
         {
-            logMessage(ERROR, "Arguments should be valid positive intergers. Invalid argument:'" + s + "'");
+            logMessage(ERROR, "Arguments should be valid positive intergers.");
             return false;
         }
     }
@@ -23,7 +23,7 @@ bool isValidNumber(std::string &s, int &conversion)
     long bound = atol(s.c_str());
     if (bound > INT_MAX || bound < 0)
     {
-        logMessage(ERROR, "Passed argument bigger thant INT_MAX:'" + s + "'");
+        logMessage(ERROR, "Passed argument bigger thant INT_MAX.");
         return false;
     }
     conversion = bound;

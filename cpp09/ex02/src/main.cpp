@@ -15,64 +15,18 @@ int main(int argc, char **argv)
     }
     else
     {
-        std::vector<int> arr;
-        for (int i = 1; i < argc; ++i)
+        try
         {
-            int conversion;
-            std::string s = argv[i];
-            if (!isValidNumber(s, conversion))
-                return 1;
-            arr.push_back(conversion);
+            std::vector<int> container;
+            fordJohnsonSort vector(argc, argv, container); // vect will me a template later
+            vector.startSorting();
+            vector.showResults();
+            // fordJohnsonSort my_algo(argc, argv, "vector");
         }
-        size_t initialSize = arr.size();
-        showSequence("Before", arr, initialSize);
-        int iterations = 0;
-        int comparisons = 0;
-
-        // timer starts before algo
-        // CPU time: benchmark algorithm's computational cost.
-        // Wall time: measure user-perceived duration.
-        logMessage("", C_YELLOW "FordJohnson Algorythm starts" C_RESET);
-        struct timeval tv_start;
-        gettimeofday(&tv_start, 0);
-        std::clock_t cpu_start = std::clock();
-        // algo call
-        fordJohnsonSort(arr, iterations, comparisons);
-        // timer ends here
-        std::clock_t cpu_end = std::clock();
-        logMessage("", C_YELLOW "FordJohnson Algorythm ends" C_RESET);
-        showSequence("After", arr, initialSize);
-
-        size_t endSize = arr.size();
-        if (!is_sorted(arr))
+        catch (const std::exception &e)
         {
-            logMessage(ERROR, C_RED "Container is was not sorted correctly!" C_RESET);
+            logMessage(ERROR, e.what());
             return 1;
-        }
-        else
-        {
-            if (initialSize != endSize)
-            {
-                logMessage(ERROR, C_RED "Container size was not preserved after sorting! Size before sort: " + asString(initialSize) + ", Size after sort: " + asString(endSize) + C_RESET);
-                return 1;
-            }
-            int max_comp = maxComparisons(endSize);
-            if (comparisons <= max_comp)
-            {
-                double cpu_micro_double = (double)(cpu_end - cpu_start) / CLOCKS_PER_SEC * 1e6;
-                std::ostringstream cpuFmt;
-                cpuFmt.setf(std::ios::fixed);
-                cpuFmt << std::setprecision(5) << cpu_micro_double;
-
-                logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterations) + " iterations and in " + C_GREEN + asString(comparisons) + C_RESET + "/" + asString(max_comp) + " comparison count." C_RESET);
-                logMessage(LOG, C_CYAN "Time taken to process " + asString(initialSize) +
-                                    " elements: " + cpuFmt.str() + " us" C_RESET);
-            }
-            else
-            {
-                logMessage(ERROR, "Container was sorted but exceeded comparison limit for container of "  + asString(endSize) + " numbers: " C_RED + asString(comparisons) + C_RESET +"/" + asString(max_comp) + ")!" C_RESET);
-                return 1;
-            }
         }
     }
 
