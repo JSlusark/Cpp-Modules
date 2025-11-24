@@ -1,8 +1,64 @@
 #include "../headers/PmergeMe.hpp"
 
+/* ------------------------------ CONSTRUCTORS --------------------------------- */
+PmergeMe::PmergeMe(std::vector<int> selected_container, int &iteration, int &comparisons)
+    : container(selected_container),
+      remainderValue(-1),
+      has_remainder(0),
+      counter(comparisons),
+      recursionLvl(iteration)
+{
+    has_remainder = (container.size() % 2 != 0); // if remainder is not 0 has_remainder is true
+    if (has_remainder)
+        remainderValue = container.back();
+    createChains();
+    pendSize = pend.size();
+    generateJacobsthal();
+};
+
+PmergeMe::~PmergeMe() {};
+// ADD COPY CONSTRUCTOR AND ASSIGN<EN OPERATOR!!!
+
+
+/* ------------------------------CHAIN CREATION--------------------------------- */
+std::pair<int, int> PmergeMe::orderPair(size_t i)
+{
+    int min;
+    int max;
+    if (container[i] == remainderValue && i == (container.size() - 1)) // i create a fake pair and make sure to select the remainder (handles dups)
+    {
+        min = remainderValue;
+        max = -1; // i use a dummy max value to recognise the remainder and assign to a fake pair
+    }
+    else
+    {
+        min = container[i];     // first (smallest)
+        max = container[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
+        if (min > max)      // swaps content for ascending order
+        {
+            // i should swap also the container in chain
+            std::swap(min, max); // could do the swap later?
+            counter++; // increment comparison count from ford-johnson
+            logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
+        }
+    }
+    return(std::make_pair(min, max));
+}
+
+void PmergeMe::createChains()
+{
+    for (size_t i = 0; i < container.size(); i += 2) // we proceed by 2n at a time (pairs duh)
+    {
+        std::pair<int, int> newPair = orderPair(i);
+        pairs.push_back(newPair);
+        if (newPair.second != -1)           // only add true max values to avoid undefined behaviour with the -1 from <odd, -1> pair
+            main.push_back(newPair.second);
+        pend.push_back(newPair.first);     // adding all min value, including odd number
+    }
+}
+
 
 /* ------------------------------JACOBSTAHL SEQUENCE FUNCTIONS--------------------------------- */
-
 void PmergeMe::generateJacobsthal() // n is size of pend_chain
 {
     findNumbers();
@@ -17,8 +73,8 @@ void PmergeMe::findNumbers()
         return;
     }
     size_t j = 0;
-    size_t j1 = 1; // n - 1 (prev)
-    size_t j2 = 0; // n - 2 (prev_prev)
+    size_t j1 = 1;                        // n - 1 (prev)
+    size_t j2 = 0;                        // n - 2 (prev_prev)
     for (size_t i = 0; j < pendSize; i++) // jacobstahl number has to be < than pendSize
     {
         /* J(n) = J(n-1) + 2 * J(n-2)  */
@@ -49,7 +105,7 @@ void PmergeMe::completeSequence()
     if (pendSize > jacobsthal.back())
     {
         size_t a = jacobsthal.back(); // prev
-        size_t b = pendSize;  // curr
+        size_t b = pendSize;          // curr
         for (size_t n = b; n > a; n--)
             fill.push_back(n);
     }
@@ -58,64 +114,8 @@ void PmergeMe::completeSequence()
 }
 
 
-/* ------------------------------CHAIN CREATION--------------------------------- */
 
-
-void PmergeMe::createChains()
-{
-    for (size_t i = 0; i < container.size(); i += 2) // we proceed by 2 container at a time
-    {
-        int min;
-        int max;
-        // creates the fake pair for the remainder
-        if (container[i] == remainderValue && i == (container.size() - 1)) // checking container.size ensure we don't select duplicate values if present
-        {
-            // break;
-            min = remainderValue;
-            max = -1;
-        }
-        else
-        {
-            // creates and sorts the real pairs before pusing to pairs
-            // logMessage(DEBUG, "")
-            min = container[i];     // first (smallest)
-            max = container[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
-            if (min > max)      // swaps content for ascending order
-            {
-                // i should swap also the container in chain
-                std::swap(min, max);
-                counter++; // increment comparison count from ford-johnson
-                logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
-            }
-        }
-
-        std::pair<int, int> keyPair(min, max);
-        pairs.push_back(keyPair);
-        if (max != -1)           // avoid dummy value gets pushed to main chain
-            main.push_back(max); // only true values are pushed to chain
-        pend.push_back(min);     // adds all small numbers + odd one to the pend
-    }
-}
-
-PmergeMe::PmergeMe(std::vector<int> selected_container, int &iteration, int &comparisons)
-    : container(selected_container),
-    remainderValue(-1),
-    has_remainder(0),
-    counter(comparisons),
-    recursionLvl(iteration)
-{
-    has_remainder = (container.size() % 2 != 0); // if remainder is not 0 has_remainder is true
-    if (has_remainder)
-        remainderValue = container.back();
-    createChains();
-    pendSize = pend.size();
-    generateJacobsthal();
-};
-
-PmergeMe::~PmergeMe(){};
-// ADD COPY CONSTRUCTOR AND ASSIGN<EN OPERATOR!!!
-
-// getters
+/* ------------------------------ GETTERS AND SETTERS --------------------------------- */
 std::vector<int> &PmergeMe::getMain()
 {
     return main;
@@ -173,29 +173,15 @@ void PmergeMe::sortPair()
     }
 }
 
+
+// instead should i just update it after new pairs are sorted?
 void PmergeMe::updatePend()
 {
-    // std::vector<int> updatedPend;
-
-    // for (size_t i = 0; i < pairs.size(); ++i)
-    //     updatedPend.push_back(pairs[i].first);
-    // if(has_remainder)
-    //     updatedPend.push_back(remainderValue);
-
-    // showContainer(updatedPend, "Pend", remainderValue, has_remainder);
-
-    // pend = updatedPend;
-
     std::vector<int> updatedPend;
 
     for (size_t i = 0; i < main.size(); ++i)
     {
-        // std::vector<int>::iterator pair = std::find(main.begin(), main.end(), main[i]);
-        // std::cout << "< " << *pair << " >" << std::endl;
-
         int big = main[i];
-        // since the pair will be <first, second>, how can i put the first value of pair in updated pend
-
         for (size_t j = 0; j < pairs.size(); ++j)
         {
             if (pairs[j].second == big)
@@ -205,6 +191,5 @@ void PmergeMe::updatePend()
 
     if (has_remainder)
         updatedPend.push_back(remainderValue);
-    // showContainer(updatedPend, "Pend", remainderValue, has_remainder);
     pend = updatedPend;
 }

@@ -20,6 +20,8 @@ private:
     int counter; // counts amount of combinations done in each set and scales between recursions
 
     void createChains();
+    std::pair<int, int> orderPair(size_t i);
+
 
 /* ------------------------------JACOBSTAHL SEQUENCE FUNCTIONS--------------------------------- */
     void generateJacobsthal(); 
