@@ -1,70 +1,74 @@
 #include "../headers/PmergeMe.hpp"
 
-std::vector<size_t> PmergeMe::findNumbers(size_t pend_size)
+
+/* ------------------------------JACOBSTAHL SEQUENCE FUNCTIONS--------------------------------- */
+
+void PmergeMe::generateJacobsthal() // n is size of pend_chain
 {
-    std::vector<size_t> seq;              // empty vector
-    if (pend_size == 0 || pend_size == 1) // means that there are no pending elements, but where does this decrease?!
+    findNumbers();
+    completeSequence();
+}
+
+void PmergeMe::findNumbers()
+{
+    if (pendSize == 0 || pendSize == 1) // added it to avoid weird behavioru in loop (0 - 1 or 1 - 2)
     {
-        seq.push_back(pend_size); // adds 0 or 1 to seq depending on size
-        return seq;
+        jacobsthal.push_back(pendSize); // starts with 0 or 1 depending on pend size
+        return;
     }
-    size_t j = 0;  // i assign this so i can start the loop?
+    size_t j = 0;
     size_t j1 = 1; // n - 1 (prev)
     size_t j2 = 0; // n - 2 (prev_prev)
-    for (size_t i = 0; j < pend_size; i++)
+    for (size_t i = 0; j < pendSize; i++) // jacobstahl number has to be < than pendSize
     {
         /* J(n) = J(n-1) + 2 * J(n-2)  */
-        //         1    +    0
         j = (j1) + (2 * (j2));
-        if (j < pend_size) // adds only if last generated j is < size
-            seq.push_back(j);
+        if (j < pendSize) // adds only if result of j number is < size
+            jacobsthal.push_back(j);
         j2 = j1;
         j1 = j;
     }
-    return seq;
 }
 
-std::vector<size_t> PmergeMe::filledSequence(std::vector<size_t> &seq, size_t pend_size)
+void PmergeMe::completeSequence()
 {
-    std::vector<size_t> filled;
-    for (size_t i = 0; i < seq.size(); i++)
+    std::vector<size_t> fill;
+    for (size_t i = 0; i < jacobsthal.size(); i++)
     {
         if (i == 0)
         {
-            filled.push_back(seq[i]);
+            fill.push_back(jacobsthal[i]);
             continue;
         }
-        size_t a = seq[i - 1]; // prev
-        size_t b = seq[i];     // curr
+        size_t a = jacobsthal[i - 1]; // prev
+        size_t b = jacobsthal[i];     // curr
 
         for (size_t n = b; n > a; n--)
-            filled.push_back(n);
+            fill.push_back(n);
     }
-    if (pend_size > seq.back())
+    if (pendSize > jacobsthal.back())
     {
-        size_t a = seq.back(); // prev
-        size_t b = pend_size;  // curr
+        size_t a = jacobsthal.back(); // prev
+        size_t b = pendSize;  // curr
         for (size_t n = b; n > a; n--)
-            filled.push_back(n);
+            fill.push_back(n);
     }
-    // showContainer(filled, "Order", -1);
-    return filled;
+    // showContainer(fill, "Order", -1);
+    jacobsthal = fill; // overwrite the jacobstahl with the filled
 }
 
-std::vector<size_t> PmergeMe::generateJacobsthal() // n is size of pend_chain
-{
-    std::vector<size_t> sequence = findNumbers(pend.size());
-    return filledSequence(sequence, pend.size());
-}
+
+/* ------------------------------CHAIN CREATION--------------------------------- */
+
 
 void PmergeMe::createChains()
 {
-    for (size_t i = 0; i < input.size(); i += 2) // we proceed by 2 input at a time
+    for (size_t i = 0; i < container.size(); i += 2) // we proceed by 2 container at a time
     {
         int min;
         int max;
         // creates the fake pair for the remainder
-        if (input[i] == remainderValue && i == (input.size() - 1)) // checking input.size ensure we don't select duplicate values if present
+        if (container[i] == remainderValue && i == (container.size() - 1)) // checking container.size ensure we don't select duplicate values if present
         {
             // break;
             min = remainderValue;
@@ -74,8 +78,8 @@ void PmergeMe::createChains()
         {
             // creates and sorts the real pairs before pusing to pairs
             // logMessage(DEBUG, "")
-            min = input[i];     // first (smallest)
-            max = input[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
+            min = container[i];     // first (smallest)
+            max = container[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
             if (min > max)      // swaps content for ascending order
             {
                 // i should swap also the container in chain
@@ -93,20 +97,21 @@ void PmergeMe::createChains()
     }
 }
 
-PmergeMe::PmergeMe(std::vector<int> input, int &iteration, int &comparisons)
-    : input(input),
-      counter(comparisons),
-      remainderValue(-1),
-      has_remainder(0),
-      recursionLvl(iteration)
+PmergeMe::PmergeMe(std::vector<int> selected_container, int &iteration, int &comparisons)
+    : container(selected_container),
+    remainderValue(-1),
+    has_remainder(0),
+    counter(comparisons),
+    recursionLvl(iteration)
 {
-    has_remainder = (input.size() % 2 != 0); // if even it's false(0), if odd it's true(1)
+    has_remainder = (container.size() % 2 != 0); // if remainder is not 0 has_remainder is true
     if (has_remainder)
-        remainderValue = input.back();
+        remainderValue = container.back();
     createChains();
-    jacobsthal = generateJacobsthal();
-    // std::cout << "Jacobsthal insertion order for pend[" << pend.size() << "]:" << std::endl;
+    pendSize = pend.size();
+    generateJacobsthal();
 };
+
 PmergeMe::~PmergeMe(){};
 // ADD COPY CONSTRUCTOR AND ASSIGN<EN OPERATOR!!!
 
