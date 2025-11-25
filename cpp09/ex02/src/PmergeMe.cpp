@@ -115,7 +115,7 @@ void PmergeMe::completeSequence()
         for (size_t n = b; n > a; n--)
             fill.push_back(n);
     }
-    // showContainer(fill, "Order", -1);
+    // printChain(fill, "Order", -1);
     jacobsthal = fill; // overwrite the jacobstahl with the filled
 }
 
@@ -165,8 +165,8 @@ void PmergeMe::containerStatus()
 {
     showPairs(pairs, remainderValue);
     // logMessage("", "Counter: " + asString(counter));
-    showContainer(main, "Main", remainderValue, has_remainder);
-    showContainer(pend, "Pend", remainderValue, has_remainder);
+    printChain(main, "Main", remainderValue, has_remainder);
+    printChain(pend, "Pend", remainderValue, has_remainder);
 }
 
 // change with sort pair

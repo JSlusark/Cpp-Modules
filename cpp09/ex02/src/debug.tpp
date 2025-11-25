@@ -27,7 +27,7 @@ void showSequence(std::string state, const T &container, size_t containerSize)
 }
 
 template <typename T> // for pend and main chains
-void showContainer(const T &container, const std::string &name, int remainderValue, int hasRemainder)
+void printChain(const T &container, const std::string &name, int remainderValue, int hasRemainder)
 {
     // logMessage(DEBUG, "remainderValue:'" + asString(remainderValue) + "'   hasRemainder:'" + asString(hasRemainder) + "' ");
     std::cout << name << ":" << C_RESET << " [ ";

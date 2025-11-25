@@ -107,38 +107,41 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
     std::vector<int> stored_main = recursed_container.getMain();
     recursed_container.containerStatus();
 
-    // showContainer(recursed_container.getMain(), "Previous merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
+    // printChain(recursed_container.getMain(), "Previous merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
     PmergeMe::CountComparisons curr_comparisons(recursed_container.getCounter()); // i might need to initialise this somewhere else?
     for (size_t i = 0; i < recursed_container.getJacobsthal().size(); i++)
     {
         size_t j = recursed_container.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
 
         // int bigref = recursed_container.getMain()[j]
-
-        int value = recursed_container.getPend()[j];
-        int partner = stored_main[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
-        std::vector<int>::iterator partnerPosition;
-        // std::cout << "< " << value << " , " << partner << " >" << std::endl;
-        // if (partner == -1) // means that the number in pend had no partner and it's not in main chain
-        //     partnerPosition = recursed_container.getMain().end();
-        // else
-        partnerPosition = std::find(recursed_container.getMain().begin(), recursed_container.getMain().end(), partner);
         std::string message;
-        // if (partner == -1)
-        //     message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd  <   " + asString(value) + "   > to be inserted in main";
-        // else
-        message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to be inserted in main";
+        int value = recursed_container.getPend()[j];
 
-        showContainer(recursed_container.getMain(), C_GRAY + message + C_RESET, recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
+        std::vector<int>::iterator partnerPosition;
+        int partner;
+        
+        if (value == recursed_container.getRemainderValue() && j == (recursed_container.getPend().size() - 1))
+        {
+                //handles test like 5 4 3 1 2 6
+                message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd < " + asString(value) +  " > to binary insert in mainchain between: " + asString(recursed_container.getMain()[0]) + " to null terminator";
+                partnerPosition = recursed_container.getMain().end(); // i pass the null terminator to avoid that 6 is inserted before 5, use this to prove lowerbound function
+        }
+        else
+        {   
+            partner = stored_main[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
+            partnerPosition = std::find(recursed_container.getMain().begin(), recursed_container.getMain().end(), partner);
+            message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to binary insert in mainchain between: " + asString(recursed_container.getMain()[0]) + " to " + asString(partner);
+        }
 
+        logMessage("", C_GRAY + message + C_RESET);
+        
         // NOTE: FOUND BUG PERHAPS! number at J(1) should always go at beginning of main chain and i should skip the
         // comparison/binary insertion pat and can just add at beggining
-
-        // need to consider the subrange!
-        // if()
-        // needs to start from higher bound and then move lower no? here it moves from begin to partner position no?
+        
+        // binary insert checks from the begin of mainchain until partner position(excluded in count as we compare until value < partnerPosition, which is returned by default if value not inserted)
         std::vector<int>::iterator pos = std::lower_bound(recursed_container.getMain().begin(), partnerPosition, value, curr_comparisons);
         recursed_container.getMain().insert(pos, value);
+        printChain(recursed_container.getMain(), "Inserted", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
     }
     // if (recursed_container.getRemainderInfo())
     // {
@@ -148,7 +151,7 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
     //     recursed_container.getMain().insert(pos, value);
     // }
 
-    showContainer(recursed_container.getMain(), "Current merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
+    printChain(recursed_container.getMain(), "Current merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
     logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
 }
 
