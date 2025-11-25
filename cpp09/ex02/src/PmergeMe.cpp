@@ -37,15 +37,16 @@ std::pair<int, int> PmergeMe::orderPair(size_t i)
     }
     else
     {
-        min = container[i];     // first (smallest)
-        max = container[i + 1]; // second (biggest) // wthis segfaults, and needs to be used only on non-paired
+        min = container[i];   
+        max = container[i + 1];
+        counter++; // comparison increases whenever comapring every number, not only at switch!!!
         if (min > max)      // swaps content for ascending order
         {
             // i should swap also the container in chain
             std::swap(min, max); // could do the swap later?
-            counter++; // increment comparison count from ford-johnson
-            logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
+            // logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
         }
+        logMessage("", C_GRAY "Created and compared pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
     }
     return(std::make_pair(min, max));
 }
@@ -169,14 +170,14 @@ void PmergeMe::containerStatus()
 }
 
 // change with sort pair
-void PmergeMe::sortPair()
-{
-    if (main[0] > main[1])
-    {
-        std::swap(main[0], main[1]);
-        counter++; // increment comparison count also here
-    }
-}
+// void PmergeMe::sortPair()
+// {
+//     if (main[0] > main[1])
+//     {
+//         std::swap(main[0], main[1]);
+//         counter++; // increment comparison count also here
+//     }
+// }
 
 
 // instead should i just update it after new pairs are sorted?

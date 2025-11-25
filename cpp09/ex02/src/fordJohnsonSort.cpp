@@ -18,8 +18,8 @@ fordJohnsonSort::fordJohnsonSort(int argc, char **argv) // vect will me a templa
     }
     originalSize = result.size();
     comparisonLimit = maxComparisons(originalSize);
-    sort();
     showSequence("Before", result, originalSize);
+    sort();
 }
 
 fordJohnsonSort::~fordJohnsonSort() {}
@@ -47,19 +47,23 @@ void fordJohnsonSort::sort()
 
 void fordJohnsonSort::recursion(std::vector<int> &recursed_container)
 {
-    // in the iteration a new set gets created from the new paired and sorted main
-    // which we then divide in chains until main is 1
+
     if (recursed_container.size() <= 1) // 1 n does not need to be sorted so recursion stops here
     {
         logMessage(LOG, "???");
         return;
     }
-    // if (recursed_iteration > 0)
     logMessage(C_GRAY "\n------------ STARTED RECURSION LEVEL:" + asString(iterationResult), "------------\n" C_RESET);
-    // std::cout << "param recursion: " << recursed_iteration <<std::endl;
-    logMessage(C_CYAN "Recursion level: " C_RESET, asString(iterationResult));
+
+
+    logMessage(C_YELLOW "Recursion level - moving forward: " C_RESET, asString(iterationResult));
     showSequence("Received container", recursed_container, recursed_container.size());
     PmergeMe set(recursed_container, iterationResult, comparisonResult);
+    comparisonResult = set.getCounter(); // update global comparison count as 
+
+
+    // logMessage("", C_CYAN "FRONT - pair comparison set.count: " C_RESET + asString(set.getCounter()));
+    // logMessage("", C_CYAN "FRONT - pair comaprison result: " C_RESET + asString(comparisonResult));
     set.containerStatus();
 
     pairingPhase(set);
@@ -72,25 +76,30 @@ void fordJohnsonSort::recursion(std::vector<int> &recursed_container)
 
 void fordJohnsonSort::pairingPhase(PmergeMe &recursed_container)
 {
-    logMessage("", "Counter: " + asString(recursed_container.getCounter()));
+    // logMessage("", "Counter: " + asString(recursed_container.getCounter()));
+
     // recursed_container.containerStatus();
     if (recursed_container.getMain().size() > 1)
     {
-        logMessage("", "We move forward in the next recursion...");
+        logMessage("", "Creating new recursion level..");
         iterationResult++;
-        comparisonResult = recursed_container.getCounter();
+        // comparisonResult = recursed_container.getCounter(); // it would not update in other cases, needs to update global
 
         // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursed_container.getRecursionLvl()) , "------------\n" C_RESET);
         recursion(recursed_container.getMain());
     }
+    else    
+        logMessage("", " -- Recursion stops here! --");
+
 }
 
 void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
 {
-    logMessage("", "We move backward in the previous recursion...");
-    logMessage(C_CYAN "Recursion level: " C_RESET, asString(recursed_container.getRecursionLvl()));
-    recursed_container.getCounter() = comparisonResult;
-    logMessage("", C_CYAN "Staring set count: " C_RESET + asString(recursed_container.getCounter()));
+    logMessage(C_YELLOW "Recursion level - moving backward: " C_RESET, asString(recursed_container.getRecursionLvl()));
+    recursed_container.getCounter() = comparisonResult; // we need to update based on the previous eneded iteration
+    // logMessage("", C_CYAN "BACK - set count: " C_RESET + asString(recursed_container.getCounter()));
+    // logMessage("", C_CYAN "BACK - result count: " C_RESET + asString(comparisonResult));
+    // logMessage("", C_CYAN "BACK - set count after: " C_RESET + asString(recursed_container.getCounter()));
     recursed_container.containerStatus();
 
     logMessage(LOG, "updating pend to main");
@@ -109,7 +118,7 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
         int value = recursed_container.getPend()[j];
         int partner = stored_main[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
         std::vector<int>::iterator partnerPosition;
-        std::cout << "< " << value << " , " << partner << " >" << std::endl;
+        // std::cout << "< " << value << " , " << partner << " >" << std::endl;
         // if (partner == -1) // means that the number in pend had no partner and it's not in main chain
         //     partnerPosition = recursed_container.getMain().end();
         // else
@@ -140,7 +149,6 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
     // }
 
     showContainer(recursed_container.getMain(), "Current merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
-    logMessage("", C_CYAN "Ending set count: " C_RESET + asString(recursed_container.getCounter()));
     logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
 }
 

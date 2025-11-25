@@ -108,7 +108,7 @@ fi
     
     printf "highest comparison: ${WHITE}%s${RESET}  |  from: ${WHITE}%s${RESET}\n" \
        "$max_comparisons" "$max_args"
-    sleep 0.05                      # remove to show speed
+    # sleep 0.05                      # remove to show speed
 
 
     # MOVE CURSOR UP 2 LINES FOR NEXT OVERWRITE

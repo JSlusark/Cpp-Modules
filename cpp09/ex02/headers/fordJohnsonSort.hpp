@@ -18,7 +18,6 @@ class fordJohnsonSort
 {
 private:
     int iterationResult;
-    int comparisonResult;
     std::vector<int> result; // will be a template
     size_t originalSize;
     size_t resultSize;
@@ -27,6 +26,7 @@ private:
     struct timeval tv_start; // wall start (kept if you later want wall time)
     struct timeval tv_end;   // wall end
     int comparisonLimit;
+    int comparisonResult; // added here for tester purposes
     std::string errorMessage;
     // http://en.cppreference.com/w/cpp/container.html
     // use chatgpt brainstorming message to explain deque vs stack from ex01
@@ -38,8 +38,9 @@ private:
     int wrongResult();
 
 public:
-    fordJohnsonSort(int argc, char **argv, std::vector<int> received_container); // vect will me a template later
+    fordJohnsonSort(int argc, char **argv); // vect will me a template later
     ~fordJohnsonSort();
+
 
     // --------------  TO ADD AT THE END  -----------------
     // copy contructor + assignment operator !!!!
