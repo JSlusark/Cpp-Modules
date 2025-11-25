@@ -1,9 +1,99 @@
 #include "../headers/fordJohnsonSort.hpp"
 
+// -----------------------------CONSTRUCTORS----------------------------------------
+
+fordJohnsonSort::fordJohnsonSort(int argc, char **argv, std::vector<int> received_container) // vect will me a template later
+    : iterationResult(0),
+      comparisonResult(0),
+      result(received_container),
+      cpu_start(0),
+      cpu_end(0)
+{
+    for (int i = 1; i < argc; ++i)
+    {
+        int conversion;
+        std::string s = argv[i];
+        if (!isValidNumber(s, conversion))
+            throw std::runtime_error("Invalid argument: " + s);
+        result.push_back(conversion);
+    }
+    originalSize = result.size();
+    comparisonLimit = maxComparisons(originalSize);
+    comparisonLimit = maxComparisons(originalSize);
+    showSequence("Before", result, originalSize);
+}
+
+fordJohnsonSort::~fordJohnsonSort() {}
+// ADD COP AND ASGN CONSTRUCTORS!!
+
+
+// -----------------------------SORTING FUNCTIONS----------------------------------------
+
+void fordJohnsonSort::sort()
+{
+    logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
+
+    // timer starts here - create function?
+    gettimeofday(&tv_start, 0);
+    cpu_start = std::clock();
+
+    recursion(result);
+    // logMessage(LOG, "after sort container!!");
+
+
+    // timer ends here - create function?
+    cpu_end = std::clock();
+    gettimeofday(&tv_end, 0);
+
+    logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
+}
+
+void fordJohnsonSort::recursion(std::vector<int> &recursed_container)
+{
+    // in the iteration a new set gets created from the new paired and sorted main
+    // which we then divide in chains until main is 1
+    if (recursed_container.size() <= 1) // 1 n does not need to be sorted so recursion stops here
+    {
+        logMessage(LOG, "???");
+        return;
+    }
+    // if (recursed_iteration > 0)
+        logMessage(C_GRAY "\n------------ STARTED RECURSION LEVEL:" + asString(iterationResult), "------------\n" C_RESET);
+    // std::cout << "param recursion: " << recursed_iteration <<std::endl;
+    logMessage(C_CYAN "Recursion level: " C_RESET, asString(iterationResult));
+    showSequence("Received container", recursed_container, recursed_container.size());
+    PmergeMe set(recursed_container, iterationResult, comparisonResult);
+    set.containerStatus();
+
+    pairingPhase(set);
+    insertionPhase(set); // if main
+
+    // Updating global recursed_container and comparison
+    recursed_container = set.getMain();
+    comparisonResult = set.getCounter();
+}
+
+void fordJohnsonSort::pairingPhase(PmergeMe &recursed_container)
+{
+    logMessage("", "Counter: " + asString(recursed_container.getCounter()));
+    // recursed_container.containerStatus();
+    if (recursed_container.getMain().size() > 1)
+    {
+        logMessage("", "We move forward in the next recursion...");
+        iterationResult++;
+        comparisonResult = recursed_container.getCounter();
+
+        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursed_container.getRecursionLvl()) , "------------\n" C_RESET);
+        recursion(recursed_container.getMain());
+    }
+}
+
 void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
 {
     logMessage("", "We move backward in the previous recursion...");
     logMessage(C_CYAN "Recursion level: " C_RESET, asString(recursed_container.getRecursionLvl()));
+    recursed_container.getCounter() = comparisonResult;
+    logMessage("", C_CYAN "Staring set count: " C_RESET + asString(recursed_container.getCounter()));
     recursed_container.containerStatus();
 
     logMessage(LOG, "updating pend to main");
@@ -53,90 +143,17 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
     // }
 
     showContainer(recursed_container.getMain(), "Current merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
-    logMessage("", C_CYAN "Current total count: " C_RESET + asString(recursed_container.getCounter()));
-    if (recursed_container.getRecursionLvl() > 0)
-        logMessage(C_GRAY "\n------------ EXITED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
-}
-
-void fordJohnsonSort::pairingPhase(PmergeMe &recursed_container, int &recursed_iteration, int &recursed_count)
-{
-    (void)recursed_count;
-    logMessage("", "Counter: " + asString(recursed_container.getCounter()));
-    recursed_container.containerStatus();
-    if (recursed_container.getMain().size() > 1)
-    {
-        logMessage("", "We move forward in the next recursion...");
-        recursed_iteration++;
-        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursed_container.getRecursionLvl()) , "------------\n" C_RESET);
-        sortContainer(recursed_container.getMain(), recursed_iteration, recursed_container.getCounter());
-    }
-}
-
-void fordJohnsonSort::sortContainer(std::vector<int> &recursed_container, int &recursed_iteration, int &recursed_count)
-{
-    if (recursed_container.size() <= 1) // 1 n does not need to be sorted
-    {
-        logMessage(LOG, "???");
-        return;
-    }
-    if (recursed_iteration > 0)
-        logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursed_iteration), "------------\n" C_RESET);
-    logMessage(C_CYAN "Recursion level: " C_RESET, asString(recursed_iteration));
-    showSequence("Received container", recursed_container, recursed_container.size());
-    PmergeMe set(recursed_container, recursed_iteration, recursed_count);
-    pairingPhase(set, recursed_iteration, recursed_count);
-    insertionPhase(set); // if main
-
-    // Updating global recursed_container and comparison
-    recursed_container = set.getMain();
-    recursed_count = set.getCounter();
+    logMessage("", C_CYAN "Ending set count: " C_RESET + asString(recursed_container.getCounter()));
+        logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
 }
 
 
-// -----------------------------CLASS FUNCTION-----------------------------------------
-
-fordJohnsonSort::fordJohnsonSort(int argc, char **argv, std::vector<int> received_container) // vect will me a template later
-    : iterationResult(0),
-      comparisonResult(0),
-      result(received_container),
-      cpu_start(0),
-      cpu_end(0)
-{
-    for (int i = 1; i < argc; ++i)
-    {
-        int conversion;
-        std::string s = argv[i];
-        if (!isValidNumber(s, conversion))
-            throw std::runtime_error("Invalid argument: " + s);
-        result.push_back(conversion);
-    }
-    originalSize = result.size();
-    comparisonLimit = maxComparisons(originalSize);
-    comparisonLimit = maxComparisons(originalSize);
-    showSequence("Before", result, originalSize);
-}
-
-fordJohnsonSort::~fordJohnsonSort() {}
-
-void fordJohnsonSort::startSorting()
-{
-    logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
-
-    // timer starts here - create function?
-    gettimeofday(&tv_start, 0);
-    cpu_start = std::clock();
-
-    showSequence("before sort", result, originalSize);
-    sortContainer(result, iterationResult, comparisonResult);
-    // logMessage(LOG, "after sort container!!");
 
 
-    // timer ends here - create function?
-    cpu_end = std::clock();
-    gettimeofday(&tv_end, 0);
 
-    logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
-}
+
+
+// UTILS
 
 int fordJohnsonSort::wrongResult()
 {

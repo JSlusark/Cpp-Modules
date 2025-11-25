@@ -42,11 +42,11 @@ public:
     // fordJohnsonSort(const fordJohnsonSort &other);
     // fordJohnsonSort &operator=(const fordJohnsonSort &other);
 
-    void startSorting();
+    void sort();
     int wrongResult();
     void showResult();
 
+    void recursion(std::vector<int> &recursed_container);
+    void pairingPhase(PmergeMe &recursed_containert);
     void insertionPhase(PmergeMe &recursed_container);
-    void pairingPhase(PmergeMe &recursed_container, int &recursed_iteration, int &recursed_count);
-    void sortContainer(std::vector<int> &recursed_container, int &recursed_iteration, int &recursed_count);
 };

@@ -18,7 +18,7 @@ int main(int argc, char **argv)
         {
             std::vector<int> container;
             fordJohnsonSort vector(argc, argv, container); // vect will me a template later
-            vector.startSorting();
+            vector.sort();
             vector.showResult();
             // fordJohnsonSort my_algo(argc, argv, "vector");
         }

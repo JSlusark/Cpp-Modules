@@ -10,10 +10,15 @@ PmergeMe::PmergeMe(std::vector<int> selected_container, int &iteration, int &com
 {
     has_remainder = (container.size() % 2 != 0); // if remainder is not 0 has_remainder is true
     if (has_remainder)
-        remainderValue = container.back();
+    remainderValue = container.back();
+    // this->containerStatus();
+    
     createChains();
+    
     pendSize = pend.size();
     generateJacobsthal();
+
+
 };
 
 PmergeMe::~PmergeMe() {};
