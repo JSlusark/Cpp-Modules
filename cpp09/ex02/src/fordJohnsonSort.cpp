@@ -1,40 +1,39 @@
 #include "../headers/fordJohnsonSort.hpp"
-#include "../headers/PmergeMe.hpp"
 
-void insertionPhase(PmergeMe &set)
+void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
 {
     logMessage("", "We move backward in the previous recursion...");
-    logMessage(C_CYAN "Recursion level: " C_RESET, asString(set.getRecursionLvl()));
-    set.containerStatus();
+    logMessage(C_CYAN "Recursion level: " C_RESET, asString(recursed_container.getRecursionLvl()));
+    recursed_container.containerStatus();
 
     logMessage(LOG, "updating pend to main");
-    set.updatePend(); // match position of partners in main and pend for easy access
-    std::vector<int> stored_main = set.getMain();
-    set.containerStatus();
+    recursed_container.updatePend(); // match position of partners in main and pend for easy access
+    std::vector<int> stored_main = recursed_container.getMain();
+    recursed_container.containerStatus();
 
-    // showContainer(set.getMain(), "Previous merge", set.getRemainderValue(), set.getRemainderInfo());
-    PmergeMe::CountComparisons comparisons(set.getCounter()); // i might need to initialise this somewhere else?
-    for (size_t i = 0; i < set.getJacobsthal().size(); i++)
+    // showContainer(recursed_container.getMain(), "Previous merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
+    PmergeMe::CountComparisons curr_comparisons(recursed_container.getCounter()); // i might need to initialise this somewhere else?
+    for (size_t i = 0; i < recursed_container.getJacobsthal().size(); i++)
     {
-        size_t j = set.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
+        size_t j = recursed_container.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
 
-        // int bigref = set.getMain()[j]
+        // int bigref = recursed_container.getMain()[j]
 
-        int value = set.getPend()[j];
+        int value = recursed_container.getPend()[j];
         int partner = stored_main[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
         std::vector<int>::iterator partnerPosition;
         std::cout << "< " << value << " , " << partner << " >" << std::endl;
         // if (partner == -1) // means that the number in pend had no partner and it's not in main chain
-        //     partnerPosition = set.getMain().end();
+        //     partnerPosition = recursed_container.getMain().end();
         // else
-        partnerPosition = std::find(set.getMain().begin(), set.getMain().end(), partner);
+        partnerPosition = std::find(recursed_container.getMain().begin(), recursed_container.getMain().end(), partner);
         std::string message;
         // if (partner == -1)
-        //     message = "j(" + asString(set.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd  <   " + asString(value) + "   > to be inserted in main";
+        //     message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd  <   " + asString(value) + "   > to be inserted in main";
         // else
-        message = "j(" + asString(set.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to be inserted in main";
+        message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to be inserted in main";
 
-        showContainer(set.getMain(), C_GRAY + message + C_RESET, set.getRemainderValue(), set.getRemainderInfo());
+        showContainer(recursed_container.getMain(), C_GRAY + message + C_RESET, recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
 
         // NOTE: FOUND BUG PERHAPS! number at J(1) should always go at beginning of main chain and i should skip the
         // comparison/binary insertion pat and can just add at beggining
@@ -42,64 +41,64 @@ void insertionPhase(PmergeMe &set)
         // need to consider the subrange!
         // if()
         // needs to start from higher bound and then move lower no? here it moves from begin to partner position no?
-        std::vector<int>::iterator pos = std::lower_bound(set.getMain().begin(), partnerPosition, value, comparisons);
-        set.getMain().insert(pos, value);
+        std::vector<int>::iterator pos = std::lower_bound(recursed_container.getMain().begin(), partnerPosition, value, curr_comparisons);
+        recursed_container.getMain().insert(pos, value);
     }
-    // if (set.getRemainderInfo())
+    // if (recursed_container.getRemainderInfo())
     // {
-    //     int value = set.getRemainderValue();
-    //     // PmergeMe::CountComparisons comparisons(set.getCounter()); // i might need to initialise this somewhere else?
-    //     std::vector<int>::iterator pos = std::lower_bound(set.getMain().begin(), set.getMain().end(), value, comparisons);
-    //     set.getMain().insert(pos, value);
+    //     int value = recursed_container.getRemainderValue();
+    //     // PmergeMe::CountComparisons curr_comparisons(recursed_container.getCounter()); // i might need to initialise this somewhere else?
+    //     std::vector<int>::iterator pos = std::lower_bound(recursed_container.getMain().begin(), recursed_container.getMain().end(), value, curr_comparisons);
+    //     recursed_container.getMain().insert(pos, value);
     // }
 
-    showContainer(set.getMain(), "Current merge", set.getRemainderValue(), set.getRemainderInfo());
-    logMessage("", C_CYAN "Current total count: " C_RESET + asString(set.getCounter()));
-    if (set.getRecursionLvl() > 0)
-        logMessage(C_GRAY "\n------------ EXITED RECURSION LEVEL:" + asString(set.recursionLvl), "------------\n" C_RESET);
+    showContainer(recursed_container.getMain(), "Current merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
+    logMessage("", C_CYAN "Current total count: " C_RESET + asString(recursed_container.getCounter()));
+    if (recursed_container.getRecursionLvl() > 0)
+        logMessage(C_GRAY "\n------------ EXITED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
 }
 
-void pairingPhase(PmergeMe &set, int &iteration, int &comparisons)
+void fordJohnsonSort::pairingPhase(PmergeMe &recursed_container, int &recursed_iteration, int &recursed_count)
 {
-    (void)comparisons;
-    logMessage("", "Counter: " + asString(set.getCounter()));
-    set.containerStatus();
-    if (set.getMain().size() > 1)
+    (void)recursed_count;
+    logMessage("", "Counter: " + asString(recursed_container.getCounter()));
+    recursed_container.containerStatus();
+    if (recursed_container.getMain().size() > 1)
     {
         logMessage("", "We move forward in the next recursion...");
-        iteration++;
-        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(set.getRecursionLvl()) , "------------\n" C_RESET);
-        sortContainer(set.getMain(), iteration, set.getCounter());
+        recursed_iteration++;
+        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursed_container.getRecursionLvl()) , "------------\n" C_RESET);
+        sortContainer(recursed_container.getMain(), recursed_iteration, recursed_container.getCounter());
     }
 }
 
-void sortContainer(std::vector<int> &input, int &iteration, int &comparisons)
+void fordJohnsonSort::sortContainer(std::vector<int> &recursed_container, int &recursed_iteration, int &recursed_count)
 {
-    if (input.size() <= 1) // 1 n does not need to be sorted
-     {
-         logMessage(LOG, "???");
-           return;
+    if (recursed_container.size() <= 1) // 1 n does not need to be sorted
+    {
+        logMessage(LOG, "???");
+        return;
     }
-    if (iteration > 0)
-        logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(iteration), "------------\n" C_RESET);
-    logMessage(C_CYAN "Recursion level: " C_RESET, asString(iteration));
-    showSequence("Received container", input, input.size());
-    PmergeMe set(input, iteration, comparisons);
-    pairingPhase(set, iteration, comparisons);
+    if (recursed_iteration > 0)
+        logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursed_iteration), "------------\n" C_RESET);
+    logMessage(C_CYAN "Recursion level: " C_RESET, asString(recursed_iteration));
+    showSequence("Received container", recursed_container, recursed_container.size());
+    PmergeMe set(recursed_container, recursed_iteration, recursed_count);
+    pairingPhase(set, recursed_iteration, recursed_count);
     insertionPhase(set); // if main
 
-
-    // Updating global input and comparison
-    input = set.getMain();
-    comparisons = set.getCounter();
+    // Updating global recursed_container and comparison
+    recursed_container = set.getMain();
+    recursed_count = set.getCounter();
 }
+
 
 // -----------------------------CLASS FUNCTION-----------------------------------------
 
 fordJohnsonSort::fordJohnsonSort(int argc, char **argv, std::vector<int> received_container) // vect will me a template later
-    : iterations(0),
-      comparisons(0),
-      container(received_container),
+    : iterationResult(0),
+      comparisonResult(0),
+      result(received_container),
       cpu_start(0),
       cpu_end(0)
 {
@@ -109,12 +108,12 @@ fordJohnsonSort::fordJohnsonSort(int argc, char **argv, std::vector<int> receive
         std::string s = argv[i];
         if (!isValidNumber(s, conversion))
             throw std::runtime_error("Invalid argument: " + s);
-        container.push_back(conversion);
+        result.push_back(conversion);
     }
-    containerSize = container.size();
-    comparisonsLimit = maxComparisons(containerSize);
-    comparisonsLimit = maxComparisons(containerSize);
-    showSequence("Before", container, containerSize);
+    originalSize = result.size();
+    comparisonLimit = maxComparisons(originalSize);
+    comparisonLimit = maxComparisons(originalSize);
+    showSequence("Before", result, originalSize);
 }
 
 fordJohnsonSort::~fordJohnsonSort() {}
@@ -127,8 +126,8 @@ void fordJohnsonSort::startSorting()
     gettimeofday(&tv_start, 0);
     cpu_start = std::clock();
 
-    showSequence("before sort", container, containerSize);
-    sortContainer(container, iterations, comparisons);
+    showSequence("before sort", result, originalSize);
+    sortContainer(result, iterationResult, comparisonResult);
     // logMessage(LOG, "after sort container!!");
 
 
@@ -139,20 +138,19 @@ void fordJohnsonSort::startSorting()
     logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
 }
 
-int fordJohnsonSort::incorrectSort()
+int fordJohnsonSort::wrongResult()
 {
-    size_t resultSize = container.size(); // to make sure the insertion part did not skip any number in the way
-    if (containerSize != resultSize)
+    if (originalSize != resultSize)
     {
-        errorMessage = "Container size was not preserved after sorting! Size before sort: " + asString(containerSize) + ", Size after sort: " + asString(resultSize);
+        errorMessage = "Container size was not preserved after sorting! Size before sort: " + asString(resultSize) + ", Size after sort: " + asString(resultSize);
         return 1;
     }
-    if (comparisons > comparisonsLimit)
+    if (comparisonResult > comparisonLimit)
     {
-        errorMessage = "Container was sorted but exceeded comparison limit for container of " + asString(resultSize) + " numbers: " C_RED + asString(comparisons) + C_RESET + "/" + asString(comparisonsLimit) + ")!";
+        errorMessage = "Container was sorted but exceeded comparison limit for container of " + asString(resultSize) + " numbers: " C_RED + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + ")!";
         return 1;
     }
-    if (!is_sorted(container))
+    if (!is_sorted(result))
     {
         errorMessage = "Container is was not sorted correctly!";
         return 1;
@@ -161,10 +159,11 @@ int fordJohnsonSort::incorrectSort()
     return 0;
 }
 
-void fordJohnsonSort::showResults()
+void fordJohnsonSort::showResult()
 {
-    showSequence("After", container, containerSize);
-    if (incorrectSort()) // i dont want to trhow error as the code went as expected but if this hits it means that the algo failed
+    resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
+    showSequence("After", result, resultSize);
+    if (wrongResult()) // i dont want to trhow error as the code went as expected but if this hits it means that the algo failed
         logMessage(ERROR, errorMessage);
     else
     {
@@ -174,8 +173,8 @@ void fordJohnsonSort::showResults()
         cpuFmt.setf(std::ios::fixed);
         cpuFmt << std::setprecision(5) << cpu_micro_double;
 
-        logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterations) + " iterations and in " + C_GREEN + asString(comparisons) + C_RESET + "/" + asString(comparisonsLimit) + " comparison count." C_RESET);
-        logMessage(LOG, C_CYAN "Time taken to process " + asString(containerSize) +
+        logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterationResult) + " iterationResult and in " + C_GREEN + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + " comparison count." C_RESET);
+        logMessage(LOG, C_CYAN "Time taken to process " + asString(resultSize) +
                             " elements: " + cpuFmt.str() + " us" C_RESET);
     }
 }

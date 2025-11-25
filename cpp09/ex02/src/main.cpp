@@ -5,7 +5,6 @@
 #include <iomanip> // for std::setprecision, std::fixed
 #include <sstream> // for std::ostringstream
 
-/* ./PmergeMe $(shuf -i 1-10 -n 3000 | tr "\n" " ") */
 int main(int argc, char **argv)
 {
     if (argc < 2)
@@ -20,7 +19,7 @@ int main(int argc, char **argv)
             std::vector<int> container;
             fordJohnsonSort vector(argc, argv, container); // vect will me a template later
             vector.startSorting();
-            vector.showResults();
+            vector.showResult();
             // fordJohnsonSort my_algo(argc, argv, "vector");
         }
         catch (const std::exception &e)

@@ -1,4 +1,4 @@
-#include "../headers/fordJohnsonSort.hpp"
+#include "../headers/debug.hpp"
 
 /* ----------------------------RESULT CHECK------------------------------- */
 template <typename T>

@@ -1,5 +1,6 @@
 #pragma once
 #include "./debug.hpp"
+#include "./PmergeMe.hpp"
 #include <iostream>
 #include <vector>
 #include <deque>
@@ -12,22 +13,22 @@
 #include <iomanip>
 #include <sstream>
 
-// Free function version
-void sortContainer(std::vector<int> &input, int &iteration, int &comparisons);
+/* ./PmergeMe $(shuf -i 1-10 -n 3000 | tr "\n" " ") */
 
 // Class version (same name; allowed but distinct from function)
 class fordJohnsonSort
 {
 private:
-    int iterations;
-    int comparisons;
-    std::vector<int> container; // will be a template
-    size_t containerSize;
+    int iterationResult;
+    int comparisonResult;
+    std::vector<int> result; // will be a template
+    size_t originalSize;
+    size_t resultSize;
     std::clock_t cpu_start;  // stored start CPU time
     std::clock_t cpu_end;    // stored end CPU time
     struct timeval tv_start; // wall start (kept if you later want wall time)
     struct timeval tv_end;   // wall end
-    int comparisonsLimit;
+    int comparisonLimit;
     std::string errorMessage;
     // http://en.cppreference.com/w/cpp/container.html
     // use chatgpt brainstorming message to explain deque vs stack from ex01
@@ -35,13 +36,17 @@ private:
 public:
     fordJohnsonSort(int argc, char **argv, std::vector<int> received_container); // vect will me a template later
     ~fordJohnsonSort();
+
     // --------------  TO ADD AT THE END  -----------------
-    //copy contructor + assignment operator !!!!
+    // copy contructor + assignment operator !!!!
     // fordJohnsonSort(const fordJohnsonSort &other);
     // fordJohnsonSort &operator=(const fordJohnsonSort &other);
 
     void startSorting();
-    int incorrectSort();  
-    void showResults();
-};
+    int wrongResult();
+    void showResult();
 
+    void insertionPhase(PmergeMe &recursed_container);
+    void pairingPhase(PmergeMe &recursed_container, int &recursed_iteration, int &recursed_count);
+    void sortContainer(std::vector<int> &recursed_container, int &recursed_iteration, int &recursed_count);
+};
