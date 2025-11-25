@@ -13,8 +13,6 @@
 #include <iomanip>
 #include <sstream>
 
-/* ./PmergeMe $(shuf -i 1-10 -n 3000 | tr "\n" " ") */
-
 // Class version (same name; allowed but distinct from function)
 class fordJohnsonSort
 {
@@ -32,6 +30,12 @@ private:
     std::string errorMessage;
     // http://en.cppreference.com/w/cpp/container.html
     // use chatgpt brainstorming message to explain deque vs stack from ex01
+    void sort();
+    void recursion(std::vector<int> &recursed_container);
+    void pairingPhase(PmergeMe &recursed_containert);
+    void insertionPhase(PmergeMe &recursed_container);
+    
+    int wrongResult();
 
 public:
     fordJohnsonSort(int argc, char **argv, std::vector<int> received_container); // vect will me a template later
@@ -42,11 +46,6 @@ public:
     // fordJohnsonSort(const fordJohnsonSort &other);
     // fordJohnsonSort &operator=(const fordJohnsonSort &other);
 
-    void sort();
-    int wrongResult();
     void showResult();
 
-    void recursion(std::vector<int> &recursed_container);
-    void pairingPhase(PmergeMe &recursed_containert);
-    void insertionPhase(PmergeMe &recursed_container);
 };

@@ -2,12 +2,11 @@
 
 // -----------------------------CONSTRUCTORS----------------------------------------
 
-fordJohnsonSort::fordJohnsonSort(int argc, char **argv, std::vector<int> received_container) // vect will me a template later
+fordJohnsonSort::fordJohnsonSort(int argc, char **argv) // vect will me a template later
     : iterationResult(0),
-      comparisonResult(0),
-      result(received_container),
       cpu_start(0),
-      cpu_end(0)
+      cpu_end(0),
+      comparisonResult(0)
 {
     for (int i = 1; i < argc; ++i)
     {
@@ -19,13 +18,12 @@ fordJohnsonSort::fordJohnsonSort(int argc, char **argv, std::vector<int> receive
     }
     originalSize = result.size();
     comparisonLimit = maxComparisons(originalSize);
-    comparisonLimit = maxComparisons(originalSize);
+    sort();
     showSequence("Before", result, originalSize);
 }
 
 fordJohnsonSort::~fordJohnsonSort() {}
 // ADD COP AND ASGN CONSTRUCTORS!!
-
 
 // -----------------------------SORTING FUNCTIONS----------------------------------------
 
@@ -39,7 +37,6 @@ void fordJohnsonSort::sort()
 
     recursion(result);
     // logMessage(LOG, "after sort container!!");
-
 
     // timer ends here - create function?
     cpu_end = std::clock();
@@ -58,7 +55,7 @@ void fordJohnsonSort::recursion(std::vector<int> &recursed_container)
         return;
     }
     // if (recursed_iteration > 0)
-        logMessage(C_GRAY "\n------------ STARTED RECURSION LEVEL:" + asString(iterationResult), "------------\n" C_RESET);
+    logMessage(C_GRAY "\n------------ STARTED RECURSION LEVEL:" + asString(iterationResult), "------------\n" C_RESET);
     // std::cout << "param recursion: " << recursed_iteration <<std::endl;
     logMessage(C_CYAN "Recursion level: " C_RESET, asString(iterationResult));
     showSequence("Received container", recursed_container, recursed_container.size());
@@ -144,14 +141,8 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
 
     showContainer(recursed_container.getMain(), "Current merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
     logMessage("", C_CYAN "Ending set count: " C_RESET + asString(recursed_container.getCounter()));
-        logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
+    logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
 }
-
-
-
-
-
-
 
 // UTILS
 

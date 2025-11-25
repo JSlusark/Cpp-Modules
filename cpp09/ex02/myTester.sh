@@ -6,6 +6,7 @@ RED="\033[31m"
 RESET="\033[0m"
 
 
+
 # ======== GET INPUT NUMBERS ========
 if [ $# -lt 1 ]; then
     echo "Usage: $0 n1 n2 n3 ..."
@@ -19,7 +20,11 @@ fails=()
 permutations=0
 total_perms=0
 
-# first compute total permutations (n!)
+max_comparisons=0        ### NEW ###
+max_args=""              ### NEW ###
+
+> tested.txt
+
 factorial() {
     local n=$1
     local result=1
@@ -67,11 +72,26 @@ permute() {
 run_test() {
     local args=("$@")
 
-    # silents program execution (ergo -> printing)
-    $PROGRAM "${args[@]}" > /dev/null 2>&1
+    output="$($PROGRAM "${args[@]}" 2>/dev/null)"
     ret=$?
 
     permutations=$((permutations + 1))
+
+    # extracts comparison count (adjust pattern if needed)
+    # comparisons=$(echo "$output" | grep -Eo '[0-9]+ comparisons' | grep -Eo '[0-9]+')
+    comparisons=$(echo "$output" | grep -Eo 'comparisons=[0-9]+' | grep -Eo '[0-9]+')
+    if [ -z "$comparisons" ]; then
+        comparisons="?"
+    fi
+
+    # writes permutation + comparison count
+    echo "${args[*]} : $comparisons" >> tested.txt
+
+  if [ "$comparisons" != "?" ] && [ "$comparisons" -ge "$max_comparisons" ]; then
+    max_comparisons=$comparisons
+    max_args="${args[*]}"
+fi
+
 
     if [ $ret -ne 0 ]; then
         fail_count=$((fail_count + 1))
@@ -81,20 +101,28 @@ run_test() {
     ok_count=$((permutations - fail_count))
 
     # overwrites console 
-    printf "\r[%d/%d] SUCCESS=${GREEN}%d${RESET}  FAIL=${RED}%d${RESET}" \
+    printf "\r[%d/%d] SUCCESS=${GREEN}%d${RESET}  FAIL=${RED}%d${RESET}\n" \
         "$permutations" "$total_perms" "$ok_count" "$fail_count"
+
+    # PRINT / OVERWRITE HIGHEST RESULT LINE
+    
+    printf "highest comparison: ${WHITE}%s${RESET}  |  from: ${WHITE}%s${RESET}\n" \
+       "$max_comparisons" "$max_args"
+    sleep 0.05                      # remove to show speed
+
+
+    # MOVE CURSOR UP 2 LINES FOR NEXT OVERWRITE
+    printf "\033[2A"   ### NEW ###
 }
 
-# run all permutations
 permute "${NUMBERS[@]}"
 
-# print final newline
-echo
+printf "\n"  # clear last overwrite block
 
-# summary
 echo "======================="
 echo "Total permutations: $permutations"
 echo "Failures: $fail_count"
+echo "All tested permutations saved to tested.txt"
 
 if [ $fail_count -gt 0 ]; then
     echo "Failing permutations:"
