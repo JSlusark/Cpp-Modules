@@ -75,22 +75,11 @@ int maxComparisons(int n);
 template <typename T>
 void showSequence(std::string state, const T &container, size_t containerSize);
 
-template <typename T>
-void printChain(const T &container, const std::string &name, int remainder);
+// template <typename T>
+// void printChain(const T &container, const std::string &name, int remainder);
 
-void showPairs(const std::vector<std::pair<int, int> > &pairs, int remainder);
+// void printPairs(const std::vector<std::pair<int, int> > &pairs, int remainder);
 
 
 /* ------------------------------ INCLUDE DEFINITIONS ------------------------------ */
 #include "../src/debug.tpp"
-
-
-
-
-
-
-
-
-
-
-/* ----------------------------------------------------------- */

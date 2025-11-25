@@ -45,10 +45,10 @@ void fordJohnsonSort::sort()
     logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
 }
 
-void fordJohnsonSort::recursion(std::vector<int> &recursed_container)
+void fordJohnsonSort::recursion(std::vector<int> &recursedSet)
 {
 
-    if (recursed_container.size() <= 1) // 1 n does not need to be sorted so recursion stops here
+    if (recursedSet.size() <= 1) // 1 n does not need to be sorted so recursion stops here
     {
         logMessage(LOG, "???");
         return;
@@ -57,80 +57,88 @@ void fordJohnsonSort::recursion(std::vector<int> &recursed_container)
 
 
     logMessage(C_YELLOW "Recursion level - moving forward: " C_RESET, asString(iterationResult));
-    showSequence("Received container", recursed_container, recursed_container.size());
-    PmergeMe set(recursed_container, iterationResult, comparisonResult);
-    comparisonResult = set.getCounter(); // update global comparison count as 
+    showSequence("Received container", recursedSet, recursedSet.size());
+    PmergeMe currentSet(recursedSet, iterationResult, comparisonResult);
+    comparisonResult = currentSet.getCounter(); // update global comparison count as 
 
 
-    // logMessage("", C_CYAN "FRONT - pair comparison set.count: " C_RESET + asString(set.getCounter()));
+    // logMessage("", C_CYAN "FRONT - pair comparison currentSet.count: " C_RESET + asString(currentSet.getCounter()));
     // logMessage("", C_CYAN "FRONT - pair comaprison result: " C_RESET + asString(comparisonResult));
-    set.containerStatus();
+    currentSet.printRecursedSet();
 
-    pairingPhase(set);
-    insertionPhase(set); // if main
+    // currentSet.getContainer() = currentSet.getMain();
+    // printChain(currentSet.getContainer(), "CONTAINER AFTER PAIRING:", 0, 0);
 
-    // Updating global recursed_container and comparison
-    recursed_container = set.getMain();
-    comparisonResult = set.getCounter();
+    pairingPhase(currentSet);
+
+
+    insertionPhase(currentSet); // if main
+
+    // Updating global recursedSet and comparison
+    recursedSet = currentSet.getMain();
+    // currentSet.getContainer() = currentSet.getMain();
+    comparisonResult = currentSet.getCounter();
+    // printChain(currentSet.getContainer(), "CONTAINER AFTER MERGING:", 0, 0);
 }
 
-void fordJohnsonSort::pairingPhase(PmergeMe &recursed_container)
+void fordJohnsonSort::pairingPhase(PmergeMe &recursedSet)
 {
-    // logMessage("", "Counter: " + asString(recursed_container.getCounter()));
+    // logMessage("", "Counter: " + asString(recursedSet.getCounter()));
 
-    // recursed_container.containerStatus();
-    if (recursed_container.getMain().size() > 1)
+    // recursedSet.printRecursedSet();
+    if (recursedSet.getMain().size() > 1)
     {
         logMessage("", "Creating new recursion level..");
         iterationResult++;
-        // comparisonResult = recursed_container.getCounter(); // it would not update in other cases, needs to update global
+        // comparisonResult = recursedSet.getCounter(); // it would not update in other cases, needs to update global
 
-        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursed_container.getRecursionLvl()) , "------------\n" C_RESET);
-        recursion(recursed_container.getMain());
+        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursedSet.getRecursionLvl()) , "------------\n" C_RESET);
+        recursion(recursedSet.getMain());
     }
     else    
         logMessage("", " -- Recursion stops here! --");
 
 }
 
-void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
+void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
 {
-    logMessage(C_YELLOW "Recursion level - moving backward: " C_RESET, asString(recursed_container.getRecursionLvl()));
-    recursed_container.getCounter() = comparisonResult; // we need to update based on the previous eneded iteration
-    // logMessage("", C_CYAN "BACK - set count: " C_RESET + asString(recursed_container.getCounter()));
+    logMessage(C_YELLOW "Recursion level - moving backward: " C_RESET, asString(recursedSet.getRecursionLvl()));
+    recursedSet.getCounter() = comparisonResult; // we need to update based on the previous eneded iteration
+    // logMessage("", C_CYAN "BACK - currentSet count: " C_RESET + asString(recursedSet.getCounter()));
     // logMessage("", C_CYAN "BACK - result count: " C_RESET + asString(comparisonResult));
-    // logMessage("", C_CYAN "BACK - set count after: " C_RESET + asString(recursed_container.getCounter()));
-    recursed_container.containerStatus();
+    // logMessage("", C_CYAN "BACK - currentSet count after: " C_RESET + asString(recursedSet.getCounter()));
+    recursedSet.printRecursedSet();
 
     logMessage(LOG, "updating pend to main");
-    recursed_container.updatePend(); // match position of partners in main and pend for easy access
-    std::vector<int> stored_main = recursed_container.getMain();
-    recursed_container.containerStatus();
+    recursedSet.updatePend(); // match position of partners in main and pend for easy access
+    std::vector<int> stored_main = recursedSet.getMain();
+    // printChain(recursedSet.getContainer(), "CONTANER:", 0, 0);
+    recursedSet.printRecursedSet();
 
-    // printChain(recursed_container.getMain(), "Previous merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
-    PmergeMe::CountComparisons curr_comparisons(recursed_container.getCounter()); // i might need to initialise this somewhere else?
-    for (size_t i = 0; i < recursed_container.getJacobsthal().size(); i++)
+    // printChain(recursedSet.getMain(), "Previous merge", recursedSet.getRemainderValue(), recursedSet.getRemainderInfo());
+    PmergeMe::CountComparisons curr_comparisons(recursedSet.getCounter()); // i might need to initialise this somewhere else?
+    for (size_t i = 0; i < recursedSet.getJacobsthal().size(); i++)
     {
-        size_t j = recursed_container.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
+        size_t j = recursedSet.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
 
-        // int bigref = recursed_container.getMain()[j]
+        // int bigref = recursedSet.getMain()[j]
         std::string message;
-        int value = recursed_container.getPend()[j];
+        int value = recursedSet.getPend()[j];
 
         std::vector<int>::iterator partnerPosition;
         int partner;
         
-        if (value == recursed_container.getRemainderValue() && j == (recursed_container.getPend().size() - 1))
+        if (value == recursedSet.getRemainderValue() && j == (recursedSet.getPend().size() - 1))
         {
                 //handles test like 5 4 3 1 2 6
-                message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd < " + asString(value) +  " > to binary insert in mainchain between: " + asString(recursed_container.getMain()[0]) + " to null terminator";
-                partnerPosition = recursed_container.getMain().end(); // i pass the null terminator to avoid that 6 is inserted before 5, use this to prove lowerbound function
+                message = "j(" + asString(recursedSet.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd < " + asString(value) +  " > to binary insert in mainchain between: " + asString(recursedSet.getMain()[0]) + " to null terminator";
+                partnerPosition = recursedSet.getMain().end(); // i pass the null terminator to avoid that 6 is inserted before 5, use this to prove lowerbound function
         }
         else
         {   
             partner = stored_main[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
-            partnerPosition = std::find(recursed_container.getMain().begin(), recursed_container.getMain().end(), partner);
-            message = "j(" + asString(recursed_container.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to binary insert in mainchain between: " + asString(recursed_container.getMain()[0]) + " to " + asString(partner);
+            partnerPosition = std::find(recursedSet.getMain().begin(), recursedSet.getMain().end(), partner);
+            message = "j(" + asString(recursedSet.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to binary insert in mainchain between: " + asString(recursedSet.getMain()[0]) + " to " + asString(partner);
         }
 
         logMessage("", C_GRAY + message + C_RESET);
@@ -139,20 +147,20 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursed_container)
         // comparison/binary insertion pat and can just add at beggining
         
         // binary insert checks from the begin of mainchain until partner position(excluded in count as we compare until value < partnerPosition, which is returned by default if value not inserted)
-        std::vector<int>::iterator pos = std::lower_bound(recursed_container.getMain().begin(), partnerPosition, value, curr_comparisons);
-        recursed_container.getMain().insert(pos, value);
-        printChain(recursed_container.getMain(), "Inserted", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
+        std::vector<int>::iterator pos = std::lower_bound(recursedSet.getMain().begin(), partnerPosition, value, curr_comparisons);
+        recursedSet.getMain().insert(pos, value);
+        recursedSet.printChain(recursedSet.getMain(), "Inserted");
     }
-    // if (recursed_container.getRemainderInfo())
+    // if (recursedSet.getRemainderInfo())
     // {
-    //     int value = recursed_container.getRemainderValue();
-    //     // PmergeMe::CountComparisons curr_comparisons(recursed_container.getCounter()); // i might need to initialise this somewhere else?
-    //     std::vector<int>::iterator pos = std::lower_bound(recursed_container.getMain().begin(), recursed_container.getMain().end(), value, curr_comparisons);
-    //     recursed_container.getMain().insert(pos, value);
+    //     int value = recursedSet.getRemainderValue();
+    //     // PmergeMe::CountComparisons curr_comparisons(recursedSet.getCounter()); // i might need to initialise this somewhere else?
+    //     std::vector<int>::iterator pos = std::lower_bound(recursedSet.getMain().begin(), recursedSet.getMain().end(), value, curr_comparisons);
+    //     recursedSet.getMain().insert(pos, value);
     // }
 
-    printChain(recursed_container.getMain(), "Current merge", recursed_container.getRemainderValue(), recursed_container.getRemainderInfo());
-    logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursed_container.recursionLvl), "------------\n" C_RESET);
+    recursedSet.printChain(recursedSet.getMain(), "Current merge");
+    logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursedSet.recursionLvl), "------------\n" C_RESET);
 }
 
 // UTILS

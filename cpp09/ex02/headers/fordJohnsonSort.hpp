@@ -31,9 +31,9 @@ private:
     // http://en.cppreference.com/w/cpp/container.html
     // use chatgpt brainstorming message to explain deque vs stack from ex01
     void sort();
-    void recursion(std::vector<int> &recursed_container);
-    void pairingPhase(PmergeMe &recursed_containert);
-    void insertionPhase(PmergeMe &recursed_container);
+    void recursion(std::vector<int> &recursedSet);
+    void pairingPhase(PmergeMe &recursedSett);
+    void insertionPhase(PmergeMe &recursedSet);
     
     int wrongResult();
 

@@ -1,17 +1,17 @@
 #include "../headers/PmergeMe.hpp"
 
 /* ------------------------------ CONSTRUCTORS --------------------------------- */
-PmergeMe::PmergeMe(std::vector<int> selected_container, int &iteration, int &comparisons)
-    : container(selected_container),
+PmergeMe::PmergeMe(std::vector<int> numbers, int &iteration, int &comparisons)
+    : storedValues(numbers),
       remainderValue(-1),
       has_remainder(0),
       counter(comparisons),
       recursionLvl(iteration)
 {
-    has_remainder = (container.size() % 2 != 0); // if remainder is not 0 has_remainder is true
+    has_remainder = (storedValues.size() % 2 != 0); // if remainder is not 0 has_remainder is true
     if (has_remainder)
-    remainderValue = container.back();
-    // this->containerStatus();
+    remainderValue = storedValues.back();
+    // this->storedValuesStatus();
     
     createChains();
     
@@ -30,19 +30,19 @@ std::pair<int, int> PmergeMe::orderPair(size_t i)
 {
     int min;
     int max;
-    if (container[i] == remainderValue && i == (container.size() - 1)) // i create a fake pair and make sure to select the remainder (handles dups)
+    if (storedValues[i] == remainderValue && i == (storedValues.size() - 1)) // i create a fake pair and make sure to select the remainder (handles dups)
     {
         min = remainderValue;
         max = -1; // i use a dummy max value to recognise the remainder and assign to a fake pair
     }
     else
     {
-        min = container[i];   
-        max = container[i + 1];
+        min = storedValues[i];   
+        max = storedValues[i + 1];
         counter++; // comparison increases whenever comapring every number, not only at switch!!!
         if (min > max)      // swaps content for ascending order
         {
-            // i should swap also the container in chain
+            // i should swap also the storedValues in chain
             std::swap(min, max); // could do the swap later?
             // logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
         }
@@ -53,7 +53,7 @@ std::pair<int, int> PmergeMe::orderPair(size_t i)
 
 void PmergeMe::createChains()
 {
-    for (size_t i = 0; i < container.size(); i += 2) // we proceed by 2n at a time (pairs duh)
+    for (size_t i = 0; i < storedValues.size(); i += 2) // we proceed by 2n at a time (pairs duh)
     {
         std::pair<int, int> newPair = orderPair(i);
         pairs.push_back(newPair);
@@ -122,6 +122,11 @@ void PmergeMe::completeSequence()
 
 
 /* ------------------------------ GETTERS AND SETTERS --------------------------------- */
+std::vector<int> &PmergeMe::getContainer()
+{
+    return storedValues;
+}
+
 std::vector<int> &PmergeMe::getMain()
 {
     return main;
@@ -161,12 +166,44 @@ int &PmergeMe::getRecursionLvl()
     return recursionLvl;
 }
 
-void PmergeMe::containerStatus()
+/* ------------------------------ DEBUGGERS --------------------------------- */
+void PmergeMe::printRecursedSet()
 {
-    showPairs(pairs, remainderValue);
-    // logMessage("", "Counter: " + asString(counter));
-    printChain(main, "Main", remainderValue, has_remainder);
-    printChain(pend, "Pend", remainderValue, has_remainder);
+    printPairs();
+    printChain(main, "Main");
+    printChain(pend, "Pend");
+}
+
+void PmergeMe::printPairs() const
+{
+    std::cout << "Pairs:" << " [";
+    for (size_t i = 0; i < pairs.size(); ++i)
+    {
+        if (has_remainder && pairs[i].second == -1) // the
+            std::cout << C_RED " <" << pairs[i].first << "> " C_RESET;
+        else
+            std::cout << " <" << pairs[i].first << "," << pairs[i].second << "> ";
+        if (i < (pairs.size() - 1))
+            std::cout << ",";
+    }
+    std::cout << "]" << std::endl;
+}
+
+void PmergeMe::printChain(const std::vector<int> &container, const std::string &name) const
+{
+    // logMessage(DEBUG, "remainderValue:'" + asString(remainderValue) + "'   hasRemainder:'" + asString(has_remainder) + "' ");
+    std::cout << name << ":" << C_RESET << " [ ";
+    for (size_t i = 0; i < container.size(); ++i)
+    {
+        if (has_remainder && (container[i] == remainderValue))
+            std::cout << C_RED << container[i] << C_RESET;
+        else
+            std::cout << container[i];
+
+        if (i < (container.size() - 1))
+            std::cout << ", ";
+    }
+    std::cout << " ]" << std::endl;
 }
 
 // change with sort pair
