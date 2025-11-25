@@ -2,7 +2,7 @@
 
 // -----------------------------CONSTRUCTORS----------------------------------------
 
-fordJohnsonSort::fordJohnsonSort(int argc, char **argv) // vect will me a template later
+fordJohnsonSort::fordJohnsonSort(int argc, char **argv)
     : iterationResult(0),
       cpu_start(0),
       cpu_end(0),
@@ -177,7 +177,7 @@ int fordJohnsonSort::wrongResult()
         errorMessage = "Container was sorted but exceeded comparison limit for container of " + asString(resultSize) + " numbers: " C_RED + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + ")!";
         return 1;
     }
-    if (!is_sorted(result))
+    if (!isSorted(result))
     {
         errorMessage = "Container is was not sorted correctly!";
         return 1;
@@ -204,4 +204,78 @@ void fordJohnsonSort::showResult()
         logMessage(LOG, C_CYAN "Time taken to process " + asString(resultSize) +
                             " elements: " + cpuFmt.str() + " us" C_RESET);
     }
+}
+
+/* ------------------ Moved former debug utilities ------------------ */
+
+bool isSorted(const std::vector<int> &container)
+{
+    for (size_t i = 0; i < container.size() - 1; i++)
+    {
+        if (container[i] > container[i + 1])
+            return false;
+    }
+    return true;
+}
+
+bool fordJohnsonSort::isValidNumber(std::string &s, int &conversion)
+{
+    if (s.empty())
+    {
+        logMessage(ERROR, "Found empty argument");
+        return false;
+    }
+    if (s[0] == '+') // erases the initial + so that isdigit does not throw error for valid +n numbers
+        s.erase(0, 1);
+
+    for (size_t i = 0; i < s.length(); i++) // runs loop inside the string (after first + if found)
+    {
+        if (!isdigit(s[i])) //
+        {
+            logMessage(ERROR, "Arguments should be valid positive intergers.");
+            return false;
+        }
+    }
+
+    long bound = atol(s.c_str());
+    if (bound > INT_MAX || bound < 0)
+    {
+        logMessage(ERROR, "Passed argument bigger thant INT_MAX.");
+        return false;
+    }
+    conversion = bound;
+    return true;
+}
+
+bool fordJohnsonSort::isSorted(const std::vector<int> &container)
+{
+    for (size_t i = 0; i < container.size() - 1; i++)
+    {
+        if (container[i] > container[i + 1])
+            return false;
+    }
+    return true;
+}
+
+int fordJohnsonSort::maxComparisons(int n)
+{
+    int sum = 0;
+    for (int k = 1; k <= n; ++k)
+    {
+        double value = (3.0 / 4.0) * k;
+        sum += static_cast<int>(ceil(log2(value)));
+    }
+    return sum;
+}
+
+void fordJohnsonSort::showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize)
+{
+    std::cout << state << ": ";
+    for (size_t i = 0; i < containerSize; ++i)
+    {
+        std::cout << container[i];
+        if (i < (container.size() - 1))
+            std::cout << ", ";
+    }
+    std::cout << std::endl;
 }

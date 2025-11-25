@@ -59,27 +59,3 @@ inline std::string asString(int value) {
     ss << value;
     return ss.str();
 }
-
-
-/* ------------------------------ARGS CHECK----------------------------- */
-bool isValidNumber(std::string &s, int &conversion);
-
-
-/* ----------------------------RESULT CHECK------------------------------- */
-template <typename T>
-bool is_sorted(const T &container);
-int maxComparisons(int n);
-
-
-/* ------------------------------PRINTING----------------------------- */
-template <typename T>
-void showSequence(std::string state, const T &container, size_t containerSize);
-
-// template <typename T>
-// void printChain(const T &container, const std::string &name, int remainder);
-
-// void printPairs(const std::vector<std::pair<int, int> > &pairs, int remainder);
-
-
-/* ------------------------------ INCLUDE DEFINITIONS ------------------------------ */
-#include "../src/debug.tpp"

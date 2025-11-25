@@ -12,6 +12,7 @@
 #include <sys/time.h>
 #include <iomanip>
 #include <sstream>
+#include <climits>   // add for INT_MAX
 
 // Class version (same name; allowed but distinct from function)
 class fordJohnsonSort
@@ -34,8 +35,13 @@ private:
     void recursion(std::vector<int> &recursedSet);
     void pairingPhase(PmergeMe &recursedSett);
     void insertionPhase(PmergeMe &recursedSet);
-    
     int wrongResult();
+
+    // Moved utility methods (were in debug.*)
+    bool isValidNumber(std::string &s, int &conversion);
+    bool isSorted(const std::vector<int> &container);
+    int  maxComparisons(int n);
+    void showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize);
 
 public:
     fordJohnsonSort(int argc, char **argv); // vect will me a template later
