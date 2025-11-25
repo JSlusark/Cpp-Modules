@@ -30,37 +30,38 @@ std::pair<int, int> PmergeMe::orderPair(size_t i)
 {
     int min;
     int max;
-    if (storedValues[i] == remainderValue && i == (storedValues.size() - 1)) // i create a fake pair and make sure to select the remainder (handles dups)
+
+    min = storedValues[i];   
+    max = storedValues[i + 1];
+    counter++; // comparison increases whenever comapring every number, not only at switch!!!
+    if (min > max)      // swaps content for ascending order
     {
-        min = remainderValue;
-        max = -1; // i use a dummy max value to recognise the remainder and assign to a fake pair
+        // i should swap also the storedValues in chain
+        std::swap(min, max); // could do the swap later?
+        // logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
     }
-    else
-    {
-        min = storedValues[i];   
-        max = storedValues[i + 1];
-        counter++; // comparison increases whenever comapring every number, not only at switch!!!
-        if (min > max)      // swaps content for ascending order
-        {
-            // i should swap also the storedValues in chain
-            std::swap(min, max); // could do the swap later?
-            // logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
-        }
-        logMessage("", C_GRAY "Created and compared pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
-    }
+    logMessage("", C_GRAY "Created and compared pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
+
     return(std::make_pair(min, max));
 }
 
 void PmergeMe::createChains()
 {
-    for (size_t i = 0; i < storedValues.size(); i += 2) // we proceed by 2n at a time (pairs duh)
+    size_t looplength;
+    if(has_remainder)
+        looplength = storedValues.size() - 1;
+    else
+    looplength = storedValues.size();
+
+    for (size_t i = 0; i < looplength; i += 2) // we proceed by 2n at a time (pairs duh)
     {
         std::pair<int, int> newPair = orderPair(i);
         pairs.push_back(newPair);
-        if (newPair.second != -1)           // only add true max values to avoid undefined behaviour with the -1 from <odd, -1> pair
-            main.push_back(newPair.second);
+        main.push_back(newPair.second);
         pend.push_back(newPair.first);     // adding all min value, including odd number
     }
+    if(has_remainder)
+        pend.push_back(remainderValue);     // adding all min value, including odd number
 }
 
 
@@ -179,13 +180,13 @@ void PmergeMe::printPairs() const
     std::cout << "Pairs:" << " [";
     for (size_t i = 0; i < pairs.size(); ++i)
     {
-        if (has_remainder && pairs[i].second == -1) // the
-            std::cout << C_RED " <" << pairs[i].first << "> " C_RESET;
-        else
+      
             std::cout << " <" << pairs[i].first << "," << pairs[i].second << "> ";
         if (i < (pairs.size() - 1))
             std::cout << ",";
     }
+      if (has_remainder) // just printing for view but it is not included in pairing as useless there
+            std::cout << ", " C_RED "<" << remainderValue << "> " C_RESET;
     std::cout << "]" << std::endl;
 }
 
@@ -235,4 +236,28 @@ void PmergeMe::updatePend()
     if (has_remainder)
         updatedPend.push_back(remainderValue);
     pend = updatedPend;
+}
+
+void PmergeMe::updatePairing()
+{
+    std::vector<std::pair<int,int> > updatedPairs;
+
+    // Rebuild pairs in the order of the updated main chain
+    for (size_t i = 0; i < main.size(); ++i)
+    {
+
+        for (size_t j = 0; j < pairs.size(); ++j)
+        {
+            if (pairs[j].second == main[i])
+                updatedPairs.push_back(pairs[j]);
+        }
+    }
+
+    // If there is a remainder, append its fake pair <min, -1>
+    // if (has_remainder)
+    // {
+    //     updatedPairs.push_back(std::make_pair(remainderValue, -1));
+    // }
+
+    pairs = updatedPairs;
 }

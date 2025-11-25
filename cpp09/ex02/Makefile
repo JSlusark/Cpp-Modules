@@ -6,12 +6,10 @@ INCDIR    := headers
 OBJDIR    := obj
 
 HEADERS = fordJohnsonSort.hpp \
-		PmergeMe.hpp \
-		debug.hpp
+		PmergeMe.hpp 
 SRC = main.cpp \
 	  fordJohnsonSort.cpp \
-	  PmergeMe.cpp \
-	  debug.cpp
+	  PmergeMe.cpp 
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))

@@ -63,4 +63,6 @@ private:
     // change with sort pair
     // void sortPair();
     void updatePend();
+    void updatePairing();
+
 };

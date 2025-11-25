@@ -103,17 +103,17 @@ void fordJohnsonSort::pairingPhase(PmergeMe &recursedSet)
 void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
 {
     logMessage(C_YELLOW "Recursion level - moving backward: " C_RESET, asString(recursedSet.getRecursionLvl()));
+    std::vector<int> storedMain = recursedSet.getMain(); // storing mainchain to not affect insertion orders
+    recursedSet.updatePairing();
+    recursedSet.updatePend(); // i use my pairs vector so that pend can match partner from main if it was previously sorted
     recursedSet.getCounter() = comparisonResult; // we need to update based on the previous eneded iteration
+    recursedSet.printRecursedSet();
     // logMessage("", C_CYAN "BACK - currentSet count: " C_RESET + asString(recursedSet.getCounter()));
     // logMessage("", C_CYAN "BACK - result count: " C_RESET + asString(comparisonResult));
     // logMessage("", C_CYAN "BACK - currentSet count after: " C_RESET + asString(recursedSet.getCounter()));
-    recursedSet.printRecursedSet();
 
-    logMessage(LOG, "updating pend to main");
-    recursedSet.updatePend(); // match position of partners in main and pend for easy access
-    std::vector<int> stored_main = recursedSet.getMain();
+    // logMessage(LOG, "updating pend to main");
     // printChain(recursedSet.getContainer(), "CONTANER:", 0, 0);
-    recursedSet.printRecursedSet();
 
     // printChain(recursedSet.getMain(), "Previous merge", recursedSet.getRemainderValue(), recursedSet.getRemainderInfo());
     PmergeMe::CountComparisons curr_comparisons(recursedSet.getCounter()); // i might need to initialise this somewhere else?
@@ -136,30 +136,18 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
         }
         else
         {   
-            partner = stored_main[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
+            partner = storedMain[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
             partnerPosition = std::find(recursedSet.getMain().begin(), recursedSet.getMain().end(), partner);
             message = "j(" + asString(recursedSet.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to binary insert in mainchain between: " + asString(recursedSet.getMain()[0]) + " to " + asString(partner);
-        }
+        } // might have a j problem ..
 
         logMessage("", C_GRAY + message + C_RESET);
-        
-        // NOTE: FOUND BUG PERHAPS! number at J(1) should always go at beginning of main chain and i should skip the
-        // comparison/binary insertion pat and can just add at beggining
-        
         // binary insert checks from the begin of mainchain until partner position(excluded in count as we compare until value < partnerPosition, which is returned by default if value not inserted)
         std::vector<int>::iterator pos = std::lower_bound(recursedSet.getMain().begin(), partnerPosition, value, curr_comparisons);
         recursedSet.getMain().insert(pos, value);
-        recursedSet.printChain(recursedSet.getMain(), "Inserted");
+        recursedSet.printChain(recursedSet.getMain(), "Updated Main");
     }
-    // if (recursedSet.getRemainderInfo())
-    // {
-    //     int value = recursedSet.getRemainderValue();
-    //     // PmergeMe::CountComparisons curr_comparisons(recursedSet.getCounter()); // i might need to initialise this somewhere else?
-    //     std::vector<int>::iterator pos = std::lower_bound(recursedSet.getMain().begin(), recursedSet.getMain().end(), value, curr_comparisons);
-    //     recursedSet.getMain().insert(pos, value);
-    // }
-
-    recursedSet.printChain(recursedSet.getMain(), "Current merge");
+    recursedSet.printChain(recursedSet.getMain(), C_YELLOW "Final sorted Main" C_RESET);
     logMessage(C_GRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursedSet.recursionLvl), "------------\n" C_RESET);
 }
 
