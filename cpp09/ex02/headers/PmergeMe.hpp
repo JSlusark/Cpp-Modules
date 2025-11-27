@@ -8,7 +8,8 @@ private:
     std::vector<std::pair<int, int> > pairs; // container to preserve relationship between pairs sent to main and pend chains
     std::vector<int> main;                  // bigger values container
     std::vector<int> pend;                  // smaller values container
-    std::vector<size_t> jacobsthal;
+    std::vector<size_t> jacobsthalAnchors;
+    std::vector<size_t> jacobsthalSequence;
     int remainderValue;
     int has_remainder;
     int &counter; // counts amount of combinations done in each currentSet and scales between recursions
@@ -62,7 +63,7 @@ private:
     void printSetData();
     void printPairs() const;
     void printChain(const std::vector<int> &container, const std::string &name) const;
-    void printJacobstahl(); 
+    void printJacobstahl(std::vector<size_t> jacob); 
     void printInsertionOrder();
 
     /* ------------------------------ PAIR INFO USED FOR INSERTION --------------------------------- */

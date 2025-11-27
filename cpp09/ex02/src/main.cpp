@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     {
         try
         {
-            FordJohnsonSort vector(argc, argv);
+            FordJohnsonSort vector(argc, argv); // <------------------ add template for deque!
             vector.showResult();
         }
         catch (const std::exception &e)

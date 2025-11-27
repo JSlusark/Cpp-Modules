@@ -82,7 +82,6 @@ void FordJohnsonSort::recursion(std::vector<int> &recursedSet)
     showSequence("Received container", recursedSet, recursedSet.size());
 
     PmergeMe newSet(recursedSet, iterationResult, comparisonResult);
-    std::cout << "newSet.counter:" << newSet.getCounter() << "  Total counter:" << comparisonResult << std::endl;
     
     if (newSet.getMain().size() > 1)
     {

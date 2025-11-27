@@ -13,7 +13,6 @@ PmergeMe::PmergeMe(std::vector<int> &recursedSet, int &iteration, int &compariso
         remainderValue = mergedChains.back();
     createChains();
     generateJacobsthal();
-
     printSetData();
 };
 
@@ -22,7 +21,7 @@ PmergeMe::PmergeMe(const PmergeMe &other)
       pairs(other.pairs),
       main(other.main),
       pend(other.pend),
-      jacobsthal(other.jacobsthal),
+      jacobsthalSequence(other.jacobsthalSequence),
       remainderValue(other.remainderValue),
       has_remainder(other.has_remainder),
       counter(other.counter),
@@ -38,7 +37,7 @@ PmergeMe &PmergeMe::operator=(const PmergeMe &other)
         pairs          = other.pairs;
         main           = other.main;
         pend           = other.pend;
-        jacobsthal     = other.jacobsthal;
+        jacobsthalSequence     = other.jacobsthalSequence;
         remainderValue = other.remainderValue;
         has_remainder  = other.has_remainder;
         counter        = other.counter;
@@ -96,7 +95,7 @@ void PmergeMe::findNumbers(size_t pendSize)
 {
     if (pendSize == 0 || pendSize == 1) // added it to avoid weird behavioru in loop (0 - 1 or 1 - 2)
     {
-        jacobsthal.push_back(pendSize); // starts/ends with 0 or 1 depending on pend size
+        jacobsthalSequence.push_back(pendSize); // starts/ends with 0 or 1 depending on pend size
         return;
     }
     size_t j = 0;
@@ -107,36 +106,49 @@ void PmergeMe::findNumbers(size_t pendSize)
         /* J(n) = J(n-1) + 2 * J(n-2)  */
         j = (j1) + (2 * (j2));
         if (j < pendSize) // adds only if result of j number is < size
-            jacobsthal.push_back(j);
+            jacobsthalSequence.push_back(j);
         j2 = j1;
         j1 = j;
     }
+    jacobsthalAnchors = jacobsthalSequence; // stored for printing 
 }
 
 void PmergeMe::completeSequence(size_t pendSize)
 {
     std::vector<size_t> fill;
-    for (size_t i = 0; i < jacobsthal.size(); i++)
+    for (size_t i = 0; i < jacobsthalSequence.size(); i++)
     {
         if (i == 0)
         {
-            fill.push_back(jacobsthal[i]);
+            fill.push_back(jacobsthalSequence[i]);
             continue;
         }
-        size_t a = jacobsthal[i - 1]; // prev
-        size_t b = jacobsthal[i];     // curr
+        size_t a = jacobsthalSequence[i - 1]; // prev
+        size_t b = jacobsthalSequence[i];     // curr
 
         for (size_t n = b; n > a; n--)
             fill.push_back(n);
     }
-    if (pendSize > jacobsthal.back())
+    if (pendSize > jacobsthalSequence.back())
     {
-        size_t a = jacobsthal.back(); // prev
+        size_t a = jacobsthalSequence.back(); // prev
         size_t b = pendSize;          // curr
         for (size_t n = b; n > a; n--)
             fill.push_back(n);
     }
-    jacobsthal = fill; // overwrite the jacobstahl with the filled
+    jacobsthalSequence = fill; // overwrite the jacobstahl with the filled
+}
+
+void PmergeMe::printJacobstahl(std::vector<size_t> jacob)
+{
+    std::cout << "Jacobstahl sequence: [ ";
+    for (size_t i = 0; i < jacob.size(); ++i)
+    {
+        std::cout << jacob[i];
+        if (i < (jacob.size() - 1))
+            std::cout << ", ";
+    }
+    std::cout << " ]" << std::endl;
 }
 
 /* ------------------------------ JACOBSTAHL BINARY INSERT--------------------------------- */
@@ -145,20 +157,20 @@ void PmergeMe::pleaseMergeMe()
 {
     logMessage(C_YELLOW "Moving backward (Recursion level ", asString(recursionLvl) + ")" + C_RESET);
     mergedChains = main; // as main will not change we make sortedvalues as a copy and insert in there
-    printChain(mergedChains, C_YELLOW "sorted main:" C_RESET);
+    printChain(mergedChains, C_YELLOW "Sorted main" C_RESET);
     printInsertionOrder();
     PmergeMe::CountComparisons curr_comparisons(counter); // i might need to initialise this somewhere else?
 
-    for (size_t i = 0; i < jacobsthal.size(); i++)
+    for (size_t i = 0; i < jacobsthalSequence.size(); i++)
     {
-        size_t j = jacobsthal[i] - 1; // js number - 1 to start from index 0
+        size_t j = jacobsthalSequence[i] - 1; // js number - 1 to start from index 0
         std::pair<int,int> ref = getPairInfo(j);
         int value = ref.first;
         int partner = ref.second;
-        std::vector<int>::iterator partnerPosition = getPartnerPosition(value, partner, jacobsthal[i], j);
+        std::vector<int>::iterator partnerPosition = getPartnerPosition(value, partner, jacobsthalSequence[i], j);
         std::vector<int>::iterator insertPosition = std::lower_bound(mergedChains.begin(), partnerPosition, value, curr_comparisons);
         mergedChains.insert(insertPosition, value);
-        printChain(mergedChains, C_YELLOW "Updated Main" C_RESET);
+        printChain(mergedChains, C_YELLOW "Merged Chains" C_RESET);
     }
     
     logMessage("", C_GRAY "Insertion stops here - all pend numbers are now ordered in main!" C_RESET);
@@ -210,7 +222,7 @@ std::vector<std::pair<int, int> > &PmergeMe::getPairs()
 
 std::vector<size_t> &PmergeMe::getJacobsthal()
 {
-    return jacobsthal;
+    return jacobsthalSequence;
 }
 
 int &PmergeMe::getRemainderInfo()
@@ -263,20 +275,10 @@ void PmergeMe::printSetData()
     printChain(pend, "Pend Chain");
     printChain(main, "Main Chain");
     printPairs();
-    printJacobstahl();
+    printJacobstahl(jacobsthalAnchors);
+    printJacobstahl(jacobsthalSequence);
 }
 
-void PmergeMe::printJacobstahl()
-{
-    std::cout << "Jacobstahl sequence: [ ";
-    for (size_t i = 0; i < jacobsthal.size(); ++i)
-    {
-        std::cout << jacobsthal[i];
-        if (i < (jacobsthal.size() - 1))
-            std::cout << ", ";
-    }
-    std::cout << " ]" << std::endl;
-}
 
 void PmergeMe::printPairs() const
 {
