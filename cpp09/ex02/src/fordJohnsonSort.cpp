@@ -1,7 +1,6 @@
 #include "../headers/fordJohnsonSort.hpp"
 
-// -----------------------------CONSTRUCTORS----------------------------------------
-
+/* ------------------ CONSTRUCTORS ------------------ */
 fordJohnsonSort::fordJohnsonSort(int argc, char **argv)
     : iterationResult(0),
       cpu_start(0),
@@ -22,77 +21,85 @@ fordJohnsonSort::fordJohnsonSort(int argc, char **argv)
     sort();
 }
 
-fordJohnsonSort::~fordJohnsonSort() {}
-// ADD COP AND ASGN CONSTRUCTORS!!
+fordJohnsonSort::fordJohnsonSort(const fordJohnsonSort &other)
+    : iterationResult(other.iterationResult),
+      result(other.result),
+      originalSize(other.originalSize),
+      resultSize(other.resultSize),
+      cpu_start(other.cpu_start),
+      cpu_end(other.cpu_end),
+      tv_start(other.tv_start),
+      tv_end(other.tv_end),
+      comparisonLimit(other.comparisonLimit),
+      comparisonResult(other.comparisonResult),
+      errorMessage(other.errorMessage)
+{
+}
 
-// -----------------------------SORTING FUNCTIONS----------------------------------------
+fordJohnsonSort &fordJohnsonSort::operator=(const fordJohnsonSort &other)
+{
+    if (this != &other)
+    {
+        iterationResult   = other.iterationResult;
+        result            = other.result;
+        originalSize      = other.originalSize;
+        resultSize        = other.resultSize;
+        cpu_start         = other.cpu_start;
+        cpu_end           = other.cpu_end;
+        tv_start          = other.tv_start;
+        tv_end            = other.tv_end;
+        comparisonLimit   = other.comparisonLimit;
+        comparisonResult  = other.comparisonResult;
+        errorMessage      = other.errorMessage;
+    }
+    return *this;
+}
+
+fordJohnsonSort::~fordJohnsonSort() {}
+
+/* ------------------ SORTING FUNCTIONS ------------------ */
 
 void fordJohnsonSort::sort()
 {
     logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
-
-    // timer starts here - create function?
     gettimeofday(&tv_start, 0);
     cpu_start = std::clock();
 
     recursion(result);
-    // logMessage(LOG, "after sort container!!");
 
-    // timer ends here - create function?
     cpu_end = std::clock();
     gettimeofday(&tv_end, 0);
-
     logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
 }
 
 void fordJohnsonSort::recursion(std::vector<int> &recursedSet)
 {
-
-    if (recursedSet.size() <= 1) // 1 n does not need to be sorted so recursion stops here
-    {
-        logMessage(LOG, "???");
+    if (recursedSet.size() <= 1) // recursion stops here
         return;
-    }
+
     logMessage(C_LGRAY "\n------------ STARTED RECURSION LEVEL:" + asString(iterationResult), "------------\n" C_RESET);
-
-
     logMessage(C_YELLOW "Moving forward (Recursion level ", asString(iterationResult) + ")" C_RESET);
     showSequence("Received container", recursedSet, recursedSet.size());
+
     PmergeMe currentSet(recursedSet, iterationResult, comparisonResult);
     comparisonResult = currentSet.getCounter(); // update global comparison count as 
 
 
-    // logMessage("", C_CYAN "FRONT - pair comparison currentSet.count: " C_RESET + asString(currentSet.getCounter()));
-    // logMessage("", C_CYAN "FRONT - pair comaprison result: " C_RESET + asString(comparisonResult));
-    currentSet.printRecursedSet();
-
-    // currentSet.getContainer() = currentSet.getMain();
-    // printChain(currentSet.getContainer(), "CONTAINER AFTER PAIRING:", 0, 0);
 
     pairingPhase(currentSet);
-
-
-    insertionPhase(currentSet); // if main
+    insertionPhase(currentSet); 
 
     // Updating global recursedSet and comparison
     recursedSet = currentSet.getMain();
-    // currentSet.getContainer() = currentSet.getMain();
     comparisonResult = currentSet.getCounter();
-    // printChain(currentSet.getContainer(), "CONTAINER AFTER MERGING:", 0, 0);
 }
 
 void fordJohnsonSort::pairingPhase(PmergeMe &recursedSet)
 {
-    // logMessage("", "Counter: " + asString(recursedSet.getCounter()));
-
-    // recursedSet.printRecursedSet();
     if (recursedSet.getMain().size() > 1)
     {
         logMessage("", "Creating new recursion level..");
         iterationResult++;
-        // comparisonResult = recursedSet.getCounter(); // it would not update in other cases, needs to update global
-
-        // logMessage(C_GRAY "\n------------ ENTERED RECURSION LEVEL:" + asString(recursedSet.getRecursionLvl()) , "------------\n" C_RESET);
         recursion(recursedSet.getMain());
     }
     else    
@@ -107,13 +114,12 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
     recursedSet.getCounter() = comparisonResult; // we need to update based on the previous eneded iteration
     recursedSet.printChain(storedMain, C_YELLOW "Main:" C_RESET);
     recursedSet.printInsertionOrder();
-    // recursedSet.printRecursedSet();
     PmergeMe::CountComparisons curr_comparisons(recursedSet.getCounter()); // i might need to initialise this somewhere else?
 
     for (size_t i = 0; i < recursedSet.getJacobsthal().size(); i++)
     {
         size_t j = recursedSet.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
-        std::pair<int,int> ref = recursedSet.getPair(j, storedMain);
+        std::pair<int,int> ref = recursedSet.getPairInfo(j, storedMain);
         int value = ref.first;
         int partner = ref.second;
         std::vector<int>::iterator partnerPosition;
@@ -143,7 +149,47 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
     logMessage(C_LGRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursedSet.recursionLvl), "------------\n" C_RESET);
 }
 
-// UTILS
+
+
+/* ------------------ PRINT DEBUG ------------------ */
+
+
+void fordJohnsonSort::showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize)
+{
+    std::cout << state << ": [ ";
+    for (size_t i = 0; i < containerSize; ++i)
+    {
+        std::cout << container[i];
+        if (i < (container.size() - 1))
+            std::cout << ", ";
+    }   
+    std::cout << " ]" << std::endl;
+}
+
+
+/* ------------------ RESULT CHECKING ------------------ */
+
+void fordJohnsonSort::showResult()
+{
+    resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
+    showSequence("After", result, resultSize);
+    if (wrongResult())
+    {
+            // std::cout << "comparisons=" << comparisonResult << std::endl; // uncomment for tester
+            throw std::runtime_error("Wrong result: " + errorMessage);
+    }
+    else
+    {
+        double cpu_micro_double = (double)(cpu_end - cpu_start) / CLOCKS_PER_SEC * 1e6;
+        std::ostringstream cpuFmt;
+        cpuFmt.setf(std::ios::fixed);
+        cpuFmt << std::setprecision(5) << cpu_micro_double;
+
+        logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterationResult) + " iterationResult and in " + C_GREEN + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + " comparison count." C_RESET);
+        logMessage(LOG, C_CYAN "Time taken to process " + asString(resultSize) +
+                            " elements: " + cpuFmt.str() + " us" C_RESET);
+    }
+}
 
 bool fordJohnsonSort::wrongResult()
 {
@@ -166,31 +212,28 @@ bool fordJohnsonSort::wrongResult()
     return 0;
 }
 
-void fordJohnsonSort::showResult()
+bool fordJohnsonSort::isSorted(const std::vector<int> &container)
 {
-    resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
-    showSequence("After", result, resultSize);
-    if (wrongResult()) // i dont want to trhow error as the code went as expected but if this hits it means that the algo failed
+    for (size_t i = 0; i < container.size() - 1; i++)
     {
-            std::cout << "comparisons=" << comparisonResult << std::endl; // uncomment for tester
-            throw std::runtime_error("Wrong result: " + errorMessage);
+        if (container[i] > container[i + 1])
+            return false;
     }
-    else
-    {
-        // convert time?
-        double cpu_micro_double = (double)(cpu_end - cpu_start) / CLOCKS_PER_SEC * 1e6;
-        std::ostringstream cpuFmt;
-        cpuFmt.setf(std::ios::fixed);
-        cpuFmt << std::setprecision(5) << cpu_micro_double;
-
-        logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterationResult) + " iterationResult and in " + C_GREEN + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + " comparison count." C_RESET);
-        logMessage(LOG, C_CYAN "Time taken to process " + asString(resultSize) +
-                            " elements: " + cpuFmt.str() + " us" C_RESET);
-    }
+    return true;
 }
 
-/* ------------------ Moved former debug utilities ------------------ */
+int fordJohnsonSort::maxComparisons(int n)
+{
+    int sum = 0;
+    for (int k = 1; k <= n; ++k)
+    {
+        double value = (3.0 / 4.0) * k;
+        sum += static_cast<int>(ceil(log2(value)));
+    }
+    return sum;
+}
 
+/* ------------------ RESULT CHECKING ------------------ */
 bool fordJohnsonSort::isValidNumber(std::string &s, int &conversion)
 {
     if (s.empty())
@@ -218,37 +261,4 @@ bool fordJohnsonSort::isValidNumber(std::string &s, int &conversion)
     }
     conversion = bound;
     return true;
-}
-
-bool fordJohnsonSort::isSorted(const std::vector<int> &container)
-{
-    for (size_t i = 0; i < container.size() - 1; i++)
-    {
-        if (container[i] > container[i + 1])
-            return false;
-    }
-    return true;
-}
-
-int fordJohnsonSort::maxComparisons(int n)
-{
-    int sum = 0;
-    for (int k = 1; k <= n; ++k)
-    {
-        double value = (3.0 / 4.0) * k;
-        sum += static_cast<int>(ceil(log2(value)));
-    }
-    return sum;
-}
-
-void fordJohnsonSort::showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize)
-{
-    std::cout << state << ": [ ";
-    for (size_t i = 0; i < containerSize; ++i)
-    {
-        std::cout << container[i];
-        if (i < (container.size() - 1))
-            std::cout << ", ";
-    }   
-    std::cout << " ]" << std::endl;
 }

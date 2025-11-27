@@ -1,7 +1,7 @@
 #pragma once
 #include "./debug.hpp"
 
-class PmergeMe // or would be even called "iterationset"
+class PmergeMe
 {
 private:
     std::vector<int> storedValues; // container to sort
@@ -25,7 +25,7 @@ private:
     /* ------------------------------JACOBSTAHL SEQUENCE FUNCTIONS--------------------------------- */
     void generateJacobsthal(); 
     void findNumbers();          // selects js numbers based on pend size (1, 3, 5.. etc)
-    void completeSequence();    // fills in sequence (1, 3, 2, 5, 4.. etc)
+    void completeSequence();    // fills in sequence (1, 3, 2, 5, 8, 7 ,6, 4.. etc)
     
     public:
     int recursionLvl;
@@ -42,12 +42,13 @@ private:
         };
     };
     
+    /* ------------------ CONSTRUCTORS ------------------ */
     PmergeMe(std::vector<int> input, int &iteration, int &comparisons);
+    PmergeMe(const PmergeMe &other);
+    PmergeMe &operator=(const PmergeMe &other);
     ~PmergeMe();
-    int getPartner(int pend);
-    // ADD COPY CONSTRUCTOR AND ASSIGN<EN OPERATOR!!!
     
-    // getters
+    /* ------------------------------ GETTERS AND SETTERS --------------------------------- */
     std::vector<int> &getContainer();
     std::vector<int> &getMain();
     std::vector<int> &getPend();
@@ -57,15 +58,15 @@ private:
     int &getRemainderValue();
     int &getCounter();
     int &getRecursionLvl();
-    void printRecursedSet();
-    void printChain(const std::vector<int> &container, const std::string &name) const;
+
+    /* ------------------------------ SHOW SET INFO --------------------------------- */
+    void printSetData();
     void printPairs() const;
-    
-    // change with sort pair
-    // void sortPair();
-    std::pair<int,int> getPair(size_t jacob, std::vector<int> orderedMain);
-    // void printPendOrder();
-    // void printPairOrder();
+    void printChain(const std::vector<int> &container, const std::string &name) const;
+    void printJacobstahl(); 
     void printInsertionOrder();
+
+    /* ------------------------------ PAIR INFO USED FOR INSERTION --------------------------------- */
+    std::pair<int,int> getPairInfo(size_t jacob, std::vector<int> orderedMain);
 
 };

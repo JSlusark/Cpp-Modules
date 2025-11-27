@@ -1,12 +1,8 @@
 #include "../headers/fordJohnsonSort.hpp"
-#include <ctime>      // clock()
-#include <sys/time.h> // gettimeofday()
-
-#include <iomanip> // for std::setprecision, std::fixed
 #include <sstream> // for std::ostringstream
 
 /*
-
+FOR TESTING PURPOSES:
 bash:
 ./PmergeMe $(shuf -i 1-10 -n 3000 | tr "\n" " ")
 
@@ -16,6 +12,7 @@ descending order:
 ./PmergeMe (seq 3000 -1 1)
 
 To be added under showResult( make public) if using bashTester:
+./myTester.sh 1 2 3 4 5
 std::cout << "comparisons=" << vector.comparisonResult << std::endl;
 
 */
@@ -31,7 +28,7 @@ int main(int argc, char **argv)
     {
         try
         {
-            fordJohnsonSort vector(argc, argv); // vect will me a template later
+            fordJohnsonSort vector(argc, argv);
             vector.showResult();
         }
         catch (const std::exception &e)

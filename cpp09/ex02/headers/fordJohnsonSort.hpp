@@ -29,31 +29,33 @@ private:
     int comparisonLimit;
     int comparisonResult; 
     std::string errorMessage;
+    
     // http://en.cppreference.com/w/cpp/container.html
     // use chatgpt brainstorming message to explain deque vs stack from ex01
+    
+    /* ------------------ SORTING FUNCTIONS ------------------ */
     void sort();
     void recursion(std::vector<int> &recursedSet);
     void pairingPhase(PmergeMe &recursedSett);
     void insertionPhase(PmergeMe &recursedSet);
     
-    // Utility methods
+    /* ------------------ PRINT DEBUG ------------------ */
+    void showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize);
+    
+    /* ------------------ RESULT CHECKING UTILS ------------------ */
+    bool isSorted(const std::vector<int> &container);
     bool wrongResult();
     bool isValidNumber(std::string &s, int &conversion);
-    bool isSorted(const std::vector<int> &container);
     int  maxComparisons(int n);
-    void showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize);
 
 
 public:
+    /* ------------------ CONSTRUCTORS ------------------ */
     fordJohnsonSort(int argc, char **argv); // vect will me a template later
     ~fordJohnsonSort();
+    fordJohnsonSort(const fordJohnsonSort &other);
+    fordJohnsonSort &operator=(const fordJohnsonSort &other);
 
-
-    // --------------  TO ADD AT THE END  -----------------
-    // copy contructor + assignment operator !!!!
-    // fordJohnsonSort(const fordJohnsonSort &other);
-    // fordJohnsonSort &operator=(const fordJohnsonSort &other);
-
+    /* ------------------ CHECKS AND PRINT RESULT ------------------ */
     void showResult();
-
 };
