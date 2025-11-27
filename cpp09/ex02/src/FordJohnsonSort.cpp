@@ -1,7 +1,7 @@
-#include "../headers/fordJohnsonSort.hpp"
+#include "../headers/FordJohnsonSort.hpp"
 
 /* ------------------ CONSTRUCTORS ------------------ */
-fordJohnsonSort::fordJohnsonSort(int argc, char **argv)
+FordJohnsonSort::FordJohnsonSort(int argc, char **argv)
     : iterationResult(0),
       cpu_start(0),
       cpu_end(0),
@@ -21,7 +21,7 @@ fordJohnsonSort::fordJohnsonSort(int argc, char **argv)
     sort();
 }
 
-fordJohnsonSort::fordJohnsonSort(const fordJohnsonSort &other)
+FordJohnsonSort::FordJohnsonSort(const FordJohnsonSort &other)
     : iterationResult(other.iterationResult),
       result(other.result),
       originalSize(other.originalSize),
@@ -36,7 +36,7 @@ fordJohnsonSort::fordJohnsonSort(const fordJohnsonSort &other)
 {
 }
 
-fordJohnsonSort &fordJohnsonSort::operator=(const fordJohnsonSort &other)
+FordJohnsonSort &FordJohnsonSort::operator=(const FordJohnsonSort &other)
 {
     if (this != &other)
     {
@@ -55,11 +55,11 @@ fordJohnsonSort &fordJohnsonSort::operator=(const fordJohnsonSort &other)
     return *this;
 }
 
-fordJohnsonSort::~fordJohnsonSort() {}
+FordJohnsonSort::~FordJohnsonSort() {}
 
 /* ------------------ SORTING FUNCTIONS ------------------ */
 
-void fordJohnsonSort::sort()
+void FordJohnsonSort::sort()
 {
     logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
     gettimeofday(&tv_start, 0);
@@ -72,7 +72,7 @@ void fordJohnsonSort::sort()
     logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
 }
 
-void fordJohnsonSort::recursion(std::vector<int> &recursedSet)
+void FordJohnsonSort::recursion(std::vector<int> &recursedSet)
 {
     if (recursedSet.size() <= 1) // recursion stops here
         return;
@@ -94,7 +94,7 @@ void fordJohnsonSort::recursion(std::vector<int> &recursedSet)
     comparisonResult = currentSet.getCounter();
 }
 
-void fordJohnsonSort::pairingPhase(PmergeMe &recursedSet)
+void FordJohnsonSort::pairingPhase(PmergeMe &recursedSet)
 {
     if (recursedSet.getMain().size() > 1)
     {
@@ -107,7 +107,7 @@ void fordJohnsonSort::pairingPhase(PmergeMe &recursedSet)
 
 }
 
-void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
+void FordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
 {
     logMessage(C_YELLOW "Moving backward (Recursion level ", asString(recursedSet.getRecursionLvl()) + ")" + C_RESET);
     std::vector<int> storedMain = recursedSet.getMain(); // storing mainchain to not affect insertion orders
@@ -154,7 +154,7 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
 /* ------------------ PRINT DEBUG ------------------ */
 
 
-void fordJohnsonSort::showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize)
+void FordJohnsonSort::showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize)
 {
     std::cout << state << ": [ ";
     for (size_t i = 0; i < containerSize; ++i)
@@ -169,7 +169,7 @@ void fordJohnsonSort::showSequence(const std::string &state, const std::vector<i
 
 /* ------------------ RESULT CHECKING ------------------ */
 
-void fordJohnsonSort::showResult()
+void FordJohnsonSort::showResult()
 {
     resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
     showSequence("After", result, resultSize);
@@ -191,7 +191,7 @@ void fordJohnsonSort::showResult()
     }
 }
 
-bool fordJohnsonSort::wrongResult()
+bool FordJohnsonSort::wrongResult()
 {
     if (originalSize != resultSize)
     {
@@ -212,7 +212,7 @@ bool fordJohnsonSort::wrongResult()
     return 0;
 }
 
-bool fordJohnsonSort::isSorted(const std::vector<int> &container)
+bool FordJohnsonSort::isSorted(const std::vector<int> &container)
 {
     for (size_t i = 0; i < container.size() - 1; i++)
     {
@@ -222,7 +222,7 @@ bool fordJohnsonSort::isSorted(const std::vector<int> &container)
     return true;
 }
 
-int fordJohnsonSort::maxComparisons(int n)
+int FordJohnsonSort::maxComparisons(int n)
 {
     int sum = 0;
     for (int k = 1; k <= n; ++k)
@@ -234,7 +234,7 @@ int fordJohnsonSort::maxComparisons(int n)
 }
 
 /* ------------------ RESULT CHECKING ------------------ */
-bool fordJohnsonSort::isValidNumber(std::string &s, int &conversion)
+bool FordJohnsonSort::isValidNumber(std::string &s, int &conversion)
 {
     if (s.empty())
     {

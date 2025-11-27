@@ -5,10 +5,10 @@ SRCDIR    := src
 INCDIR    := headers
 OBJDIR    := obj
 
-HEADERS = fordJohnsonSort.hpp \
+HEADERS = FordJohnsonSort.hpp \
 		PmergeMe.hpp 
 SRC = main.cpp \
-	  fordJohnsonSort.cpp \
+	  FordJohnsonSort.cpp \
 	  PmergeMe.cpp 
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))

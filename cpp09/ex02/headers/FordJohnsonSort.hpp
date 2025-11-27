@@ -15,7 +15,7 @@
 #include <climits>   // add for INT_MAX
 
 // Class version (same name; allowed but distinct from function)
-class fordJohnsonSort
+class FordJohnsonSort
 {
 private:
     int iterationResult;
@@ -51,10 +51,10 @@ private:
 
 public:
     /* ------------------ CONSTRUCTORS ------------------ */
-    fordJohnsonSort(int argc, char **argv); // vect will me a template later
-    ~fordJohnsonSort();
-    fordJohnsonSort(const fordJohnsonSort &other);
-    fordJohnsonSort &operator=(const fordJohnsonSort &other);
+    FordJohnsonSort(int argc, char **argv); // vect will me a template later
+    ~FordJohnsonSort();
+    FordJohnsonSort(const FordJohnsonSort &other);
+    FordJohnsonSort &operator=(const FordJohnsonSort &other);
 
     /* ------------------ CHECKS AND PRINT RESULT ------------------ */
     void showResult();
