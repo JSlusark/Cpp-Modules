@@ -27,7 +27,7 @@ private:
     struct timeval tv_start; // wall start (kept if you later want wall time)
     struct timeval tv_end;   // wall end
     int comparisonLimit;
-    int comparisonResult; // added here for tester purposes
+    int comparisonResult; 
     std::string errorMessage;
     // http://en.cppreference.com/w/cpp/container.html
     // use chatgpt brainstorming message to explain deque vs stack from ex01
@@ -35,13 +35,14 @@ private:
     void recursion(std::vector<int> &recursedSet);
     void pairingPhase(PmergeMe &recursedSett);
     void insertionPhase(PmergeMe &recursedSet);
-    int wrongResult();
-
-    // Moved utility methods (were in debug.*)
+    
+    // Utility methods
+    bool wrongResult();
     bool isValidNumber(std::string &s, int &conversion);
     bool isSorted(const std::vector<int> &container);
     int  maxComparisons(int n);
     void showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize);
+
 
 public:
     fordJohnsonSort(int argc, char **argv); // vect will me a template later

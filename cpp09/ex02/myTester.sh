@@ -95,7 +95,7 @@ fi
 
     if [ $ret -ne 0 ]; then
         fail_count=$((fail_count + 1))
-        fails+=("${args[*]}")
+        fails+=("${args[*]} : $comparisons")
     fi
 
     ok_count=$((permutations - fail_count))

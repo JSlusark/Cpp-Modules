@@ -104,31 +104,22 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
 {
     logMessage(C_YELLOW "Moving backward (Recursion level ", asString(recursedSet.getRecursionLvl()) + ")" + C_RESET);
     std::vector<int> storedMain = recursedSet.getMain(); // storing mainchain to not affect insertion orders
-    recursedSet.updatePairing();
-    recursedSet.updatePend(); // i use my pairs vector so that pend can match partner from main if it was previously sorted
     recursedSet.getCounter() = comparisonResult; // we need to update based on the previous eneded iteration
-    recursedSet.printRecursedSet();
-    // logMessage("", C_CYAN "BACK - currentSet count: " C_RESET + asString(recursedSet.getCounter()));
-    // logMessage("", C_CYAN "BACK - result count: " C_RESET + asString(comparisonResult));
-    // logMessage("", C_CYAN "BACK - currentSet count after: " C_RESET + asString(recursedSet.getCounter()));
-
-    // logMessage(LOG, "updating pend to main");
-    // printChain(recursedSet.getContainer(), "CONTANER:", 0, 0);
-
-    // printChain(recursedSet.getMain(), "Previous merge", recursedSet.getRemainderValue(), recursedSet.getRemainderInfo());
+    recursedSet.printChain(storedMain, C_YELLOW "Main:" C_RESET);
+    recursedSet.printInsertionOrder();
+    // recursedSet.printRecursedSet();
     PmergeMe::CountComparisons curr_comparisons(recursedSet.getCounter()); // i might need to initialise this somewhere else?
+
     for (size_t i = 0; i < recursedSet.getJacobsthal().size(); i++)
     {
         size_t j = recursedSet.getJacobsthal()[i] - 1; // js number - 1 to start from index 0
-
-        // int bigref = recursedSet.getMain()[j]
-        std::string message;
-        int value = recursedSet.getPend()[j];
-
+        std::pair<int,int> ref = recursedSet.getPair(j, storedMain);
+        int value = ref.first;
+        int partner = ref.second;
         std::vector<int>::iterator partnerPosition;
-        int partner;
-        
-        if (value == recursedSet.getRemainderValue() && j == (recursedSet.getPend().size() - 1))
+        std::string message;
+
+        if (partner == -1)
         {
                 //handles test like 5 4 3 1 2 6
                 message = "j(" + asString(recursedSet.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd < " + asString(value) +  " > to binary insert in mainchain between " + asString(recursedSet.getMain()[0]) + " to end of chain";
@@ -136,10 +127,9 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
         }
         else
         {   
-            partner = storedMain[j]; // AS MAIN AND PEND ARE ORDERED BASED FROM PAIRS partner is -1 if pend value is odd
             partnerPosition = std::find(recursedSet.getMain().begin(), recursedSet.getMain().end(), partner);
             message = "j(" + asString(recursedSet.getJacobsthal()[i]) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to binary insert in mainchain between " + asString(recursedSet.getMain()[0]) + " to " + asString(partner);
-        } // might have a j problem ..
+        } // might have a j problem, check later!!
 
         logMessage("", C_GRAY + message + C_RESET);
         // binary insert checks from the begin of mainchain until partner position(excluded in count as we compare until value < partnerPosition, which is returned by default if value not inserted)
@@ -147,6 +137,7 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
         recursedSet.getMain().insert(pos, value);
         recursedSet.printChain(recursedSet.getMain(), C_YELLOW "Updated Main" C_RESET);
     }
+    
     logMessage("", C_GRAY "Insertion stops here - all pend numbers are now ordered in main!" C_RESET);
     recursedSet.printChain(recursedSet.getMain(), C_GREEN "Sorted Main (Recursion level " + asString(recursedSet.recursionLvl) +")" C_RESET);
     logMessage(C_LGRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursedSet.recursionLvl), "------------\n" C_RESET);
@@ -180,7 +171,10 @@ void fordJohnsonSort::showResult()
     resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
     showSequence("After", result, resultSize);
     if (wrongResult()) // i dont want to trhow error as the code went as expected but if this hits it means that the algo failed
-        throw std::runtime_error("Invalid argument: " + errorMessage);
+    {
+            std::cout << "comparisons=" << comparisonResult << std::endl; // uncomment for tester
+            throw std::runtime_error("Wrong result: " + errorMessage);
+    }
     else
     {
         // convert time?

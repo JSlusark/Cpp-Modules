@@ -29,7 +29,7 @@ private:
     
     public:
     int recursionLvl;
-
+    
     struct CountComparisons // functor to count comparisons inside the lowerbound
     {
         int &counter;
@@ -41,11 +41,12 @@ private:
             return a < b;
         };
     };
-
+    
     PmergeMe(std::vector<int> input, int &iteration, int &comparisons);
     ~PmergeMe();
+    int getPartner(int pend);
     // ADD COPY CONSTRUCTOR AND ASSIGN<EN OPERATOR!!!
-
+    
     // getters
     std::vector<int> &getContainer();
     std::vector<int> &getMain();
@@ -59,10 +60,12 @@ private:
     void printRecursedSet();
     void printChain(const std::vector<int> &container, const std::string &name) const;
     void printPairs() const;
-
+    
     // change with sort pair
     // void sortPair();
-    void updatePend();
-    void updatePairing();
+    std::pair<int,int> getPair(size_t jacob, std::vector<int> orderedMain);
+    // void printPendOrder();
+    // void printPairOrder();
+    void printInsertionOrder();
 
 };

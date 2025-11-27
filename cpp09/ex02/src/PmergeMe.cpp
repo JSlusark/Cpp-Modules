@@ -10,20 +10,17 @@ PmergeMe::PmergeMe(std::vector<int> numbers, int &iteration, int &comparisons)
 {
     has_remainder = (storedValues.size() % 2 != 0); // if remainder is not 0 has_remainder is true
     if (has_remainder)
-     remainderValue = storedValues.back();
+        remainderValue = storedValues.back();
     // this->storedValuesStatus();
-    
+
     createChains();
-    
+
     pendSize = pend.size();
     generateJacobsthal();
-
-
 };
 
 PmergeMe::~PmergeMe() {};
 // ADD COPY CONSTRUCTOR AND ASSIGN<EN OPERATOR!!!
-
 
 /* ------------------------------CHAIN CREATION--------------------------------- */
 std::pair<int, int> PmergeMe::orderPair(size_t i)
@@ -31,23 +28,23 @@ std::pair<int, int> PmergeMe::orderPair(size_t i)
     int min;
     int max;
 
-    min = storedValues[i];   
+    min = storedValues[i];
     max = storedValues[i + 1];
-    counter++; // comparison increases whenever comapring every number, not only at switch!!!
-    if (min > max)      // swaps content for ascending order
+    counter++;     // comparison increases whenever comapring every number, not only at switch!!!
+    if (min > max) // swaps content for ascending order
     {
         // i should swap also the storedValues in chain
         std::swap(min, max); // could do the swap later?
         // logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
     }
     logMessage("", C_GRAY "Created and compared pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
-    return(std::make_pair(min, max));
+    return (std::make_pair(min, max));
 }
 
 void PmergeMe::createChains()
 {
     size_t looplength;
-    if(has_remainder)
+    if (has_remainder)
         looplength = storedValues.size() - 1;
     else
         looplength = storedValues.size();
@@ -57,12 +54,11 @@ void PmergeMe::createChains()
         std::pair<int, int> newPair = orderPair(i);
         pairs.push_back(newPair);
         main.push_back(newPair.second);
-        pend.push_back(newPair.first);     // adding all min value, including odd number
+        pend.push_back(newPair.first); // adding all min value, including odd number
     }
-    if(has_remainder)
-        pend.push_back(remainderValue);     // adding all min value, including odd number
+    if (has_remainder)
+        pend.push_back(remainderValue); // adding all min value, including odd number
 }
-
 
 /* ------------------------------JACOBSTAHL SEQUENCE FUNCTIONS--------------------------------- */
 void PmergeMe::generateJacobsthal() // n is size of pend_chain
@@ -118,8 +114,6 @@ void PmergeMe::completeSequence()
     // printChain(fill, "Order", -1);
     jacobsthal = fill; // overwrite the jacobstahl with the filled
 }
-
-
 
 /* ------------------------------ GETTERS AND SETTERS --------------------------------- */
 std::vector<int> &PmergeMe::getContainer()
@@ -179,12 +173,12 @@ void PmergeMe::printPairs() const
     std::cout << "Pairs data:" << " [";
     for (size_t i = 0; i < pairs.size(); ++i)
     {
-            std::cout << " <" << pairs[i].first << "," << pairs[i].second << "> ";
+        std::cout << " <" << /* C_MAGENTA  <<*/ pairs[i].first << C_RESET << "," << pairs[i].second << "> ";
         if (i < (pairs.size() - 1))
             std::cout << ",";
     }
-      if (has_remainder) // just printing for view but it is not included in pairing as useless there
-            std::cout << ", " C_RED "<" << remainderValue << "> " C_RESET;
+    if (has_remainder) // just printing for view but it is not included in pairing as useless there
+        std::cout << ", " C_RED "<" << remainderValue << "> " C_RESET;
     std::cout << "]" << std::endl;
 }
 
@@ -206,45 +200,76 @@ void PmergeMe::printChain(const std::vector<int> &container, const std::string &
 }
 
 // instead should i just update it after new pairs are sorted?
-void PmergeMe::updatePend()
+void PmergeMe::printInsertionOrder()
 {
-    std::vector<int> updatedPend;
-
+    std::cout << "Pend Reference: [";
     for (size_t i = 0; i < main.size(); ++i)
     {
         int big = main[i];
         for (size_t j = 0; j < pairs.size(); ++j)
         {
             if (pairs[j].second == big)
-                updatedPend.push_back(pairs[j].first);
-        };
+                std::cout << pairs[j].first;
+            };
+        if (i < (pairs.size() -1))
+            std::cout << ", ";
     }
 
     if (has_remainder)
-        updatedPend.push_back(remainderValue);
-    pend = updatedPend;
-}
+                std::cout << ", " C_RED<< remainderValue << C_RESET;
+    std::cout << "]" <<std::endl;
 
-void PmergeMe::updatePairing()
-{
-    std::vector<std::pair<int,int> > updatedPairs;
-
+    std::vector<std::pair<int, int> > updatedPairs;
     // Rebuild pairs in the order of the updated main chain
+    std::cout << "Pairs reference: [ ";
     for (size_t i = 0; i < main.size(); ++i)
     {
-
         for (size_t j = 0; j < pairs.size(); ++j)
         {
             if (pairs[j].second == main[i])
-                updatedPairs.push_back(pairs[j]);
+            {
+                std::cout << "< " << pairs[j].first << "," << pairs[j].second << " >";
+            }
+        }
+        if (i < (main.size() - 1))
+            std::cout << ", ";
+    }
+    if (has_remainder)
+        std::cout << ", < " C_RED << remainderValue << C_RESET" >";
+    std::cout << " ]" << std::endl;
+}
+
+int PmergeMe::getPartner(int pend)
+{
+
+    for (size_t i = 0; i < pairs.size(); ++i)
+    {
+        const std::pair<int, int> &p = pairs[i];
+        if (p.first == pend)
+            return p.second; // returns biggest from main
+    }
+    return -1;
+}
+
+std::pair<int, int> PmergeMe::getPair(size_t jacob, std::vector<int> orderedMain)
+{
+
+    // std::cout << "Ordered size:" << orderedMain.size() << " Jacob index:" << jacob << " Main found:" << orderedMain[jacob] << std::endl;
+    if (jacob < orderedMain.size()) // if main[j] does not exist, it means we have to call the remainder if exists
+    {
+        int to_search = orderedMain[jacob]; // main[j] will call the main number based on jacobstahl
+
+        for (size_t i = 0; i < pairs.size(); ++i)
+        {
+            if (pairs[i].second == to_search)
+                return pairs[i]; // returns the pair info so we can insert the correct pend
         }
     }
-
-    // If there is a remainder, append its fake pair <min, -1>
-    // if (has_remainder)
-    // {
-    //     updatedPairs.push_back(std::make_pair(remainderValue, -1));
-    // }
-
-    pairs = updatedPairs;
+    else
+    {
+        if (has_remainder) // if remainder exists we return it with dummy value
+            return std::make_pair(remainderValue, -1);
+        throw std::runtime_error(ERROR " getPair(): Jacob index out of range and no remainder"); // else we have an aeeror
+    }
+    throw std::runtime_error(ERROR " getPair(): No matching pair found");
 }
