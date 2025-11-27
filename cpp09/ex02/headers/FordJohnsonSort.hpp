@@ -36,8 +36,8 @@ private:
     /* ------------------ SORTING FUNCTIONS ------------------ */
     void sort();
     void recursion(std::vector<int> &recursedSet);
-    void pairingPhase(PmergeMe &recursedSett);
-    void insertionPhase(PmergeMe &recursedSet);
+    void mergingPhase(PmergeMe &recursedSett);
+    // void insertionPhase(PmergeMe &recursedSet);
     
     /* ------------------ PRINT DEBUG ------------------ */
     void showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize);
