@@ -21,10 +21,11 @@
 #define C_MAGENTA "\033[38;2;255;0;255m"
 #define C_PURPLE "\033[38;2;180;0;255m"
 #define C_CYAN "\033[38;2;0;255;255m"
-#define C_GRAY "\033[38;2;150;150;150m"
+#define C_LGRAY "\033[38;2;150;150;150m"
+#define C_GRAY "\033[38;2;80;80;80m"
 
 /* --------------------- LOGGERS --------------------- */
-#define LOG C_GRAY "[LOG] " C_RESET
+#define LOG C_LGRAY "[LOG] " C_RESET
 #define SUCCESS C_GREEN "[SUCCESS] " C_RESET
 #define WARNING C_YELLOW "[WARNING] " C_RESET
 #define ERROR C_RED "[ERROR] " C_RESET

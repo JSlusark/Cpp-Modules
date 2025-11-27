@@ -10,7 +10,7 @@ PmergeMe::PmergeMe(std::vector<int> numbers, int &iteration, int &comparisons)
 {
     has_remainder = (storedValues.size() % 2 != 0); // if remainder is not 0 has_remainder is true
     if (has_remainder)
-    remainderValue = storedValues.back();
+     remainderValue = storedValues.back();
     // this->storedValuesStatus();
     
     createChains();
@@ -41,7 +41,6 @@ std::pair<int, int> PmergeMe::orderPair(size_t i)
         // logMessage("", C_GRAY "Ordered pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
     }
     logMessage("", C_GRAY "Created and compared pair < " + asString(min) + ", " + asString(max) + " >" + C_CYAN + "    Counter:" C_RESET + asString(counter) + C_RESET);
-
     return(std::make_pair(min, max));
 }
 
@@ -51,8 +50,8 @@ void PmergeMe::createChains()
     if(has_remainder)
         looplength = storedValues.size() - 1;
     else
-    looplength = storedValues.size();
-
+        looplength = storedValues.size();
+    logMessage("", C_GRAY "Creating sorted pair info and assigning each partner to its own chain" C_RESET);
     for (size_t i = 0; i < looplength; i += 2) // we proceed by 2n at a time (pairs duh)
     {
         std::pair<int, int> newPair = orderPair(i);
@@ -170,17 +169,16 @@ int &PmergeMe::getRecursionLvl()
 /* ------------------------------ DEBUGGERS --------------------------------- */
 void PmergeMe::printRecursedSet()
 {
+    printChain(pend, "Pend Chain");
+    printChain(main, "Main Chain");
     printPairs();
-    printChain(main, "Main");
-    printChain(pend, "Pend");
 }
 
 void PmergeMe::printPairs() const
 {
-    std::cout << "Pairs:" << " [";
+    std::cout << "Pairs data:" << " [";
     for (size_t i = 0; i < pairs.size(); ++i)
     {
-      
             std::cout << " <" << pairs[i].first << "," << pairs[i].second << "> ";
         if (i < (pairs.size() - 1))
             std::cout << ",";
@@ -206,17 +204,6 @@ void PmergeMe::printChain(const std::vector<int> &container, const std::string &
     }
     std::cout << " ]" << std::endl;
 }
-
-// change with sort pair
-// void PmergeMe::sortPair()
-// {
-//     if (main[0] > main[1])
-//     {
-//         std::swap(main[0], main[1]);
-//         counter++; // increment comparison count also here
-//     }
-// }
-
 
 // instead should i just update it after new pairs are sorted?
 void PmergeMe::updatePend()
