@@ -154,22 +154,22 @@ void fordJohnsonSort::insertionPhase(PmergeMe &recursedSet)
 
 // UTILS
 
-int fordJohnsonSort::wrongResult()
+bool fordJohnsonSort::wrongResult()
 {
     if (originalSize != resultSize)
     {
         errorMessage = "Container size was not preserved after sorting! Size before sort: " + asString(resultSize) + ", Size after sort: " + asString(resultSize);
-        return 1;
+        return true;
     }
     if (comparisonResult > comparisonLimit)
     {
         errorMessage = "Container was sorted but exceeded comparison limit for container of " + asString(resultSize) + " numbers: " C_RED + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + ")!";
-        return 1;
+        return true;
     }
     if (!isSorted(result))
     {
         errorMessage = "Container is was not sorted correctly!";
-        return 1;
+        return true;
     }
 
     return 0;
@@ -180,7 +180,7 @@ void fordJohnsonSort::showResult()
     resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
     showSequence("After", result, resultSize);
     if (wrongResult()) // i dont want to trhow error as the code went as expected but if this hits it means that the algo failed
-        logMessage(ERROR, errorMessage);
+        throw std::runtime_error("Invalid argument: " + errorMessage);
     else
     {
         // convert time?
@@ -196,16 +196,6 @@ void fordJohnsonSort::showResult()
 }
 
 /* ------------------ Moved former debug utilities ------------------ */
-
-bool isSorted(const std::vector<int> &container)
-{
-    for (size_t i = 0; i < container.size() - 1; i++)
-    {
-        if (container[i] > container[i + 1])
-            return false;
-    }
-    return true;
-}
 
 bool fordJohnsonSort::isValidNumber(std::string &s, int &conversion)
 {
