@@ -1,32 +1,41 @@
 #pragma once
 #include "./debug.hpp"
+#include <vector>
+#include <deque>
+#include <utility>
+#include <stdexcept>
 
+/*
+    Container here must match std::vector or std::deque signature:
+    template <class T, class Alloc = std::allocator<T>> class Container
+*/
+template <template<typename, typename> class Container>
 class PmergeMe
 {
 private:
-    std::vector<int> &mergedChains; // container to sort, passed as ref and changes
-    std::vector<std::pair<int, int> > pairs; // container to preserve relationship between pairs sent to main and pend chains
-    std::vector<int> main;                  // bigger values container
-    std::vector<int> pend;                  // smaller values container
-    std::vector<size_t> jacobsthalAnchors;
-    std::vector<size_t> jacobsthalSequence;
+    Container<int, std::allocator<int> > &mergedChains; // container to sort, passed as ref and changes
+    Container<std::pair<int, int>, std::allocator<std::pair<int, int> > > pairs; // preserve relationship between pairs
+    Container<int, std::allocator<int> > main;   // bigger values container
+    Container<int, std::allocator<int> > pend;   // smaller values container
+    Container<size_t, std::allocator<size_t> > jacobsthalAnchors;
+    Container<size_t, std::allocator<size_t> > jacobsthalSequence;
+
     int remainderValue;
     int has_remainder;
-    int &counter; // counts amount of combinations done in each currentSet and scales between recursions
+    int &counter; // counts amount of comparisons
 
     void createChains();
     std::pair<int, int> orderPair(size_t i);
 
+    /* ------------------------------JACOBSTHAL SEQUENCE FUNCTIONS--------------------------------- */
+    void generateJacobsthal();
+    void findNumbers(size_t pendSize);
+    void completeSequence(size_t pendSize);
 
-    /* ------------------------------JACOBSTAHL SEQUENCE FUNCTIONS--------------------------------- */
-    void generateJacobsthal(); 
-    void findNumbers(size_t pendSize);          // selects js numbers based on pend size (1, 3, 5.. etc)
-    void completeSequence(size_t pendSize);    // fills in sequence (1, 3, 2, 5, 8, 7 ,6, 4.. etc)
-    
-    public:
+public:
     int recursionLvl;
-    
-    struct CountComparisons // functor to count comparisons inside the lowerbound
+
+    struct CountComparisons
     {
         int &counter;
         CountComparisons(int &c) : counter(c) {}
@@ -35,25 +44,27 @@ private:
             counter++;
             logMessage("", C_GRAY "Compared " + asString(b) + " with " + asString(a) + C_CYAN "   Counter: " C_RESET + asString(counter));
             return a < b;
-        };
+        }
     };
-    
+
     /* ------------------ CONSTRUCTORS ------------------ */
-    PmergeMe(std::vector<int> &recursedSet, int &iteration, int &comparisons);
+    PmergeMe(Container<int, std::allocator<int> > &recursedSet, int &iteration, int &comparisons);
     PmergeMe(const PmergeMe &other);
     PmergeMe &operator=(const PmergeMe &other);
     ~PmergeMe();
-    
+
     /* ------------------------------ MERGE INSERTION --------------------------------- */
     void pleaseMergeMe();
-    std::vector<int>::iterator getPartnerPosition(int value, int partner, int jacobNumber, int j);
+
+    typename Container<int, std::allocator<int> >::iterator
+    getPartnerPosition(int value, int partner, int jacobNumber, int j);
 
     /* ------------------------------ GETTERS AND SETTERS --------------------------------- */
-    std::vector<int> &getContainer();
-    std::vector<int> &getMain();
-    std::vector<int> &getPend();
-    std::vector<std::pair<int, int> > &getPairs();
-    std::vector<size_t> &getJacobsthal();
+    Container<int, std::allocator<int> > &getContainer();
+    Container<int, std::allocator<int> > &getMain();
+    Container<int, std::allocator<int> > &getPend();
+    Container<std::pair<int,int>, std::allocator<std::pair<int,int> > > &getPairs();
+    Container<size_t, std::allocator<size_t> > &getJacobsthal();
     int &getRemainderInfo();
     int &getRemainderValue();
     int &getCounter();
@@ -62,11 +73,12 @@ private:
     /* ------------------------------ SHOW SET INFO --------------------------------- */
     void printSetData();
     void printPairs() const;
-    void printChain(const std::vector<int> &container, const std::string &name) const;
-    void printJacobstahl(std::vector<size_t> jacob); 
+    void printChain(const Container<int, std::allocator<int> > &container, const std::string &name) const;
+    void printJacobstahl(const Container<size_t, std::allocator<size_t> > &jacob);
     void printInsertionOrder();
 
     /* ------------------------------ PAIR INFO USED FOR INSERTION --------------------------------- */
     std::pair<int,int> getPairInfo(size_t jacob);
-
 };
+
+#include "../src/PmergeMe.tpp"

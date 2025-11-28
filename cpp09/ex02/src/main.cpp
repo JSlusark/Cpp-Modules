@@ -28,8 +28,14 @@ int main(int argc, char **argv)
     {
         try
         {
-            FordJohnsonSort vector(argc, argv); // <------------------ add template for deque!
-            vector.showResult();
+            std::vector<int> vec;
+            std::deque<int> deq;
+
+            FordJohnsonSort<std::vector> sorter_vec(argc, argv, vec);
+            sorter_vec.showResult();
+
+            FordJohnsonSort<std::deque> sorter_deq(argc, argv, deq);
+            sorter_deq.showResult();
         }
         catch (const std::exception &e)
         {

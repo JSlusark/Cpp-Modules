@@ -15,11 +15,12 @@
 #include <climits>   // add for INT_MAX
 
 // Class version (same name; allowed but distinct from function)
+template <template<typename, typename> class Container>
 class FordJohnsonSort
 {
 private:
     int iterationResult;
-    std::vector<int> result; // will be a template
+    Container<int, std::allocator<int> > result; // will be a template
     size_t originalSize;
     size_t resultSize;
     std::clock_t cpu_start;  // stored start CPU time
@@ -28,22 +29,20 @@ private:
     struct timeval tv_end;   // wall end
     int comparisonLimit;
     int comparisonResult; 
-    std::string errorMessage;
+    std::string errorMessage;  
     
     // http://en.cppreference.com/w/cpp/container.html
     // use chatgpt brainstorming message to explain deque vs stack from ex01
     
     /* ------------------ SORTING FUNCTIONS ------------------ */
     void sort();
-    void recursion(std::vector<int> &recursedSet);
-    void mergingPhase(PmergeMe &recursedSett);
-    // void insertionPhase(PmergeMe &recursedSet);
+    void recursion(Container<int, std::allocator<int> > &recursedSet);
     
     /* ------------------ PRINT DEBUG ------------------ */
-    void showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize);
+    void showSequence(const std::string &state, const Container<int, std::allocator<int> > &container, size_t containerSize);
     
     /* ------------------ RESULT CHECKING UTILS ------------------ */
-    bool isSorted(const std::vector<int> &container);
+    bool isSorted(const Container<int, std::allocator<int> > &container);
     bool wrongResult();
     bool isValidNumber(std::string &s, int &conversion);
     int  maxComparisons(int n);
@@ -51,7 +50,7 @@ private:
 
 public:
     /* ------------------ CONSTRUCTORS ------------------ */
-    FordJohnsonSort(int argc, char **argv); // vect will me a template later
+    FordJohnsonSort(int argc, char **argv, Container<int, std::allocator<int> > container); // vect will me a template later
     ~FordJohnsonSort();
     FordJohnsonSort(const FordJohnsonSort &other);
     FordJohnsonSort &operator=(const FordJohnsonSort &other);
@@ -59,3 +58,6 @@ public:
     /* ------------------ CHECKS AND PRINT RESULT ------------------ */
     void showResult();
 };
+
+
+#include "../src/FordJohnsonSort.tpp"

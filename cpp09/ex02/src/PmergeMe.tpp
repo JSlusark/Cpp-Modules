@@ -1,7 +1,9 @@
-#include "../headers/PmergeMe.hpp"
-
 /* ------------------------------ CONSTRUCTORS --------------------------------- */
-PmergeMe::PmergeMe(std::vector<int> &recursedSet, int &iteration, int &comparisons)
+
+template <template<typename, typename> class Container>
+PmergeMe<Container>::PmergeMe(Container<int, std::allocator<int> > &recursedSet,
+                              int &iteration,
+                              int &comparisons)
     : mergedChains(recursedSet),
       remainderValue(-1),
       has_remainder(0),
@@ -16,11 +18,13 @@ PmergeMe::PmergeMe(std::vector<int> &recursedSet, int &iteration, int &compariso
     printSetData();
 };
 
-PmergeMe::PmergeMe(const PmergeMe &other)
+template <template<typename, typename> class Container>
+PmergeMe<Container>::PmergeMe(const PmergeMe<Container> &other)
     : mergedChains(other.mergedChains),
       pairs(other.pairs),
       main(other.main),
       pend(other.pend),
+      jacobsthalAnchors(other.jacobsthalAnchors),
       jacobsthalSequence(other.jacobsthalSequence),
       remainderValue(other.remainderValue),
       has_remainder(other.has_remainder),
@@ -29,28 +33,32 @@ PmergeMe::PmergeMe(const PmergeMe &other)
 {
 }
 
-PmergeMe &PmergeMe::operator=(const PmergeMe &other)
+template <template<typename, typename> class Container>
+PmergeMe<Container> &PmergeMe<Container>::operator=(const PmergeMe<Container> &other)
 {
     if (this != &other)
     {
-        mergedChains   = other.mergedChains;
-        pairs          = other.pairs;
-        main           = other.main;
-        pend           = other.pend;
-        jacobsthalSequence     = other.jacobsthalSequence;
-        remainderValue = other.remainderValue;
-        has_remainder  = other.has_remainder;
-        counter        = other.counter;
-        recursionLvl   = other.recursionLvl;
+        mergedChains       = other.mergedChains;
+        pairs              = other.pairs;
+        main               = other.main;
+        pend               = other.pend;
+        jacobsthalAnchors  = other.jacobsthalAnchors;
+        jacobsthalSequence = other.jacobsthalSequence;
+        remainderValue     = other.remainderValue;
+        has_remainder      = other.has_remainder;
+        counter            = other.counter;
+        recursionLvl       = other.recursionLvl;
     }
     return *this;
 }
 
+template <template<typename, typename> class Container>
+PmergeMe<Container>::~PmergeMe() {}
 
-PmergeMe::~PmergeMe() {};
+/* ------------------------------ PAIR AND CHAIN CREATION --------------------------------- */
 
-/* ------------------------------PAIR AND CHAIN CREATION--------------------------------- */
-void PmergeMe::createChains()
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::createChains()
 {
     size_t looplength;
     if (has_remainder)
@@ -69,7 +77,8 @@ void PmergeMe::createChains()
         pend.push_back(remainderValue); // adding all min value, including odd number
 }
 
-std::pair<int, int> PmergeMe::orderPair(size_t i)
+template <template<typename, typename> class Container>
+std::pair<int,int> PmergeMe<Container>::orderPair(size_t i)
 {
     int min;
     int max;
@@ -84,14 +93,17 @@ std::pair<int, int> PmergeMe::orderPair(size_t i)
 }
 
 /* ------------------------------JACOBSTAHL SEQUENCE FUNCTIONS--------------------------------- */
-void PmergeMe::generateJacobsthal() // n is size of pend_chain
+
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::generateJacobsthal() // n is size of pend_chain
 {
     size_t pendSize = pend.size();
     findNumbers(pendSize);
     completeSequence(pendSize);
 }
 
-void PmergeMe::findNumbers(size_t pendSize)
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::findNumbers(size_t pendSize)
 {
     if (pendSize == 0 || pendSize == 1) // added it to avoid weird behavioru in loop (0 - 1 or 1 - 2)
     {
@@ -113,9 +125,10 @@ void PmergeMe::findNumbers(size_t pendSize)
     jacobsthalAnchors = jacobsthalSequence; // stored for printing 
 }
 
-void PmergeMe::completeSequence(size_t pendSize)
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::completeSequence(size_t pendSize)
 {
-    std::vector<size_t> fill;
+    Container<size_t, std::allocator<size_t> > fill;
     for (size_t i = 0; i < jacobsthalSequence.size(); i++)
     {
         if (i == 0)
@@ -139,7 +152,8 @@ void PmergeMe::completeSequence(size_t pendSize)
     jacobsthalSequence = fill; // overwrite the jacobstahl with the filled
 }
 
-void PmergeMe::printJacobstahl(std::vector<size_t> jacob)
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::printJacobstahl(const Container<size_t, std::allocator<size_t> > &jacob)
 {
     std::cout << "Jacobstahl sequence: [ ";
     for (size_t i = 0; i < jacob.size(); ++i)
@@ -153,13 +167,15 @@ void PmergeMe::printJacobstahl(std::vector<size_t> jacob)
 
 /* ------------------------------ JACOBSTAHL BINARY INSERT--------------------------------- */
 
-void PmergeMe::pleaseMergeMe()
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::pleaseMergeMe()
 {
     logMessage(C_YELLOW "Moving backward (Recursion level ", asString(recursionLvl) + ")" + C_RESET);
     mergedChains = main; // as main will not change we make sortedvalues as a copy and insert in there
     printChain(mergedChains, C_YELLOW "Sorted main" C_RESET);
     printInsertionOrder();
-    PmergeMe::CountComparisons curr_comparisons(counter); // i might need to initialise this somewhere else?
+
+    CountComparisons curr_comparisons(counter);
 
     for (size_t i = 0; i < jacobsthalSequence.size(); i++)
     {
@@ -167,86 +183,104 @@ void PmergeMe::pleaseMergeMe()
         std::pair<int,int> ref = getPairInfo(j);
         int value = ref.first;
         int partner = ref.second;
-        std::vector<int>::iterator partnerPosition = getPartnerPosition(value, partner, jacobsthalSequence[i], j);
-        std::vector<int>::iterator insertPosition = std::lower_bound(mergedChains.begin(), partnerPosition, value, curr_comparisons);
+        typename Container<int, std::allocator<int> >::iterator partnerPosition = getPartnerPosition(value, partner, jacobsthalSequence[i], j);
+        typename Container<int, std::allocator<int> >::iterator insertPosition = std::lower_bound(mergedChains.begin(), partnerPosition, value, curr_comparisons);
         mergedChains.insert(insertPosition, value);
         printChain(mergedChains, C_YELLOW "Merged Chains" C_RESET);
     }
-    
+
     logMessage("", C_GRAY "Insertion stops here - all pend numbers are now ordered in main!" C_RESET);
     printChain(mergedChains, C_GREEN "Sorted Main (Recursion level " + asString(recursionLvl) +")" C_RESET);
     logMessage(C_LGRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursionLvl), "------------\n" C_RESET);
 }
 
 
-std::vector<int>::iterator PmergeMe::getPartnerPosition(int value, int partner, int jacobNumber, int j)
+
+template <template<typename, typename> class Container>
+typename Container<int, std::allocator<int> >::iterator
+PmergeMe<Container>::getPartnerPosition(int value,
+                                        int partner,
+                                        int jacobNumber,
+                                        int j)
 {
-        std::vector<int>::iterator partnerPosition;
-        std::string message;
-        if (partner == -1)
-        {
+    typename Container<int, std::allocator<int> >::iterator partnerPosition;
+    std::string message;
+    if (partner == -1)
+    {
                 //handles test like 5 4 3 1 2 6
                 message = "j(" + asString(jacobNumber) + ") at pend[" + asString(j) + "]:" + asString(value) + " of odd < " + asString(value) +  " > to binary insert in mainchain between " + asString(main[0]) + " to end of chain";
                 partnerPosition = mergedChains.end(); // i pass the null terminator to avoid that 6 is inserted before 5, use this to prove lowerbound function
-        }
-        else
-        {   
-            partnerPosition = std::find(mergedChains.begin(), mergedChains.end(), partner);
+    }
+    else
+    {
+        partnerPosition = std::find(mergedChains.begin(), mergedChains.end(), partner);
             message = "j(" + asString(jacobNumber) + ") at pend[" + asString(j) + "]:" + asString(value) + " of pair < " + asString(value) + " , " + asString(partner) + " > to binary insert in mainchain between " + asString(main[0]) + " to " + asString(partner);
-        } // might have a j problem, check later!!
-        logMessage("", C_GRAY + message + C_RESET);
-        return partnerPosition;
+        }
+    logMessage("", C_GRAY + message + C_RESET);
+    return partnerPosition;
 }
 
 
 /* ------------------------------ GETTERS AND SETTERS --------------------------------- */
-std::vector<int> &PmergeMe::getContainer()
+
+template <template<typename, typename> class Container>
+Container<int, std::allocator<int> > &PmergeMe<Container>::getContainer()
 {
     return mergedChains;
 }
 
-std::vector<int> &PmergeMe::getMain()
+template <template<typename, typename> class Container>
+Container<int, std::allocator<int> > &PmergeMe<Container>::getMain()
 {
     return main;
 }
 
-std::vector<int> &PmergeMe::getPend()
+template <template<typename, typename> class Container>
+Container<int, std::allocator<int> > &PmergeMe<Container>::getPend()
 {
     return pend;
 }
 
-std::vector<std::pair<int, int> > &PmergeMe::getPairs()
+template <template<typename, typename> class Container>
+Container<std::pair<int,int>, std::allocator<std::pair<int,int> > > &PmergeMe<Container>::getPairs()
 {
     return pairs;
 }
 
-std::vector<size_t> &PmergeMe::getJacobsthal()
+template <template<typename, typename> class Container>
+Container<size_t, std::allocator<size_t> > &PmergeMe<Container>::getJacobsthal()
 {
     return jacobsthalSequence;
 }
 
-int &PmergeMe::getRemainderInfo()
+template <template<typename, typename> class Container>
+int &PmergeMe<Container>::getRemainderInfo()
 {
     return has_remainder;
 }
 
-int &PmergeMe::getRemainderValue()
+template <template<typename, typename> class Container>
+int &PmergeMe<Container>::getRemainderValue()
 {
     return remainderValue;
 }
 
-int &PmergeMe::getCounter()
+template <template<typename, typename> class Container>
+int &PmergeMe<Container>::getCounter()
 {
     return counter;
 }
-int &PmergeMe::getRecursionLvl()
+
+template <template<typename, typename> class Container>
+int &PmergeMe<Container>::getRecursionLvl()
 {
     return recursionLvl;
 }
 
 /* ------------------------------ PAIR INFO USED FOR INSERTION --------------------------------- */
 
-std::pair<int, int> PmergeMe::getPairInfo(size_t jacob)
+template <template<typename, typename> class Container>
+std::pair<int,int> PmergeMe<Container>::getPairInfo(size_t jacob)
 {
     // std::cout << "Ordered size:" << main.size() << " Jacob index:" << jacob << " Main found:" << main[jacob] << std::endl;
     if (jacob < main.size()) // if main[j] does not exist, it means we have to call the remainder if exists
@@ -270,7 +304,8 @@ std::pair<int, int> PmergeMe::getPairInfo(size_t jacob)
 
 /* ------------------------------ SHOW SET INFO --------------------------------- */
 
-void PmergeMe::printSetData()
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::printSetData()
 {
     printChain(pend, "Pend Chain");
     printChain(main, "Main Chain");
@@ -279,8 +314,8 @@ void PmergeMe::printSetData()
     printJacobstahl(jacobsthalSequence);
 }
 
-
-void PmergeMe::printPairs() const
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::printPairs() const
 {
     std::cout << "Pairs data:" << " [";
     for (size_t i = 0; i < pairs.size(); ++i)
@@ -294,7 +329,9 @@ void PmergeMe::printPairs() const
     std::cout << "]" << std::endl;
 }
 
-void PmergeMe::printChain(const std::vector<int> &container, const std::string &name) const
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::printChain(const Container<int, std::allocator<int> > &container,
+                                     const std::string &name) const
 {
     // logMessage(DEBUG, "remainderValue:'" + asString(remainderValue) + "'   hasRemainder:'" + asString(has_remainder) + "' ");
     std::cout << name << ":" << C_RESET << " [ ";
@@ -311,8 +348,8 @@ void PmergeMe::printChain(const std::vector<int> &container, const std::string &
     std::cout << " ]" << std::endl;
 }
 
-// instead should i just update it after new pairs are sorted?
-void PmergeMe::printInsertionOrder()
+template <template<typename, typename> class Container>
+void PmergeMe<Container>::printInsertionOrder()
 {
     std::cout << "Pend Reference: [";
     for (size_t i = 0; i < main.size(); ++i)
@@ -331,8 +368,6 @@ void PmergeMe::printInsertionOrder()
                 std::cout << ", " C_RED<< remainderValue << C_RESET;
     std::cout << "]" <<std::endl;
 
-    std::vector<std::pair<int, int> > updatedPairs;
-    // Rebuild pairs in the order of the updated main chain
     std::cout << "Pairs reference: [ ";
     for (size_t i = 0; i < main.size(); ++i)
     {
@@ -341,7 +376,7 @@ void PmergeMe::printInsertionOrder()
             if (pairs[j].second == main[i])
             {
                 std::cout << "< " << pairs[j].first << "," << pairs[j].second << " >";
-            }
+        }
         }
         if (i < (main.size() - 1))
             std::cout << ", ";

@@ -1,8 +1,8 @@
-#include "../headers/FordJohnsonSort.hpp"
-
 /* ------------------ CONSTRUCTORS ------------------ */
-FordJohnsonSort::FordJohnsonSort(int argc, char **argv)
+template <template<typename, typename> class Container>
+FordJohnsonSort<Container>::FordJohnsonSort(int argc, char **argv, Container<int, std::allocator<int> > container)
     : iterationResult(0),
+      result(container),
       cpu_start(0),
       cpu_end(0),
       comparisonResult(0)
@@ -21,7 +21,8 @@ FordJohnsonSort::FordJohnsonSort(int argc, char **argv)
     sort();
 }
 
-FordJohnsonSort::FordJohnsonSort(const FordJohnsonSort &other)
+template <template<typename, typename> class Container>
+FordJohnsonSort<Container>::FordJohnsonSort(const FordJohnsonSort<Container> &other)
     : iterationResult(other.iterationResult),
       result(other.result),
       originalSize(other.originalSize),
@@ -33,10 +34,11 @@ FordJohnsonSort::FordJohnsonSort(const FordJohnsonSort &other)
       comparisonLimit(other.comparisonLimit),
       comparisonResult(other.comparisonResult),
       errorMessage(other.errorMessage)
-{
+{ 
 }
 
-FordJohnsonSort &FordJohnsonSort::operator=(const FordJohnsonSort &other)
+template <template<typename, typename> class Container>
+FordJohnsonSort<Container> &FordJohnsonSort<Container>::operator=(const FordJohnsonSort<Container> &other)
 {
     if (this != &other)
     {
@@ -55,11 +57,13 @@ FordJohnsonSort &FordJohnsonSort::operator=(const FordJohnsonSort &other)
     return *this;
 }
 
-FordJohnsonSort::~FordJohnsonSort() {}
+template <template<typename, typename> class Container>
+FordJohnsonSort<Container>::~FordJohnsonSort() {}
 
 /* ------------------ SORTING FUNCTIONS ------------------ */
 
-void FordJohnsonSort::sort()
+template <template<typename, typename> class Container>
+void FordJohnsonSort<Container>::sort()
 {
     logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
     gettimeofday(&tv_start, 0);
@@ -72,7 +76,8 @@ void FordJohnsonSort::sort()
     logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
 }
 
-void FordJohnsonSort::recursion(std::vector<int> &recursedSet)
+template <template<typename, typename> class Container>
+void FordJohnsonSort<Container>::recursion(Container<int, std::allocator<int> > &recursedSet)
 {
     if (recursedSet.size() <= 1) // recursion stops here
         return;
@@ -81,7 +86,7 @@ void FordJohnsonSort::recursion(std::vector<int> &recursedSet)
     logMessage(C_YELLOW "Moving forward (Recursion level ", asString(iterationResult) + ")" C_RESET);
     showSequence("Received container", recursedSet, recursedSet.size());
 
-    PmergeMe newSet(recursedSet, iterationResult, comparisonResult);
+    PmergeMe<Container> newSet(recursedSet, iterationResult, comparisonResult);
     
     if (newSet.getMain().size() > 1)
     {
@@ -97,7 +102,8 @@ void FordJohnsonSort::recursion(std::vector<int> &recursedSet)
 
 /* ------------------ RESULT CHECKING ------------------ */
 
-void FordJohnsonSort::showResult()
+template <template<typename, typename> class Container>
+void FordJohnsonSort<Container>::showResult()
 {
     resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
     showSequence("After", result, resultSize);
@@ -116,7 +122,8 @@ void FordJohnsonSort::showResult()
     }
 }
 
-bool FordJohnsonSort::wrongResult()
+template <template<typename, typename> class Container>
+bool FordJohnsonSort<Container>::wrongResult()
 {
     if (originalSize != resultSize)
     {
@@ -137,7 +144,8 @@ bool FordJohnsonSort::wrongResult()
     return 0;
 }
 
-bool FordJohnsonSort::isSorted(const std::vector<int> &container)
+template <template<typename, typename> class Container>
+bool FordJohnsonSort<Container>::isSorted(const Container<int, std::allocator<int> > &container)
 {
     for (size_t i = 0; i < container.size() - 1; i++)
     {
@@ -147,7 +155,8 @@ bool FordJohnsonSort::isSorted(const std::vector<int> &container)
     return true;
 }
 
-int FordJohnsonSort::maxComparisons(int n)
+template <template<typename, typename> class Container>
+int FordJohnsonSort<Container>::maxComparisons(int n)
 {
     int sum = 0;
     for (int k = 1; k <= n; ++k)
@@ -159,7 +168,8 @@ int FordJohnsonSort::maxComparisons(int n)
 }
 
 /* ------------------ ARG CHECKING ------------------ */
-bool FordJohnsonSort::isValidNumber(std::string &s, int &conversion)
+template <template<typename, typename> class Container>
+bool FordJohnsonSort<Container>::isValidNumber(std::string &s, int &conversion)
 {
     if (s.empty())
     {
@@ -190,8 +200,8 @@ bool FordJohnsonSort::isValidNumber(std::string &s, int &conversion)
 
 /* ------------------ PRINT DEBUG ------------------ */
 
-
-void FordJohnsonSort::showSequence(const std::string &state, const std::vector<int> &container, size_t containerSize)
+template <template<typename, typename> class Container>
+void FordJohnsonSort<Container>::showSequence(const std::string &state, const Container<int, std::allocator<int> > &container, size_t containerSize)
 {
     std::cout << state << ": [ ";
     for (size_t i = 0; i < containerSize; ++i)
