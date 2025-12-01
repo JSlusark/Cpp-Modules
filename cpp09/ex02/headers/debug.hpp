@@ -52,10 +52,8 @@ inline void testTitle(const int number, const std::string &title)
 
 
 /* ---------------------- UNAVAILABLE CPP98 FUNCTIONS --------------------- */
-inline std::string asString(int value) {
+inline std::string asString(double value) {
     std::stringstream ss;
     ss << value;
     return ss.str();
 }
-
-

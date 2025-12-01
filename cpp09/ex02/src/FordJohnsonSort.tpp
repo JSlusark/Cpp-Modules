@@ -1,9 +1,7 @@
 /* ------------------ CONSTRUCTORS ------------------ */
 template <template<typename, typename> class Container>
 FordJohnsonSort<Container>::FordJohnsonSort(int argc, char **argv, Container<int, std::allocator<int> > container)
-    :cpu_start(0),
-    cpu_end(0),
-    result(container),
+    :result(container),
     comparisonResult(0),
     iterationResult(0)
 {
@@ -27,10 +25,7 @@ FordJohnsonSort<Container>::FordJohnsonSort(const FordJohnsonSort<Container> &ot
       result(other.result),
       originalSize(other.originalSize),
       resultSize(other.resultSize),
-      cpu_start(other.cpu_start),
-      cpu_end(other.cpu_end),
-      tv_start(other.tv_start),
-      tv_end(other.tv_end),
+      timer(other.timer),
       comparisonLimit(other.comparisonLimit),
       comparisonResult(other.comparisonResult),
       errorMessage(other.errorMessage)
@@ -46,10 +41,7 @@ FordJohnsonSort<Container> &FordJohnsonSort<Container>::operator=(const FordJohn
         result            = other.result;
         originalSize      = other.originalSize;
         resultSize        = other.resultSize;
-        cpu_start         = other.cpu_start;
-        cpu_end           = other.cpu_end;
-        tv_start          = other.tv_start;
-        tv_end            = other.tv_end;
+        timer             = other.timer;
         comparisonLimit   = other.comparisonLimit;
         comparisonResult  = other.comparisonResult;
         errorMessage      = other.errorMessage;
@@ -69,18 +61,21 @@ void FordJohnsonSort<Container>::sort()
     logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
     #endif
 
-    gettimeofday(&tv_start, 0);
-    cpu_start = std::clock();
-
+    timespec start;
+    clock_gettime(CLOCK_MONOTONIC, &start);
     recursion(result);
+    timespec end;
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    double nanoseconds =
+    ((end.tv_sec - start.tv_sec) * 1000000000L
+   +  (end.tv_nsec - start.tv_nsec)) ;
 
-    cpu_end = std::clock();
-    gettimeofday(&tv_end, 0);
-    
-    #if DEBUG_ACTIVE
-    logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
-    #endif
-    
+   
+   #if DEBUG_ACTIVE
+   logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
+   #endif
+   
+    timer = nanoseconds / 1000;
     checkResult();
 }
 
@@ -127,14 +122,9 @@ void FordJohnsonSort<Container>::checkResult()
             throw std::runtime_error("Wrong result: " + errorMessage);
     else
     {
-        double cpu_micro_double = (double)(cpu_end - cpu_start) / CLOCKS_PER_SEC * 1e6;
-        std::ostringstream cpuFmt;
-        cpuFmt.setf(std::ios::fixed);
-        cpuFmt << std::setprecision(5) << cpu_micro_double;
-
-        logMessage(LOG,  "Time taken to process " + asString(resultSize) +
-                            " elements: " + cpuFmt.str() + " us" );
-        logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterationResult) + " iterationResult and in " + C_GREEN + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + " comparison count." C_RESET);
+    
+        std::cout << "TIMER: " << timer << " μs\n";
+        logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterationResult) + " iteration/s and in " + C_GREEN + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + " comparison/s count." C_RESET);
     }
 }
 

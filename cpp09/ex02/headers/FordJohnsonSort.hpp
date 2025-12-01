@@ -26,10 +26,7 @@ class FordJohnsonSort
     size_t originalSize;
     int comparisonLimit;
 
-    std::clock_t cpu_start;
-    std::clock_t cpu_end;    
-    struct timeval tv_start; 
-    struct timeval tv_end;  
+    double timer;
 
     std::string errorMessage;  
 
