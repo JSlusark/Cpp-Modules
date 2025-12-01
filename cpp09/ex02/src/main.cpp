@@ -28,15 +28,13 @@ int main(int argc, char **argv)
     {
         try
         {
-            logMessage("", C_YELLOW "Initiating FordJohsonSort with Vector container" C_RESET);
+            testTitle(1, "VECTOR CONTAINER");
             std::vector<int> vec;
             FordJohnsonSort<std::vector> sorted_vec(argc, argv, vec);
-            std::cout << std::endl;
 
-            logMessage("", C_YELLOW "Initiating FordJohsonSort with Deq container" C_RESET);
+            testTitle(1, "DEQUE CONTAINER");
             std::deque<int> deq;
             FordJohnsonSort<std::deque> sorted_deq(argc, argv, deq);
-            std::cout << std::endl;
 
         }
         catch (const std::exception &e)

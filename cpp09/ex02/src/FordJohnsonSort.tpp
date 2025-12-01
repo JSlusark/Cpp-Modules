@@ -132,9 +132,9 @@ void FordJohnsonSort<Container>::checkResult()
         cpuFmt.setf(std::ios::fixed);
         cpuFmt << std::setprecision(5) << cpu_micro_double;
 
+        logMessage(LOG,  "Time taken to process " + asString(resultSize) +
+                            " elements: " + cpuFmt.str() + " us" );
         logMessage(SUCCESS, "Container was successfully sorted in " + asString(iterationResult) + " iterationResult and in " + C_GREEN + asString(comparisonResult) + C_RESET + "/" + asString(comparisonLimit) + " comparison count." C_RESET);
-        logMessage(LOG, C_CYAN "Time taken to process " + asString(resultSize) +
-                            " elements: " + cpuFmt.str() + " us" C_RESET);
     }
 }
 
