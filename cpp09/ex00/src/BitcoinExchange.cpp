@@ -49,7 +49,6 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
     checkFile(fileName, fileStream); // checks .csv and openable , triggers catch if error occurs
     if (type == INPUT_TYPE)
         std::cout << "\nConverting Bitcoin Rates:" << std::endl;
-    // collectkeys();
     std::string line, date, exchangeRate;
     float rate;
     std::getline(fileStream, line); // skips header
@@ -70,7 +69,6 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
             if (type == INPUT_TYPE)
                 printConversion(date); // not separating converts due to the exercise printing req
         }
-        // logMessage(C_GREEN "[ADDED]" C_RESET, " '" + line + "'" C_RESET);
     }
     // ends here
     if (data.empty())
@@ -88,32 +86,34 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
 void BitcoinExchange::printConversion(std::string date)
 {
 
+    std::string message;
     std::map<std::string, float>::const_iterator ref_it = ref_data.find(date);
     ref_it = ref_data.lower_bound(date); // sends the found date or the closest similar date (higher)
+    std::string ref_date;
+    float ref_rate;
+    float conversion;
 
     if (ref_it->first == date)
     {
-        logMessage("", date + " => " + asString(input_data[date]) + " * " + asString(ref_it->second) + " = " + asString(ref_it->second * input_data[date]));
+        ref_date = ref_it->first;
+        ref_rate = ref_it->second;
+        conversion = ref_rate * input_data[date];
+        message = date + " => " + asString(input_data[date]) + " = " + asString(conversion) + " BTC" + C_GRAY + "  Match conversion at: data[" + ref_date + "]" + C_RESET;
     }
     else
     {
-        // if (ref_it != ref_data.end())
-        //     logMessage("[HIGH] ", date + " => " + asString(input_data[date]) + " * " + asString(ref_it->second) + " = " + asString(ref_it->second * input_data[date]) + C_GRAY + " Closest higher ref date " + ref_it->first + C_RESET);
         ref_it--;
         if (ref_it == ref_data.end())
-            logMessage(ERROR, "Date not found and no closest lower date could be found ");
+            message = C_RED "[ERROR]" C_RESET " Date not found and no closest lower date could be found";
         else
         {
-            std::string closest_date = ref_it->first;
-            float closest_rate = ref_it->second;
-            float conversion = closest_rate * input_data[date];
-            if (conversion > INT_MAX)
-                logMessage(ERROR, "You either hit the INT_MAX limit or you just became a Billionaire, congratulations!" C_GRAY "Input [" + asString(input_data[date]) + " , " + asString(closest_rate) + "]" C_RESET);
-
-            else
-                logMessage("", date + " => " + asString(input_data[date]) + " * " + asString(closest_rate) + " = " + asString(closest_rate * input_data[date]) + C_GRAY + "  Closest found " + closest_date + C_RESET);
+            ref_date = ref_it->first;
+            ref_rate = ref_it->second;
+            conversion = ref_rate * input_data[date];
+            message = date + " => " + asString(input_data[date]) + " = " + asString(conversion) + " BTC" + C_GRAY + "  Closest conversion at: data[" + ref_date + "]" + C_RESET;
         }
     }
+    logMessage("", message);
 }
 
 /**********************************************************************/
@@ -154,9 +154,6 @@ bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line
         error_message = "Invalid format: " + line;
         return true;
     }
-    // trim white space for date
-    // date.erase(0, date.find_first_not_of(" \t\r"));
-    // date.erase(date.find_last_not_of(" \t\r") + 1);
     if (!isValidDate(date, line))
         return true;
     if (!convertToNumber(exchangeRate, rate))
@@ -164,9 +161,9 @@ bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line
         error_message = "Invalid rate number: " + line;
         return true; // skip this line and continue to the next
     }
-    if (rate < 0)
+    if (rate < 0 || rate > 1000) // asked by pdf
     {
-        error_message = "Invalid rate range: " + line;
+        error_message = "Invalid rate range(< 0 or > 1000): " + line;
         return true; // skip this line and continue to the next
     }
     if (mapped_data.find(date) != mapped_data.end()) // i need to use the map based on what file i use
@@ -213,7 +210,7 @@ bool BitcoinExchange::isValidDate(const std::string &date, const std::string &li
 template <typename Num>
 bool BitcoinExchange::convertToNumber(const std::string &s, Num &type)
 {
-    // Basic check: ensure Num is not std::string (using typeid)
+    // Ensures Num received ad param is not std::string (using typeid)
     assert(typeid(Num) != typeid(std::string) && "convertToNumber: Num must be a numeric type, not std::string");
 
     if (s.empty())

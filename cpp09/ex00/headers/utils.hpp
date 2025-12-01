@@ -3,6 +3,9 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
+
+
 
 /* COLORS */
 #define C_RESET "\033[0m"
@@ -40,6 +43,12 @@ inline void logMessage(const std::string &type, const std::string &message)
 inline std::string asString(int value) {
     std::stringstream ss;
     ss << value;
+    return ss.str();
+}
+
+inline std::string asString(float value) {
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(3) << value;
     return ss.str();
 }
 
