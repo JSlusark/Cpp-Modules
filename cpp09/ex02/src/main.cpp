@@ -13,7 +13,7 @@ descending order:
 
 To be added under checkResult( make public) if using bashTester:
 ./myTester.sh 1 2 3 4 5
-std::cout << "comparisons=" << vector.comparisonResult << std::endl;
+// std::cout << "comparisons=" << sorted_vec.comparisonResult << std::endl;
 
 */
 
@@ -35,8 +35,6 @@ int main(int argc, char **argv)
             testTitle(2, "DEQUE CONTAINER");
             std::deque<int> deq;
             FordJohnsonSort<std::deque> sorted_deq(argc, argv, deq);
-            
-
         }
         catch (const std::exception &e)
         {

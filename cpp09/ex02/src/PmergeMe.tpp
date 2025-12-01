@@ -178,10 +178,10 @@ void PmergeMe<Container>::printJacobstahl(const Container<size_t, std::allocator
 template <template<typename, typename> class Container>
 void PmergeMe<Container>::pleaseMergeMe()
 {
-    mergedChains = main; // mergedChain will start with the sorted Main, in which we insert the pend numbers 
+    mergedChains = main; // mergedChain will start with the ordered Main, in which we insert the pend numbers 
     #if DEBUG_ACTIVE
     logMessage(C_YELLOW "Moving backward (Recursion level ", asString(recursionLvl) + ")" + C_RESET);
-    printChain(mergedChains, C_YELLOW "Sorted main" C_RESET);
+    printChain(mergedChains,"Ordered main");
     printInsertionOrder();
     #endif
 
@@ -201,7 +201,7 @@ void PmergeMe<Container>::pleaseMergeMe()
 
     #if DEBUG_ACTIVE
     logMessage("", C_GRAY "Insertion stops here - all pend numbers are now ordered in main!" C_RESET);
-    printChain(mergedChains, C_GREEN "Sorted Main (Recursion level " + asString(recursionLvl) +")" C_RESET);
+    printChain(mergedChains, C_GREEN "Result (Recursion level " + asString(recursionLvl) +")" C_RESET);
     logMessage(C_LGRAY "\n------------ ENDED RECURSION LEVEL:" + asString(recursionLvl), "------------\n" C_RESET);
     #endif
 }
