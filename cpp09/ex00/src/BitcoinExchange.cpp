@@ -110,7 +110,11 @@ void BitcoinExchange::printConversion(std::string date)
             ref_date = ref_it->first;
             ref_rate = ref_it->second;
             conversion = ref_rate * input_data[date];
-            message = date + " => " + asString(input_data[date]) + " = " + asString(conversion) + " BTC" + C_GRAY + "  Closest conversion at: data[" + ref_date + "]" + C_RESET;
+            if (conversion > INT_MAX)
+                message = ERROR " You hit the INT_MAX limit but you just became a Billionaire, congratulations!" C_GRAY "Input [" + date + " , " + asString(input_data[date]) + "]" C_RESET;
+            
+            else
+                message = date + " => " + asString(input_data[date]) + " = " + asString(conversion) + " BTC" + C_GRAY + "  Closest conversion at: data[" + ref_date + "]" + C_RESET;
         }
     }
     logMessage("", message);
@@ -161,7 +165,8 @@ bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line
         error_message = "Invalid rate number: " + line;
         return true; // skip this line and continue to the next
     }
-    if (rate < 0 || rate > 1000) // asked by pdf
+    // if (rate < 0 || rate > 1000) 
+    if ((rate < 0 || rate > 1000) && type == INPUT_TYPE) // was unclear to me if having to apply this on both data pdf and input pdf as i parse both
     {
         error_message = "Invalid rate range(< 0 or > 1000): " + line;
         return true; // skip this line and continue to the next
