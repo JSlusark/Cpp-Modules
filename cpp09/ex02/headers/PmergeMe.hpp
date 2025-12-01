@@ -5,10 +5,13 @@
 #include <utility>
 #include <stdexcept>
 
-/*
-    Container here must match std::vector or std::deque signature:
-    template <class T, class Alloc = std::allocator<T>> class Container
+/* 
+    Pmerge me is a class that stores each recursion info of the FordJohnson class.
+    A new class object is created at everr recursion level and destoyed
+    once the level ended its course (passing it's data on its preceeding recursion level until its copied
+    to the final result of its corresponding FordJohnson initiator)
 */
+
 template <template<typename, typename> class Container>
 class PmergeMe
 {
@@ -42,7 +45,9 @@ public:
         bool operator()(int a, int b)
         {
             counter++;
+            #if DEBUG_ACTIVE
             logMessage("", C_GRAY "Compared " + asString(b) + " with " + asString(a) + C_CYAN "   Counter: " C_RESET + asString(counter));
+            #endif
             return a < b;
         }
     };

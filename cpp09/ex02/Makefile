@@ -1,5 +1,6 @@
 NAME      := PmergeMe
 CPP       := c++
+DEBUG	  := -DDEBUG_ACTIVE=0 #change with 1 to see debugged logic
 CPPFLAGS  := -Wall -Wextra -Werror -std=c++98 -g
 SRCDIR    := src
 INCDIR    := headers
@@ -8,8 +9,6 @@ OBJDIR    := obj
 HEADERS = FordJohnsonSort.hpp \
 		PmergeMe.hpp 
 SRC = main.cpp \
-	  FordJohnsonSort.cpp \
-	  PmergeMe.cpp 
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
@@ -29,10 +28,10 @@ $(OBJDIR):
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(addprefix $(INCDIR)/, $(HEADERS)) | $(OBJDIR)
 	@mkdir -p $(dir $@)
-	@$(CPP) $(CPPFLAGS) -c $< -o $@
+	@$(CPP) $(DEBUG) $(CPPFLAGS) -c $< -o $@
 
 $(NAME): $(OBJ)
-	@$(CPP) $(CPPFLAGS) -o $(NAME) $(OBJ)
+	@$(CPP) $(DEBUG) $(CPPFLAGS) -o $(NAME) $(OBJ)
 	@echo "$(SUCCESS)[MAKE]:$(RESET) $(NAME) successfully compiled"
 
 clean:

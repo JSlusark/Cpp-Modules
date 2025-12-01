@@ -1,11 +1,11 @@
 /* ------------------ CONSTRUCTORS ------------------ */
 template <template<typename, typename> class Container>
 FordJohnsonSort<Container>::FordJohnsonSort(int argc, char **argv, Container<int, std::allocator<int> > container)
-    : iterationResult(0),
-      result(container),
-      cpu_start(0),
-      cpu_end(0),
-      comparisonResult(0)
+    :cpu_start(0),
+    cpu_end(0),
+    result(container),
+    comparisonResult(0),
+    iterationResult(0)
 {
     for (int i = 1; i < argc; ++i)
     {
@@ -17,7 +17,7 @@ FordJohnsonSort<Container>::FordJohnsonSort(int argc, char **argv, Container<int
     }
     originalSize = result.size();
     comparisonLimit = maxComparisons(originalSize);
-    showSequence("Before", result, originalSize);
+    printResult("Before", result, originalSize);
     sort();
 }
 
@@ -60,12 +60,15 @@ FordJohnsonSort<Container> &FordJohnsonSort<Container>::operator=(const FordJohn
 template <template<typename, typename> class Container>
 FordJohnsonSort<Container>::~FordJohnsonSort() {}
 
-/* ------------------ SORTING FUNCTIONS ------------------ */
+/* ------------------ SORTING: SORTS THE IN RECURSIVE SETS ------------------ */
 
 template <template<typename, typename> class Container>
 void FordJohnsonSort<Container>::sort()
 {
+    #if DEBUG_ACTIVE
     logMessage("", C_YELLOW "FordJohnson Algorythm started" C_RESET);
+    #endif
+
     gettimeofday(&tv_start, 0);
     cpu_start = std::clock();
 
@@ -73,7 +76,12 @@ void FordJohnsonSort<Container>::sort()
 
     cpu_end = std::clock();
     gettimeofday(&tv_end, 0);
+    
+    #if DEBUG_ACTIVE
     logMessage("", C_YELLOW "FordJohnson Algorythm ended" C_RESET);
+    #endif
+    
+    checkResult();
 }
 
 template <template<typename, typename> class Container>
@@ -82,31 +90,39 @@ void FordJohnsonSort<Container>::recursion(Container<int, std::allocator<int> > 
     if (recursedSet.size() <= 1) // recursion stops here
         return;
 
+    #if DEBUG_ACTIVE
     logMessage(C_LGRAY "\n------------ STARTED RECURSION LEVEL:" + asString(iterationResult), "------------\n" C_RESET);
     logMessage(C_YELLOW "Moving forward (Recursion level ", asString(iterationResult) + ")" C_RESET);
-    showSequence("Received container", recursedSet, recursedSet.size());
+    printResult("Received container", recursedSet, recursedSet.size());
+    #endif
 
     PmergeMe<Container> newSet(recursedSet, iterationResult, comparisonResult);
     
     if (newSet.getMain().size() > 1)
     {
+        #if DEBUG_ACTIVE
         logMessage("", "Creating new recursion level..");
+        #endif
         iterationResult++;
         recursion(newSet.getMain());
     }
     else    
+    {
+        #if DEBUG_ACTIVE
         logMessage("", C_GRAY "Recursion nesting stops here" C_RESET);
+        #endif
+    }
     
     newSet.pleaseMergeMe();
 }
 
-/* ------------------ RESULT CHECKING ------------------ */
+/* ------------------ UTILITY FUNCTIONS ------------------ */
 
 template <template<typename, typename> class Container>
-void FordJohnsonSort<Container>::showResult()
+void FordJohnsonSort<Container>::checkResult()
 {
     resultSize = result.size(); // to make sure the insertion part did not skip any number in the way
-    showSequence("After", result, resultSize);
+    printResult("After", result, resultSize);
     if (wrongResult())
             throw std::runtime_error("Wrong result: " + errorMessage);
     else
@@ -201,7 +217,7 @@ bool FordJohnsonSort<Container>::isValidNumber(std::string &s, int &conversion)
 /* ------------------ PRINT DEBUG ------------------ */
 
 template <template<typename, typename> class Container>
-void FordJohnsonSort<Container>::showSequence(const std::string &state, const Container<int, std::allocator<int> > &container, size_t containerSize)
+void FordJohnsonSort<Container>::printResult(const std::string &state, const Container<int, std::allocator<int> > &container, size_t containerSize)
 {
     std::cout << state << ": [ ";
     for (size_t i = 0; i < containerSize; ++i)

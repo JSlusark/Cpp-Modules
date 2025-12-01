@@ -1,16 +1,13 @@
 #pragma once
 #include <iostream>
 #include <climits>
-#include <cstdlib> // For atol
+#include <cstdlib>
 #include <algorithm>
 #include <cmath>
 #include <vector>
 #include <deque>
 #include <string>
-#include <iostream>
 #include <sstream>
-
-
 
 /* ------------------------------COLOR CODES----------------------------- */
 
@@ -39,13 +36,13 @@
 #define DESTRUCTOR C_YELLOW "[DESTRUCTOR] " C_RESET
 
 
+
 inline void logMessage(const std::string &type, const std::string &message)
 {
 	// EXAMPLE
 	// logMessage(ERROR, std::string("the user ") + user.name + " is not subscribed to " + web.domain);
 	std::cout << type << message << std::endl;
 };
-
 inline void testTitle(const int number, const std::string &title)
 {
 	std::cout << C_CYAN
@@ -60,3 +57,5 @@ inline std::string asString(int value) {
     ss << value;
     return ss.str();
 }
+
+

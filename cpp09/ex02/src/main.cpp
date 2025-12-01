@@ -11,7 +11,7 @@ fish:
 descending order:
 ./PmergeMe (seq 3000 -1 1)
 
-To be added under showResult( make public) if using bashTester:
+To be added under checkResult( make public) if using bashTester:
 ./myTester.sh 1 2 3 4 5
 std::cout << "comparisons=" << vector.comparisonResult << std::endl;
 
@@ -31,11 +31,8 @@ int main(int argc, char **argv)
             std::vector<int> vec;
             std::deque<int> deq;
 
-            FordJohnsonSort<std::vector> sorter_vec(argc, argv, vec);
-            sorter_vec.showResult();
-
-            FordJohnsonSort<std::deque> sorter_deq(argc, argv, deq);
-            sorter_deq.showResult();
+            FordJohnsonSort<std::vector> sorted_vec(argc, argv, vec);
+            FordJohnsonSort<std::deque> sorted_deq(argc, argv, deq);
         }
         catch (const std::exception &e)
         {
