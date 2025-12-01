@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <cassert>  // For assert
 #include <typeinfo> // For typeid (C++98)
+#include <climits>
 #define INPUT_TYPE "input"
 #define REF_TYPE "reference"  
 

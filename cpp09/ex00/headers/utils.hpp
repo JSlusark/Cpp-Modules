@@ -12,7 +12,8 @@
 #define C_MAGENTA "\033[38;2;255;0;255m"
 #define C_PURPLE "\033[38;2;180;0;255m"
 #define C_CYAN "\033[38;2;0;255;255m"
-#define C_GRAY "\033[38;2;150;150;150m"
+#define C_GRAY "\033[38;2;80;80;80m"
+#define C_LGRAY "\033[38;2;150;150;150m"
 
 /* --------------------- LOG TYPES --------------------- */
 #define LOG C_GRAY "[LOG] " C_RESET

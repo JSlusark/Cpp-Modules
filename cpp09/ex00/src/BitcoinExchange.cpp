@@ -8,15 +8,6 @@ BitcoinExchange::BitcoinExchange(const std::string &input_file) : ref_file("data
     {
         storeData(ref_file, ref_data, REF_TYPE);
         storeData(input_file, input_data, INPUT_TYPE);
-
-        // logMessage(SUCCESS, input_file + "was stored as a BitcoinExchange exchange object");
-        // logMessage(LOG, "Converting "+ input_file + "rates from "+ ref_file+" rates");
-
-        // logMessage(SUCCESS, input_file + " rates converted");
-
-        // logMessage(SUCCESS, "BitcoinExchange inputdata was stored in the map");
-        // printData(ref_data, ref_file);     // For debugging purposes
-        // printData(input_data, input_file); // For debugging purposes
     }
     catch (const std::exception &e)
     {
@@ -56,6 +47,8 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
     std::ifstream fileStream(fileName.c_str());
     logMessage(LOG, "Initiating data from " + type + " file: " C_YELLOW + fileName + C_RESET);
     checkFile(fileName, fileStream); // checks .csv and openable , triggers catch if error occurs
+    if (type == INPUT_TYPE)
+        std::cout << "\nConverting Bitcoin Rates:" << std::endl;
     // collectkeys();
     std::string line, date, exchangeRate;
     float rate;
@@ -94,25 +87,31 @@ void BitcoinExchange::storeData(const std::string &fileName, std::map<std::strin
 /* converts and  Prints */
 void BitcoinExchange::printConversion(std::string date)
 {
+
     std::map<std::string, float>::const_iterator ref_it = ref_data.find(date);
-    if (ref_it != ref_data.end()) // If date found in ref_data ref_it->second matches input_data[date]
+    ref_it = ref_data.lower_bound(date); // sends the found date or the closest similar date (higher)
+
+    if (ref_it->first == date)
     {
-        std::string ref_date = ref_it->first;
-        float ref_rate = ref_it->second;
-        logMessage("", date + " => " + asString(input_data[date]) + " = " + asString(ref_rate * input_data[date]));
+        logMessage("", date + " => " + asString(input_data[date]) + " * " + asString(ref_it->second) + " = " + asString(ref_it->second * input_data[date]));
     }
     else
     {
-        ref_it = ref_data.lower_bound(date); // If input_date not found in ref_data is overwritten with closest earlier date
-        if (ref_it != ref_data.end())
+        // if (ref_it != ref_data.end())
+        //     logMessage("[HIGH] ", date + " => " + asString(input_data[date]) + " * " + asString(ref_it->second) + " = " + asString(ref_it->second * input_data[date]) + C_GRAY + " Closest higher ref date " + ref_it->first + C_RESET);
+        ref_it--;
+        if (ref_it == ref_data.end())
+            logMessage(ERROR, "Date not found and no closest lower date could be found ");
+        else
         {
             std::string closest_date = ref_it->first;
             float closest_rate = ref_it->second;
-            logMessage("", date + " => " + asString(input_data[date]) + " = " + asString(closest_rate * input_data[date]));
-        }
-        else
-        {
-            logMessage(ERROR, "No earliest date found:" + date + " => " + asString(input_data[date]));
+            float conversion = closest_rate * input_data[date];
+            if (conversion > INT_MAX)
+                logMessage(ERROR, "You either hit the INT_MAX limit or you just became a Billionaire, congratulations!" C_GRAY "Input [" + asString(input_data[date]) + " , " + asString(closest_rate) + "]" C_RESET);
+
+            else
+                logMessage("", date + " => " + asString(input_data[date]) + " * " + asString(closest_rate) + " = " + asString(closest_rate * input_data[date]) + C_GRAY + "  Closest found " + closest_date + C_RESET);
         }
     }
 }
@@ -165,7 +164,7 @@ bool BitcoinExchange::skipEntry(std::stringstream &lineStream, std::string &line
         error_message = "Invalid rate number: " + line;
         return true; // skip this line and continue to the next
     }
-    if (rate < 0 || rate > 1000)
+    if (rate < 0)
     {
         error_message = "Invalid rate range: " + line;
         return true; // skip this line and continue to the next
@@ -203,7 +202,7 @@ bool BitcoinExchange::isValidDate(const std::string &date, const std::string &li
     if (leapYear)
         daysInMonth[1] = 29; // feb  changes
     // Numeric range checks
-    if (year < 2009 || month < 1 || month > 12 || day < 1 || day > daysInMonth[month - 1])
+    if (month < 1 || month > 12 || day < 1 || day > daysInMonth[month - 1])
     {
         error_message = "Date out of range: " + line;
         return false;
