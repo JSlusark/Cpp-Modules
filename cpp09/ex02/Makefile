@@ -7,11 +7,17 @@ INCDIR    := headers
 OBJDIR    := obj
 
 HEADERS = FordJohnsonSort.hpp \
-		PmergeMe.hpp 
-SRC = main.cpp \
+		  PmergeMe.hpp \
+		  debug.hpp
+
+TEMPLATES = FordJohnsonSort.tpp \
+		   PmergeMe.tpp
+
+SRC = main.cpp 
 
 SRC       := $(addprefix $(SRCDIR)/, $(SRC))
 OBJ       := $(addprefix $(OBJDIR)/, $(SRC:$(SRCDIR)/%.cpp=%.o))
+TPP       := $(addprefix $(SRCDIR)/, $(TEMPLATES))
 
 # Colors
 RESET     := \033[0m
@@ -19,14 +25,13 @@ SUCCESS     := \033[0;92m
 WARNING    := \033[38;5;208m
 ERROR       := \033[0;31m
 
-
 all: $(NAME)
 	@echo "$(NAME) is up to date!"
 
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(addprefix $(INCDIR)/, $(HEADERS)) | $(OBJDIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(addprefix $(INCDIR)/, $(HEADERS)) $(TPP) | $(OBJDIR)
 	@mkdir -p $(dir $@)
 	@$(CPP) $(DEBUG) $(CPPFLAGS) -c $< -o $@
 

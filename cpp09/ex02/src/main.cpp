@@ -31,8 +31,7 @@ int main(int argc, char **argv)
             testTitle(1, "VECTOR CONTAINER");
             std::vector<int> vec;
             FordJohnsonSort<std::vector> sorted_vec(argc, argv, vec);
-
-            testTitle(1, "DEQUE CONTAINER");
+            testTitle(2, "DEQUE CONTAINER");
             std::deque<int> deq;
             FordJohnsonSort<std::deque> sorted_deq(argc, argv, deq);
 
