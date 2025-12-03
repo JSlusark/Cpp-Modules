@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   FordJohnsonSort.tpp                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jslusark <jslusark@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/03 13:02:55 by jslusark          #+#    #+#             */
+/*   Updated: 2025/12/03 13:02:57 by jslusark         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 /* ------------------ CONSTRUCTORS ------------------ */
 template <template<typename, typename> class Container>
 FordJohnsonSort<Container>::FordJohnsonSort(int argc, char **argv, Container<int, std::allocator<int> > container)

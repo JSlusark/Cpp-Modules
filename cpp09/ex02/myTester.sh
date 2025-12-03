@@ -5,8 +5,6 @@ GREEN="\033[32m"
 RED="\033[31m"
 RESET="\033[0m"
 
-
-
 # ======== GET INPUT NUMBERS ========
 if [ $# -lt 1 ]; then
     echo "Usage: $0 n1 n2 n3 ..."

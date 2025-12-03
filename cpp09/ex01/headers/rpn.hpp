@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rpn.hpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jslusark <jslusark@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/03 12:52:55 by jslusark          #+#    #+#             */
+/*   Updated: 2025/12/03 12:53:09 by jslusark         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 #include "./utils.hpp"
 #include <string.h>
-#include <sstream> // std::istringstream
+#include <sstream> 
 #include <stack>
-#include <cstdlib> // atoi
-
+#include <cstdlib> 
 
 void printError(std::string err, const char &token);
 void printStack(std::stack<int> &st);
